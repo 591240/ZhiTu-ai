@@ -1,0 +1,14 @@
+<view class="page">
+  <view class="card">
+    <view class="label">反馈内容</view>
+    <textarea class="textarea" placeholder="请描述您遇到的问题或建议…" maxlength="500" value="{{content}}" bindinput="onContent" />
+    <view class="count">{{content.length || 0}}/500</view>
+  </view>
+
+  <view class="card">
+    <view class="label">联系方式（选填）</view>
+    <input class="input" placeholder="手机号 / 微信 / 邮箱" value="{{contact}}" bindinput="onContact" />
+  </view>
+
+  <view class="btn {{content ? 'active' : ''}}" bindtap="submit">提交反馈</view>
+</view>

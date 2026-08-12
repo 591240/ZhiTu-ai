@@ -1,0 +1,16 @@
+# 不打包进镜像的内容
+.env
+.venv
+venv
+__pycache__/
+*.pyc
+.pytest_cache/
+.git
+.gitignore
+*.db
+*.sqlite3
+banyou.db
+tests_offline.py
+mock_12306_mcp.py
+migrate_*.py
+*.md

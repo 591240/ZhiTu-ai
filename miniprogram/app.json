@@ -1,0 +1,69 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/login/login",
+    "pages/phone-login/phone-login",
+    "pages/bind-phone/bind-phone",
+    "pages/trips/trips",
+    "pages/profile/profile",
+    "pages/form/form",
+    "pages/quick/quick",
+    "pages/detail/detail",
+    "pages/chat/chat",
+    "pages/template/template",
+    "pages/member/member",
+    "pages/collection/collection",
+    "pages/published/published",
+    "pages/settings/settings",
+    "pages/agreement/agreement",
+    "pages/feedback/feedback",
+    "pages/manual/manual",
+    "pages/ocr/ocr",
+    "pages/invite/invite",
+    "pages/ticket/ticket",
+    "pages/navig/navig"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "知途 AI 旅行",
+    "backgroundColor": "#F5F6FA",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#3B82F6",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/trips/trips",
+        "text": "我的行程"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于在行程详情中显示您与各景点的距离并提供地图导航"
+    }
+  },
+  "navigateToMiniProgramAppIdList": [
+    "wx761430a892e5b19f",
+    "wxaf35009675aa0b2a",
+    "wx0e6ed4f51db9d078",
+    "wxde8ac0a21135c07d"
+  ]
+}

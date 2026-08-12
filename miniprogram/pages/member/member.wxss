@@ -1,0 +1,75 @@
+/* member.wxss —— 会员中心页 WF-10（统一新色彩规范） */
+.page { padding: 28rpx 28rpx 60rpx; min-height: 100vh; background: var(--bg); }
+
+.vip-card {
+  border-radius: 20rpx;
+  padding: 40rpx 36rpx;
+  color: #fff;
+  background: linear-gradient(135deg, #9CA3AF, #6B7280);
+  box-shadow: 0 4rpx 16rpx rgba(107, 114, 128, 0.2);
+  transition: all 0.3s ease;
+}
+.vip-card.on {
+  background: linear-gradient(135deg, #60A5FA, #3B82F6);
+  box-shadow: 0 4rpx 16rpx rgba(59, 130, 246, 0.3);
+}
+.vip-top { display: flex; justify-content: space-between; align-items: center; }
+.vip-name { font-size: 38rpx; font-weight: 700; }
+.vip-badge { font-size: 24rpx; background: rgba(255,255,255,0.25); padding: 8rpx 20rpx; border-radius: 24rpx; }
+.vip-desc { font-size: 26rpx; margin-top: 18rpx; opacity: 0.92; }
+
+.sec-title { font-size: 28rpx; font-weight: 600; color: var(--text-1); margin: 36rpx 8rpx 20rpx; }
+
+.plans { display: flex; gap: 20rpx; }
+.plan {
+  flex: 1;
+  position: relative;
+  background: var(--card);
+  border-radius: 20rpx;
+  padding: 30rpx 20rpx;
+  text-align: center;
+  border: 3rpx solid transparent;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+.plan.sel { border-color: var(--primary); background: var(--primary-light); }
+.plan:active { transform: scale(0.98); }
+.plan-tag {
+  position: absolute;
+  top: -14rpx;
+  right: 16rpx;
+  background: var(--orange);
+  color: #fff;
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 24rpx;
+}
+.plan-name { font-size: 26rpx; color: var(--text-2); }
+.plan-price { font-size: 44rpx; font-weight: 700; color: var(--text-1); margin: 12rpx 0; }
+.plan-price .cur { font-size: 26rpx; }
+.plan-price .per { font-size: 22rpx; color: var(--text-3); font-weight: 400; }
+.plan-origin { font-size: 22rpx; color: var(--text-4); text-decoration: line-through; }
+
+.card {
+  background: var(--card);
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(59, 130, 246, 0.08);
+}
+.benefits { display: flex; flex-direction: column; gap: 20rpx; }
+.benefit { display: flex; align-items: center; font-size: 28rpx; color: var(--text-1); }
+.tick { color: var(--primary); font-weight: 700; margin-right: 16rpx; }
+
+.primary-btn {
+  margin-top: 40rpx;
+  background: linear-gradient(135deg, #60A5FA, #3B82F6);
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 48rpx;
+  padding: 26rpx 0;
+  border: none;
+  transition: transform 0.15s ease-out;
+}
+.primary-btn:active { transform: scale(0.98); }
+.tip { text-align: center; font-size: 22rpx; color: var(--text-3); margin-top: 18rpx; }

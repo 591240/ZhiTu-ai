@@ -1,0 +1,64 @@
+<view class="page">
+  <!-- 行程微调模式：顶部行程卡片 -->
+  <view wx:if="{{mode==='adjust' && adjustTrip}}" class="adjust-head">
+    <view class="ah-icon">✏️</view>
+    <view class="ah-info">
+      <view class="ah-title">{{adjustTrip.title || '行程微调'}}</view>
+      <view class="ah-sub">{{adjustTrip.city}} · {{adjustTrip.days}}天 · 对话微调中</view>
+    </view>
+  </view>
+
+  <!-- 普通模式才显示 Tab 切换 -->
+  <view wx:if="{{mode!=='adjust'}}" class="tabs">
+    <view class="tab {{activeTab===0?'on':''}}" bindtap="onTab" data-i="0">💬 随便问</view>
+    <view class="tab {{activeTab===1?'on':''}}" bindtap="onTab" data-i="1">🎒 行李清单</view>
+    <view class="tab {{activeTab===2?'on':''}}" bindtap="onTab" data-i="2">🍜 美食榜</view>
+  </view>
+
+  <block wx:if="{{activeTab===0}}">
+    <scroll-view scroll-y class="chat-box" scroll-into-view="{{lastId}}">
+      <view wx:if="{{messages.length===0}}" class="empty-hint">
+        <view class="eh-emoji">🤖</view>
+        <view class="eh-text">我是你的行程助手，目的地、美食、避坑、行李都能问</view>
+      </view>
+      <view wx:for="{{messages}}" wx:key="index" id="m{{index}}" class="msg-row {{item.role}}">
+        <view class="bubble">{{item.text}}</view>
+      </view>
+    </scroll-view>
+    <view class="quick-q" wx:if="{{mode!=='adjust'}}">
+      <view class="q-chip" wx:for="{{quickQs}}" wx:key="*this" bindtap="onQuick" data-q="{{item}}">{{item}}</view>
+    </view>
+
+    <!-- 微调模式：保存按钮 -->
+    <view wx:if="{{mode==='adjust' && adjusted}}" class="save-adjust" bindtap="saveAdjust">💾 保存当前行程</view>
+
+    <view class="input-bar">
+      <input class="bar-input" placeholder="{{mode==='adjust' ? '告诉我要怎么改行程…' : '问点什么…'}}" value="{{input}}" bindinput="onInput" confirm-type="send" bindconfirm="send" />
+      <view class="send-btn" bindtap="send">发送</view>
+    </view>
+  </block>
+
+  <block wx:elif="{{activeTab===1}}">
+    <scroll-view scroll-y class="list-box">
+      <view class="lug-group" wx:for="{{luggage}}" wx:key="group" wx:for-item="g">
+        <view class="lug-group-title">{{g.group}}</view>
+        <view class="lug-item {{it.done?'done':''}}" wx:for="{{g.items}}" wx:for-item="it" wx:key="name" bindtap="toggleLuggage" data-gi="{{index}}" data-ii="{{ii}}">
+          <text class="check">{{it.done?'✅':'⬜'}}</text><text class="lug-name">{{it.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </block>
+
+  <block wx:else>
+    <scroll-view scroll-y class="list-box">
+      <view class="food-sec">
+        <view class="food-head red">✅ 红榜 · 放心吃</view>
+        <view class="food-item" wx:for="{{food.red}}" wx:key="*this">· {{item}}</view>
+      </view>
+      <view class="food-sec">
+        <view class="food-head black">⛔ 黑榜 · 要避坑</view>
+        <view class="food-item" wx:for="{{food.black}}" wx:key="*this">· {{item}}</view>
+      </view>
+    </scroll-view>
+  </block>
+</view>

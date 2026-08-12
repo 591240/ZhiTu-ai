@@ -1,0 +1,36 @@
+<view class="page">
+  <view class="nav-title">我的行程</view>
+
+  <view class="tabs">
+    <view class="tab {{tab === 'active' ? 'on' : ''}}" data-tab="active" bindtap="switchTab">使用中</view>
+    <view class="tab {{tab === 'all' ? 'on' : ''}}" data-tab="all" bindtap="switchTab">全部行程</view>
+  </view>
+
+  <view wx:if="{{list.length === 0}}" class="empty">
+    <view class="emoji">🧳</view>
+    <text>还没有行程，去首页规划一个吧</text>
+  </view>
+
+  <view wx:else class="list">
+    <view class="trip-card" wx:for="{{list}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+      <view class="tc-cover">
+        <view class="tc-emoji">{{item.cover}}</view>
+        <view class="tc-cover-mask"></view>
+        <view class="tc-cover-top">
+          <view class="tc-city">📍 {{item.city}}</view>
+          <route-tag type="{{item.route_type}}" />
+        </view>
+      </view>
+      <view class="tc-body">
+        <view class="tc-title">{{item.title}}</view>
+        <view class="tc-meta">{{item.days}}天 · {{item.crowd_type}}</view>
+        <view class="tc-foot">
+          <view class="tc-budget"><text class="cur">¥</text>{{item.total_budget}}</view>
+          <text class="tc-del" catchtap="onDelete" data-id="{{item.id}}">删除</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

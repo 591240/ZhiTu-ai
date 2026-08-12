@@ -1,0 +1,205 @@
+<wxs module="m">
+function slotLabel(v){ var map={'morning':'上午','afternoon':'下午','evening':'晚上'}; return map[v]||v; }
+function mealLabel(v){ var map={'breakfast':'早餐','lunch':'午餐','dinner':'晚餐'}; return map[v]||v; }
+function idx(arr, v){ for(var i=0;i<arr.length;i++){ if(arr[i]===v) return i; } return 0; }
+module.exports = { slotLabel: slotLabel, mealLabel: mealLabel, idx: idx };
+</wxs>
+
+<view class="page" wx:if="{{trip}}">
+  <view class="d-head">
+    <view class="d-title">{{trip.title}}</view>
+    <view class="d-sub">{{trip.city}} · {{trip.days}}天 · <route-tag type="{{trip.route_type}}" /></view>
+    <view wx:if="{{!editing}}" class="edit-entry" bindtap="enterEdit">✏️ 编辑</view>
+  </view>
+
+  <!-- 行前准备（跨境/特殊证件提醒：签证、港澳通行证、电话卡等） -->
+  <view wx:if="{{trip.content.preparations.length}}" class="prep card">
+    <view class="prep-head">
+      <text class="prep-ico">🛂</text>
+      <text class="prep-title">行前准备</text>
+      <text class="prep-sub">出发前请提前备齐</text>
+    </view>
+    <view wx:for="{{trip.content.preparations}}" wx:key="title" class="prep-item">
+      <text class="prep-item-ico">{{item.icon}}</text>
+      <view class="prep-item-body">
+        <text class="prep-item-title">{{item.title}}</text>
+        <text class="prep-item-detail">{{item.detail}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 往返交通方案（仅展示态） -->
+  <view wx:if="{{!editing && trip.content.transport_plans.length}}" class="tp-wrap">
+    <view class="block-title row"><text>🚄 往返交通方案</text><text class="mini-link" bindtap="goTicket">查实时余票 ›</text></view>
+    <view class="seg wrap">
+      <view wx:for="{{trip.content.transport_plans}}" wx:key="name"
+            class="chip {{transportIndex === index ? 'on' : ''}}" data-i="{{index}}" bindtap="setTransport">{{item.name}}</view>
+    </view>
+    <view wx:if="{{trip.content.transport_plans[transportIndex]}}" class="tp-card card">
+      <view class="tp-row"><text class="tp-k">方式</text><text class="tp-v">{{trip.content.transport_plans[transportIndex].mode}}</text></view>
+      <view class="tp-row"><text class="tp-k">价格</text><text class="tp-v">¥{{trip.content.transport_plans[transportIndex].price}}</text></view>
+      <view class="tp-row"><text class="tp-k">时长</text><text class="tp-v">{{trip.content.transport_plans[transportIndex].duration}}</text></view>
+      <view class="tp-pros">✅ {{trip.content.transport_plans[transportIndex].pros}}</view>
+      <view class="tp-cons">⚠️ {{trip.content.transport_plans[transportIndex].cons}}</view>
+      <view class="tp-note">📌 {{trip.content.transport_plans[transportIndex].arrival_note}}</view>
+    </view>
+  </view>
+
+  <scroll-view scroll-x class="day-tabs" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{trip.content.itinerary}}" wx:key="day_number"
+          class="day-tab {{dayIndex === index ? 'on' : ''}}" data-i="{{index}}" bindtap="setDay">
+      第{{item.day_number}}天
+    </view>
+  </scroll-view>
+
+  <block wx:if="{{currentDay}}">
+    <!-- 每日环境提示 -->
+    <view wx:if="{{currentDay.weather_tip || currentDay.season_tip || currentDay.crowd_tip || editing}}" class="day-tips">
+      <block wx:if="{{editing}}">
+        <input class="tip-input" placeholder="天气提示" value="{{currentDay.weather_tip}}" data-di="{{dayIndex}}" data-field="weather_tip" bindinput="editDayField" />
+        <input class="tip-input" placeholder="季节提示" value="{{currentDay.season_tip}}" data-di="{{dayIndex}}" data-field="season_tip" bindinput="editDayField" />
+        <input class="tip-input" placeholder="人流提示" value="{{currentDay.crowd_tip}}" data-di="{{dayIndex}}" data-field="crowd_tip" bindinput="editDayField" />
+      </block>
+      <block wx:else>
+        <view wx:if="{{currentDay.weather_tip}}" class="dt weather">🌤 {{currentDay.weather_tip}}</view>
+        <view wx:if="{{currentDay.season_tip}}" class="dt season">📅 {{currentDay.season_tip}}</view>
+        <view wx:if="{{currentDay.crowd_tip}}" class="dt crowd">👥 {{currentDay.crowd_tip}}</view>
+      </block>
+    </view>
+
+    <!-- 景点 -->
+    <view class="block-title">📍 景点安排
+      <text wx:if="{{!editing}}" class="mini-link" bindtap="goNavigate">导航 ›</text>
+      <text wx:if="{{editing}}" class="add-mini" data-di="{{dayIndex}}" bindtap="addSpot">+ 添加</text>
+    </view>
+    <view wx:for="{{currentDay.spots}}" wx:key="name" class="spot card">
+      <block wx:if="{{editing}}">
+        <view class="ed-row">
+          <input class="ed-name" placeholder="景点名" value="{{item.name}}" data-di="{{dayIndex}}" data-si="{{index}}" data-field="name" bindinput="editSpotField" />
+          <picker class="ed-picker" range="{{SLOT_LABELS}}" value="{{m.idx(SLOTS, item.time_slot)}}" data-di="{{dayIndex}}" data-si="{{index}}" bindchange="onSpotSlot">
+            <view class="ed-picker-v">{{m.slotLabel(item.time_slot)}}</view>
+          </picker>
+          <view class="ed-del" data-di="{{dayIndex}}" data-si="{{index}}" bindtap="delSpot">✕</view>
+        </view>
+        <input class="ed-input" placeholder="地址" value="{{item.address}}" data-di="{{dayIndex}}" data-si="{{index}}" data-field="address" bindinput="editSpotField" />
+        <view class="ed-row">
+          <input class="ed-num" type="number" placeholder="时长(分)" value="{{item.duration_min}}" data-di="{{dayIndex}}" data-si="{{index}}" data-field="duration_min" bindinput="editSpotField" />
+          <input class="ed-num" type="number" placeholder="票价" value="{{item.ticket_price}}" data-di="{{dayIndex}}" data-si="{{index}}" data-field="ticket_price" bindinput="editSpotField" />
+        </view>
+        <input class="ed-input" placeholder="简介" value="{{item.description}}" data-di="{{dayIndex}}" data-si="{{index}}" data-field="description" bindinput="editSpotField" />
+      </block>
+      <block wx:else>
+        <view class="sp-media">
+          <image class="sp-img" src="{{item.image || ''}}" mode="aspectFill" lazy-load="{{true}}" />
+          <view class="sp-media-mask"></view>
+          <text wx:if="{{item.category}}" class="sp-cat-over">{{item.category}}</text>
+          <text class="sp-price-over {{((item.best_price || item.ticket_price) === 0) ? 'free' : ''}}">{{(item.best_price || item.ticket_price) === 0 ? '免费' : ('¥' + (item.best_price || item.ticket_price))}}</text>
+        </view>
+        <view class="sp-body">
+          <view class="sp-head">
+            <text class="sp-slot">{{m.slotLabel(item.time_slot)}}</text>
+            <text class="sp-name">{{item.name}}</text>
+          </view>
+          <view class="sp-addr">📍 {{item.address}}</view>
+          <view class="sp-desc">{{item.description}}</view>
+          <view class="sp-foot">
+            <text class="sp-meta">⏱ {{item.duration_min}}分钟</text>
+          </view>
+          <view class="sp-acts">
+            <text wx:if="{{item.ticket_price > 0}}" class="sp-act buy {{item.ticket_channel ? 'rec' : ''}}" data-di="{{dayIndex}}" data-si="{{index}}" bindtap="onSpotTicket">
+              <block wx:if="{{item.ticket_channel}}">AI推荐 ¥{{item.best_price || item.ticket_price}} · 去{{item.ticket_channel}}购买 ›</block>
+              <block wx:else>购票/查低价 ›</block>
+            </text>
+            <text wx:if="{{item.need_booking}}" class="sp-act book" data-di="{{dayIndex}}" data-si="{{index}}" bindtap="onSpotBooking">公众号预约 ›</text>
+            <text class="sp-act" bindtap="onSpotMedia" data-name="{{item.name}}">看视频/攻略 ›</text>
+          </view>
+          <view wx:if="{{item.photo_spots.length}}" class="photo-card">
+            <view class="pc-title">📸 打卡点推荐（{{item.photo_spots.length}}）</view>
+            <view wx:for="{{item.photo_spots}}" wx:for-item="ps" wx:key="position" class="pc-item">
+              <view class="pc-pos">{{ps.position}} <text class="pc-time">· {{ps.best_time}}</text></view>
+              <view class="pc-tip">{{ps.tip}}</view>
+              <view class="pc-foot">避峰：{{ps.avoid_crowd}} · {{ps.day_night}} · 适合{{ps.suitable_for}}</view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 餐饮 -->
+    <view class="block-title">🍽 餐饮推荐
+      <text wx:if="{{editing}}" class="add-mini" data-di="{{dayIndex}}" bindtap="addMeal">+ 添加</text>
+    </view>
+    <view wx:for="{{currentDay.meals}}" wx:key="name" class="meal card">
+      <block wx:if="{{editing}}">
+        <view class="ed-row">
+          <input class="ed-name" placeholder="餐厅名" value="{{item.name}}" data-di="{{dayIndex}}" data-mi="{{index}}" data-field="name" bindinput="editMealField" />
+          <picker class="ed-picker" range="{{MEAL_LABELS}}" value="{{m.idx(MEAL_TYPES, item.type)}}" data-di="{{dayIndex}}" data-mi="{{index}}" bindchange="onMealType">
+            <view class="ed-picker-v">{{m.mealLabel(item.type)}}</view>
+          </picker>
+          <view class="ed-del" data-di="{{dayIndex}}" data-mi="{{index}}" bindtap="delMeal">✕</view>
+        </view>
+        <view class="ed-row">
+          <input class="ed-num" type="number" placeholder="人均" value="{{item.avg_price}}" data-di="{{dayIndex}}" data-mi="{{index}}" data-field="avg_price" bindinput="editMealField" />
+          <input class="ed-input flex1" placeholder="招牌菜" value="{{item.specialty}}" data-di="{{dayIndex}}" data-mi="{{index}}" data-field="specialty" bindinput="editMealField" />
+        </view>
+      </block>
+      <block wx:else>
+        <view class="ml-row">
+          <view class="ml-ico">{{item.type === 'breakfast' ? '🥢' : (item.type === 'dinner' ? '🍲' : '🍜')}}</view>
+          <view class="ml-body">
+            <view class="ml-top">
+              <text class="ml-name">{{item.name}}</text>
+              <text class="ml-type">{{m.mealLabel(item.type)}}</text>
+            </view>
+            <view wx:if="{{item.specialty}}" class="ml-special">特色：{{item.specialty}}</view>
+            <view class="ml-price">人均 ¥{{item.avg_price}}<text wx:if="{{item.deal_channel}}" class="ml-deal"> · 推荐{{item.deal_channel}}团购</text></view>
+          </view>
+          <text class="sp-act deal {{item.deal_channel ? 'rec' : ''}}" data-di="{{dayIndex}}" data-mi="{{index}}" bindtap="onMealDeal">
+            <block wx:if="{{item.deal_channel}}">去{{item.deal_channel}}团购 ›</block>
+            <block wx:else>团购/查低价 ›</block>
+          </text>
+        </view>
+      </block>
+    </view>
+
+    <!-- 交通（仅展示态） -->
+    <view wx:if="{{!editing}}" class="block-title">🚌 交通建议</view>
+    <view wx:if="{{!editing}}" wx:for="{{currentDay.transport}}" wx:key="from" class="trans card">
+      {{item.from}} → {{item.to}} · {{item.mode}} · {{item.duration_min}}分钟 · ¥{{item.cost}}
+    </view>
+
+    <!-- 预算 + 避坑 -->
+    <view class="summary card">
+      <view class="sum-row">
+        <text>当日预算</text>
+        <text class="sum-budget">¥{{currentDay.budget}}</text>
+      </view>
+      <view class="tips">{{currentDay.tips}}</view>
+    </view>
+  </block>
+
+  <!-- 总预算分析 -->
+  <view wx:if="{{trip.content.budget_analysis}}" class="summary card ba">
+    <view class="block-title" style="margin-top:0">💰 总预算分析</view>
+    <view class="tips">{{trip.content.budget_analysis}}</view>
+  </view>
+
+  <view class="safe-bottom"></view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <block wx:if="{{editing}}">
+      <button class="btn-ghost act-btn" bindtap="cancelEdit">取消</button>
+      <button class="btn-primary act-btn" bindtap="saveEdit">完成</button>
+    </block>
+    <block wx:else>
+      <button class="btn-ghost act-btn" bindtap="onAdjust">对话微调</button>
+      <button class="btn-primary act-btn" bindtap="onSave">保存行程</button>
+    </block>
+  </view>
+</view>
+
+<view wx:else class="empty">
+  <view class="emoji">🗺️</view>
+  <text>未找到行程</text>
+</view>

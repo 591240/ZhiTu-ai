@@ -1,0 +1,138 @@
+/* chat.wxss —— 随便问对话页 WF-08（统一新色彩规范） */
+.page { display: flex; flex-direction: column; height: 100vh; background: var(--bg); }
+
+/* 顶部 Tab */
+.tabs { display: flex; background: var(--card); padding: 12rpx 16rpx; border-bottom: 1rpx solid var(--border); }
+.tab {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  color: var(--text-3);
+  padding: 16rpx 0;
+  border-radius: 12rpx;
+  transition: all 0.2s ease;
+}
+.tab.on { color: var(--primary); background: var(--primary-light); font-weight: 600; }
+
+/* 对话区 */
+.chat-box { flex: 1; padding: 28rpx 24rpx; }
+.empty-hint { text-align: center; color: var(--text-3); margin-top: 120rpx; }
+.eh-emoji { font-size: 88rpx; }
+.eh-text { font-size: 26rpx; margin-top: 16rpx; padding: 0 60rpx; }
+
+.msg-row { display: flex; margin-bottom: 24rpx; }
+.msg-row.user { justify-content: flex-end; }
+.bubble {
+  max-width: 76%;
+  padding: 20rpx 24rpx;
+  border-radius: 20rpx;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+.msg-row.ai .bubble {
+  background: var(--card);
+  color: var(--text-1);
+  border-top-left-radius: 6rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+.msg-row.user .bubble {
+  background: var(--primary);
+  color: #fff;
+  border-top-right-radius: 6rpx;
+}
+
+.quick-q { display: flex; flex-wrap: wrap; gap: 14rpx; padding: 16rpx 24rpx 4rpx; }
+.q-chip {
+  background: var(--card);
+  color: var(--primary);
+  font-size: 24rpx;
+  padding: 12rpx 20rpx;
+  border-radius: 16rpx;
+  border: 1rpx solid var(--primary-light);
+}
+.q-chip:active { transform: scale(0.96); }
+
+.input-bar {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx 28rpx;
+  background: var(--card);
+  border-top: 1rpx solid var(--border);
+}
+.bar-input {
+  flex: 1;
+  background: var(--bg);
+  border-radius: 24rpx;
+  padding: 18rpx 28rpx;
+  font-size: 28rpx;
+}
+.send-btn {
+  margin-left: 16rpx;
+  background: var(--primary);
+  color: #fff;
+  font-size: 28rpx;
+  padding: 18rpx 32rpx;
+  border-radius: 24rpx;
+}
+
+/* 行李清单、美食红黑榜 */
+.list-box { flex: 1; padding: 24rpx; }
+.lug-group {
+  background: var(--card);
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 22rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+.lug-group-title { font-size: 28rpx; font-weight: 600; color: var(--text-1); margin-bottom: 12rpx; }
+.lug-item { display: flex; align-items: center; padding: 16rpx 0; font-size: 28rpx; color: var(--text-2); border-top: 1rpx solid var(--line); }
+.lug-item .check { margin-right: 16rpx; }
+.lug-item.done .lug-name { color: var(--text-3); text-decoration: line-through; }
+
+.food-sec {
+  background: var(--card);
+  border-radius: 16rpx;
+  padding: 22rpx 24rpx;
+  margin-bottom: 22rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+.food-head { font-size: 28rpx; font-weight: 600; margin-bottom: 14rpx; }
+.food-head.red { color: #2BA471; }
+.food-head.black { color: var(--danger); }
+.food-item { font-size: 27rpx; color: var(--text-2); padding: 10rpx 0; }
+
+/* 行程对话微调模式 */
+.adjust-head {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 28rpx;
+  background: linear-gradient(135deg, var(--primary-light), var(--card));
+  border-bottom: 1rpx solid var(--border);
+}
+.ah-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 18rpx;
+  background: var(--primary);
+  color: #fff;
+  font-size: 38rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ah-info { margin-left: 20rpx; }
+.ah-title { font-size: 30rpx; font-weight: 600; color: var(--text-1); }
+.ah-sub { font-size: 22rpx; color: var(--text-3); margin-top: 6rpx; }
+
+.save-adjust {
+  margin: 4rpx 24rpx 0;
+  text-align: center;
+  padding: 20rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #D4A951, #B8923D);
+  border-radius: 24rpx;
+  box-shadow: 0 6rpx 18rpx rgba(184, 146, 61, 0.28);
+}
+.save-adjust:active { transform: scale(0.98); }

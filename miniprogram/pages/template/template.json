@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "模板详情",
+  "usingComponents": {
+    "route-tag": "../../components/route-tag/route-tag"
+  }
+}

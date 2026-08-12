@@ -1,0 +1,112 @@
+<view class="page" style="padding-top: {{statusBarHeight + navHeight}}px;">
+  <!-- 自定义导航栏：图标 + 标题 -->
+  <view class="custom-navbar" style="height: {{statusBarHeight + navHeight}}px; padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-inner">
+      <view class="navbar-title">
+        <image class="navbar-logo" src="/images/logo.png" mode="aspectFit" />
+        <text>知途 AI 旅行</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 模块1：顶部城市选择器 -->
+  <view class="header">
+    <view class="welcome-text">发现你的下一站</view>
+    <view class="city-picker" bindtap="onPickCity">
+      <view class="loc-ico"></view>
+      <text class="city-name">{{city}}</text>
+      <text class="arrow">▾</text>
+    </view>
+  </view>
+
+  <!-- 模块2：Hero Banner -->
+  <view class="hero" bindtap="goForm" hover-class="hero-press" hover-stay-time="120">
+    <view class="hero-badge">AI 智能规划</view>
+    <view class="hero-title">开始规划行程</view>
+    <view class="hero-sub">AI 智能生成专属旅行路线</view>
+    <view class="hero-decor"></view>
+    <view class="hero-mountains"></view>
+  </view>
+
+  <!-- 模块3：四大规划入口（2×2 核心/次要分层） -->
+  <view class="section">
+    <view class="sec-title">开始规划</view>
+    <view class="grid">
+      <view class="grid-item core" bindtap="goForm" hover-class="gi-press" hover-stay-time="120">
+        <view class="gi-ico form"></view>
+        <view class="gi-name">AI 表单规划</view>
+        <view class="gi-desc">填表生成行程</view>
+      </view>
+      <view class="grid-item core" bindtap="goQuick" hover-class="gi-press" hover-stay-time="120">
+        <view class="gi-ico quick"></view>
+        <view class="gi-name">一句话快规划</view>
+        <view class="gi-desc">说句话，秒出方案</view>
+      </view>
+      <view class="grid-item secondary" bindtap="goOcr" hover-class="gi-press" hover-stay-time="120">
+        <view class="gi-ico ocr"></view>
+        <view class="gi-name">截图识行程</view>
+        <view class="gi-desc">上传攻略图片</view>
+      </view>
+      <view class="grid-item secondary" bindtap="goManual" hover-class="gi-press" hover-stay-time="120">
+        <view class="gi-ico manual"></view>
+        <view class="gi-name">手动编排</view>
+        <view class="gi-desc">自由拖拽编排</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 模块4：城市选择独立区块 -->
+  <view class="city-block" bindtap="onPickCity">
+    <text class="cb-label">目的地</text>
+    <view class="cb-location">
+      <text class="cb-city">{{city}}</text>
+    </view>
+    <text class="cb-arrow">▾</text>
+  </view>
+
+  <!-- 模块5：快捷服务栏 -->
+  <view class="section">
+    <view class="sec-title">快捷服务</view>
+    <view class="service-grid">
+      <view class="svc-item" wx:for="{{services}}" wx:key="key" bindtap="onService" data-key="{{item.key}}" hover-class="svc-press" hover-stay-time="120">
+        <view class="svc-ico {{item.key}}"></view>
+        <view class="svc-name">{{item.name}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 模块6：精选模板广场 -->
+  <view class="section">
+      <view class="sec-head">
+        <view class="sec-title">精选行程模板</view>
+        <view class="refresh" bindtap="onRefreshTpl">
+          <view class="refresh-ico"></view>
+          <text>换一批</text>
+        </view>
+      </view>
+    <scroll-view scroll-x class="tpl-scroll" enhanced show-scrollbar="{{false}}">
+      <view class="tpl-card {{tplAnimate ? 'fade-enter' : ''}}" wx:for="{{templates}}" wx:key="id" bindtap="goTemplate" data-id="{{item.id}}">
+        <view class="tpl-cover">
+          <view class="tpl-emoji" wx:if="{{!item.image}}">{{item.cover}}</view>
+          <image wx:if="{{item.image}}" class="tpl-img" src="{{item.image}}" mode="aspectFill" data-index="{{index}}" binderror="onImgError" />
+          <view class="tpl-badge" wx:if="{{item.hot}}">HOT</view>
+        </view>
+        <view class="tpl-info">
+          <view class="tpl-name">{{item.title}}</view>
+          <view class="tpl-meta">{{item.city}} · {{item.days}}天 · {{item.spots_count}}景点</view>
+          <view class="tpl-tags">
+            <text class="tpl-tag">{{item.days}}日游</text>
+            <text class="tpl-tag orange" wx:if="{{item.route_type === '大众'}}">休闲出游</text>
+            <text class="tpl-tag purple" wx:if="{{item.route_type === '小众'}}">深度探索</text>
+          </view>
+          <view class="tpl-foot">
+            <text class="uses">已用 {{item.uses}} 次</text>
+            <route-tag type="{{item.route_type}}" />
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

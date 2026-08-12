@@ -1,0 +1,393 @@
+/* ticket.wxss —— 查票页（高水准高铁票风格） */
+
+.page {
+  min-height: 100vh;
+  background: var(--bg);
+  padding-bottom: 48rpx;
+}
+
+/* ===== 顶部头图 ===== */
+.header {
+  position: relative;
+  padding: 48rpx 32rpx 96rpx;
+  overflow: hidden;
+}
+.h-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 60%, #2563EB 100%);
+  border-radius: 0 0 40rpx 40rpx;
+  z-index: 0;
+}
+.h-bg::after {
+  content: '';
+  position: absolute;
+  right: -40rpx;
+  bottom: -60rpx;
+  width: 240rpx;
+  height: 240rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+}
+.h-title {
+  position: relative;
+  z-index: 1;
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 8rpx;
+}
+.h-sub {
+  position: relative;
+  z-index: 1;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ===== 查询卡片 ===== */
+.search-card {
+  position: relative;
+  z-index: 2;
+  margin: -64rpx 32rpx 0;
+  background: var(--card);
+  border-radius: 28rpx;
+  padding: 36rpx 32rpx 40rpx;
+  box-shadow: 0 8rpx 32rpx rgba(59, 130, 246, 0.14);
+}
+
+/* 出发/到达城市 */
+.route-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32rpx;
+}
+.route-city {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.route-city:last-child { align-items: flex-end; }
+.rc-label {
+  font-size: 24rpx;
+  color: var(--text-3);
+  margin-bottom: 10rpx;
+}
+.rc-name {
+  font-size: 52rpx;
+  font-weight: bold;
+  color: var(--text-1);
+  min-width: 160rpx;
+  max-width: 240rpx;
+  height: 72rpx;
+  line-height: 72rpx;
+}
+.route-city:last-child .rc-name { text-align: right; }
+
+/* 交换按钮 */
+.route-mid {
+  width: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.swap-btn {
+  position: relative;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.swap-ico {
+  position: relative;
+  z-index: 2;
+  font-size: 30rpx;
+  color: var(--primary);
+  font-weight: bold;
+}
+
+/* 日期/类型筛选 */
+.filter-row {
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+  border-radius: 16rpx;
+  padding: 22rpx 0;
+  margin-bottom: 32rpx;
+}
+.filter-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.fc-label {
+  font-size: 22rpx;
+  color: var(--text-3);
+  margin-bottom: 8rpx;
+}
+.fc-value.date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.fc-main {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.fc-week {
+  font-size: 22rpx;
+  color: var(--text-3);
+  margin-top: 2rpx;
+}
+.type-picker {
+  display: flex;
+  align-items: center;
+}
+.fc-arrow {
+  font-size: 28rpx;
+  color: var(--text-3);
+  margin-left: 8rpx;
+}
+.filter-divider {
+  width: 1rpx;
+  height: 60rpx;
+  background: var(--border);
+}
+
+/* 查询按钮 */
+.search-btn {
+  background: linear-gradient(135deg, #60A5FA, #3B82F6);
+  color: #fff;
+  border-radius: 48rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  text-align: center;
+  padding: 24rpx 0;
+  border: none;
+  box-shadow: 0 8rpx 20rpx rgba(59, 130, 246, 0.3);
+  transition: transform 0.15s ease-out;
+}
+.search-btn::after { border: none; }
+.search-btn:active { transform: scale(0.98); }
+
+/* ===== 结果头部 ===== */
+.result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 36rpx 32rpx 24rpx;
+}
+.rh-left {
+  display: flex;
+  align-items: center;
+}
+.rh-from, .rh-to {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.rh-arrow {
+  font-size: 26rpx;
+  color: var(--primary);
+  margin: 0 14rpx;
+}
+.badge {
+  font-size: 22rpx;
+  padding: 6rpx 18rpx;
+  border-radius: 24rpx;
+}
+.badge.live { background: #EAF3DE; color: #3B6D11; }
+.badge.off { background: #F1EFE8; color: var(--text-3); }
+
+/* ===== 车次卡片（高铁票风格） ===== */
+.trains { padding: 0 32rpx; }
+.train-card {
+  background: var(--card);
+  border-radius: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+.tc-top {
+  padding: 32rpx 32rpx 24rpx;
+  border-bottom: 1rpx dashed var(--border);
+  position: relative;
+}
+.tc-top::before, .tc-top::after {
+  content: '';
+  position: absolute;
+  bottom: -14rpx;
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  background: var(--bg);
+}
+.tc-top::before { left: -14rpx; }
+.tc-top::after { right: -14rpx; }
+
+.tc-time-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.tc-station {
+  display: flex;
+  flex-direction: column;
+  min-width: 132rpx;
+}
+.tc-station.right { align-items: flex-end; }
+.tc-time {
+  font-size: 42rpx;
+  font-weight: bold;
+  color: var(--text-1);
+  line-height: 1.1;
+}
+.tc-name {
+  font-size: 24rpx;
+  color: var(--text-3);
+  margin-top: 8rpx;
+}
+.tc-arrow {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 20rpx;
+}
+.tc-duration {
+  font-size: 22rpx;
+  color: var(--text-3);
+  margin-bottom: 8rpx;
+}
+.tc-track {
+  position: relative;
+  width: 100%;
+  height: 20rpx;
+  display: flex;
+  align-items: center;
+}
+.tc-track-line {
+  flex: 1;
+  height: 2rpx;
+  background: var(--border);
+}
+.tc-track-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: var(--primary);
+}
+.tc-track-dot.left { margin-right: -5rpx; }
+.tc-track-dot.right { margin-left: -5rpx; }
+.tc-no {
+  font-size: 22rpx;
+  color: var(--text-3);
+  margin-top: 6rpx;
+}
+
+.tc-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 32rpx;
+  background: linear-gradient(180deg, #fff 0%, #F8FAFC 100%);
+}
+.tc-tags {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.tag-high {
+  font-size: 22rpx;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+  font-weight: 500;
+}
+.tag-normal {
+  font-size: 22rpx;
+  color: var(--text-3);
+  background: var(--bg);
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+}
+.tc-price-wrap {
+  display: flex;
+  align-items: baseline;
+}
+.tc-price {
+  font-size: 38rpx;
+  font-weight: bold;
+  color: #E65C50;
+}
+.tc-price-tag {
+  font-size: 22rpx;
+  color: var(--text-3);
+  margin-left: 4rpx;
+}
+.tc-price-none {
+  font-size: 24rpx;
+  color: var(--text-3);
+}
+
+/* ===== 空状态 ===== */
+.empty-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 60rpx 40rpx;
+}
+.empty-train {
+  position: relative;
+  width: 160rpx;
+  height: 120rpx;
+  margin-bottom: 28rpx;
+}
+.et-body {
+  position: absolute;
+  left: 10rpx;
+  top: 20rpx;
+  width: 140rpx;
+  height: 70rpx;
+  background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+  border-radius: 18rpx 18rpx 8rpx 8rpx;
+}
+.et-window {
+  position: absolute;
+  left: 24rpx;
+  top: 34rpx;
+  width: 100rpx;
+  height: 24rpx;
+  background: #EFF6FF;
+  border-radius: 6rpx;
+}
+.et-line {
+  position: absolute;
+  left: 10rpx;
+  top: 100rpx;
+  width: 140rpx;
+  height: 6rpx;
+  background: var(--border);
+  border-radius: 3rpx;
+}
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 10rpx;
+}
+.empty-desc {
+  font-size: 26rpx;
+  color: var(--text-3);
+  text-align: center;
+}

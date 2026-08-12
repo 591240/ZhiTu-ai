@@ -1,0 +1,476 @@
+/* index.wxss —— 首页 WF-01（按优化文档 ZS-UI-001 V1.1 全面优化） */
+@import './icons.wxss';
+
+/* === 页面容器 === */
+.page {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 120rpx);
+  /* 顶部浅蓝氛围，向下自然过渡 */
+  background:
+    linear-gradient(180deg,
+      #EAF2FF 0%,
+      #F4F8FF 220rpx,
+      #FFFFFF 560rpx);
+}
+
+/* ========== 自定义导航栏 ========== */
+.custom-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12rpx);
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+}
+.navbar-inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.navbar-title {
+  display: flex;
+  align-items: center;
+  font-size: 34rpx;
+  font-weight: bold;
+  color: var(--text-1);
+}
+.navbar-logo {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 12rpx;
+  margin-right: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(59, 130, 246, 0.15);
+}
+
+/* ========== 模块1：顶部欢迎语 + 城市选择器 ========== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0 20rpx;
+}
+.welcome-text {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text-1);
+}
+.city-picker {
+  display: flex;
+  align-items: center;
+  background: var(--card);
+  padding: 14rpx 24rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  color: var(--text-1);
+  box-shadow: 0 2rpx 12rpx rgba(59, 130, 246, 0.08);
+  transition: transform 0.15s ease-out;
+}
+.city-picker:active { transform: scale(0.98); }
+.loc-ico { margin-right: 8rpx; }
+.arrow {
+  color: var(--primary);
+  margin-left: 8rpx;
+  font-size: 24rpx;
+}
+
+/* ========== 模块2：Hero Banner ========== */
+.hero {
+  margin-top: 8rpx;
+  position: relative;
+  /* 多层渐变：亮蓝→深蓝，更有层次 */
+  background:
+    radial-gradient(120% 120% at 0% 0%, #7CC0FF 0%, rgba(124, 192, 255, 0) 55%),
+    linear-gradient(135deg, #60A5FA, #2563EB 75%, #1E40AF);
+  color: #fff;
+  border-radius: 28rpx;
+  padding: 36rpx 32rpx 40rpx;
+  overflow: hidden;
+  box-shadow:
+    0 16rpx 36rpx rgba(37, 99, 235, 0.30),
+    inset 0 2rpx 0 rgba(255, 255, 255, 0.25);
+  transition: transform 0.18s ease-out;
+}
+.hero-press { transform: scale(0.975); }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #EFF6FF;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1rpx solid rgba(255, 255, 255, 0.30);
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  backdrop-filter: blur(2px);
+  position: relative;
+  z-index: 2;
+}
+.hero-badge::before {
+  content: '';
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #7CF0C8;
+  margin-right: 10rpx;
+  box-shadow: 0 0 8rpx #7CF0C8;
+}
+.hero-title {
+  font-size: 42rpx;
+  font-weight: bold;
+  letter-spacing: 1rpx;
+  position: relative;
+  z-index: 2;
+  margin-top: 18rpx;
+}
+.hero-sub {
+  font-size: 26rpx;
+  opacity: 0.9;
+  margin-top: 12rpx;
+  position: relative;
+  z-index: 2;
+}
+/* Banner 右下柔光晕 */
+.hero-decor {
+  position: absolute;
+  right: -40rpx;
+  bottom: -50rpx;
+  width: 260rpx;
+  height: 260rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 70%);
+  z-index: 1;
+}
+/* Banner 山形 + 太阳装饰 */
+.hero-mountains {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 320rpx;
+  height: 175rpx;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyMjAgMTIwJyBmaWxsPSdub25lJz48Y2lyY2xlIGN4PScxNjgnIGN5PSczNCcgcj0nMTUnIGZpbGw9J3JnYmEoMjU1LDI1NSwyNTUsMC44NSknLz48cGF0aCBkPSdNMCAxMjAgTDQ2IDYwIEw4NiAxMDAgTDEyMCA1MiBMMTYwIDk2IEwyMjAgNTggTDIyMCAxMjAgWicgZmlsbD0ncmdiYSgyNTUsMjU1LDI1NSwwLjE2KScvPjxwYXRoIGQ9J00wIDEyMCBMNzAgODQgTDEyMCAxMTIgTDE4MCA3OCBMMjIwIDEwMCBMMjIwIDEyMCBaJyBmaWxsPSdyZ2JhKDI1NSwyNTUsMjU1LDAuMTApJy8+PC9zdmc+");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  z-index: 1;
+}
+
+/* ========== 模块3：四大行程规划卡片 2×2 网格 ========== */
+.section { margin-top: 36rpx; }
+.sec-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: var(--text-1);
+  margin-bottom: 20rpx;
+  text-align: left;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+.grid-item {
+  width: calc(50% - 10rpx);
+  border-radius: 24rpx;
+  padding: 28rpx;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.gi-press { transform: scale(0.96); }
+
+/* 核心功能卡片（上行：AI 表单规划 / 一句话快规划） */
+.grid-item.core {
+  background: linear-gradient(160deg, rgba(219, 234, 254, 0.85), rgba(255, 255, 255, 0.95));
+  box-shadow:
+    0 12rpx 28rpx rgba(59, 130, 246, 0.12),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.6);
+  border: none;
+}
+/* 次要功能卡片（下行：截图识行程 / 手动编排） */
+.grid-item.secondary {
+  background: var(--card);
+  border: 2rpx solid var(--border);
+  box-shadow:
+    0 10rpx 24rpx rgba(15, 23, 42, 0.05),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.6);
+}
+
+.gi-ico {
+  width: 76rpx; height: 76rpx;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 14rpx;
+  position: relative;
+  box-shadow:
+    0 10rpx 22rpx rgba(59, 130, 246, 0.18),
+    inset 0 -6rpx 10rpx rgba(0, 0, 0, 0.14),
+    inset 0 4rpx 8rpx rgba(255, 255, 255, 0.35);
+}
+.gi-ico::after {
+  content: '';
+  position: absolute;
+  top: 9rpx;
+  left: 13rpx;
+  width: 30rpx;
+  height: 18rpx;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+/* gi-ico 底色与图标由 icons.wxss 的 .gi-ico.plan-* 控制 */
+
+.gi-name { font-size: 28rpx; font-weight: bold; }
+.core .gi-name { color: var(--text-1); }
+.secondary .gi-name { color: var(--text-2); }
+
+.gi-desc { font-size: 22rpx; margin-top: 4rpx; }
+.core .gi-desc { color: var(--text-3); }
+.secondary .gi-desc { color: var(--text-3); }
+
+/* ========== 模块4：城市选择区块（独立分割）========== */
+.city-block {
+  display: flex;
+  align-items: center;
+  background: var(--card);
+  border-radius: 24rpx;
+  padding: 28rpx 32rpx;
+  margin-top: 28rpx;
+  box-shadow:
+    0 10rpx 24rpx rgba(15, 23, 42, 0.05),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.6);
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.city-block:active { transform: scale(0.98); }
+.cb-label {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: var(--text-1);
+  margin-right: 20rpx;
+}
+.cb-location {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+.cb-city {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: var(--text-1);
+}
+.cb-arrow {
+  color: var(--primary);
+  font-size: 28rpx;
+  margin-left: auto;
+}
+
+/* ========== 模块5：快捷服务栏 ========== */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 26rpx 16rpx;
+  background: var(--card);
+  border-radius: 24rpx;
+  padding: 32rpx 20rpx;
+  box-shadow:
+    0 10rpx 24rpx rgba(15, 23, 42, 0.05),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.6);
+}
+.svc-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.15s ease-out;
+}
+.svc-press {
+  transform: scale(0.92);
+  opacity: 0.75;
+}
+.svc-ico {
+  width: 88rpx; height: 88rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10rpx;
+  position: relative;
+  /* 多层柔阴影 + inset 暗边，形成微立体玻璃球 */
+  box-shadow:
+    0 10rpx 22rpx rgba(59, 130, 246, 0.18),
+    inset 0 -6rpx 10rpx rgba(0, 0, 0, 0.14),
+    inset 0 4rpx 8rpx rgba(255, 255, 255, 0.35);
+}
+/* 玻璃球高光：左上角柔光斑 */
+.svc-ico::after {
+  content: '';
+  position: absolute;
+  top: 11rpx;
+  left: 15rpx;
+  width: 34rpx;
+  height: 20rpx;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.svc-name {
+  font-size: 22rpx;
+  color: var(--text-2);
+}
+
+/* ========== 模块6：精选行程模板区域 ========== */
+.sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+.sec-head .sec-title { margin-bottom: 0; }
+.refresh {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  font-weight: bold;
+  color: var(--primary);
+  transition: transform 0.15s ease-out;
+}
+.refresh:active { transform: scale(0.95); }
+
+.tpl-scroll { white-space: nowrap; }
+.tpl-card {
+  display: inline-flex;
+  flex-direction: column;
+  width: 320rpx;
+  background: var(--card);
+  border-radius: 24rpx;
+  margin-right: 24rpx;
+  overflow: hidden;
+  box-shadow:
+    0 12rpx 28rpx rgba(59, 130, 246, 0.12),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.6);
+  vertical-align: top;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.tpl-card:active { transform: scale(0.97); }
+.tpl-card:last-child { margin-right: 0; }
+
+.tpl-cover {
+  width: 320rpx; height: 180rpx;
+  background: linear-gradient(135deg, #DBEAFE, #93C5FD);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72rpx;
+  position: relative;
+  overflow: hidden;
+}
+.tpl-emoji { filter: drop-shadow(0 4rpx 8rpx rgba(0, 0, 0, 0.15)); z-index: 1; }
+.tpl-img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 2; }
+.tpl-badge {
+  position: absolute;
+  left: 0; top: 0;
+  z-index: 3;
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #FF8A3D, var(--orange));
+  padding: 6rpx 18rpx;
+  border-bottom-right-radius: 16rpx;
+  box-shadow: 0 2rpx 6rpx rgba(255, 107, 53, 0.4);
+}
+
+.tpl-info {
+  padding: 20rpx;
+  width: 320rpx;
+  box-sizing: border-box;
+}
+.tpl-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: var(--text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tpl-meta {
+  font-size: 22rpx;
+  color: var(--text-3);
+  margin-top: 8rpx;
+}
+.tpl-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16rpx;
+}
+.uses { font-size: 20rpx; color: var(--text-3); }
+.tpl-tags {
+  display: flex;
+  gap: 8rpx;
+  margin-top: 12rpx;
+  flex-wrap: nowrap;
+}
+.tpl-tag {
+  font-size: 18rpx;
+  padding: 4rpx 10rpx;
+  border-radius: 6rpx;
+  background: var(--bg-blue);
+  color: var(--primary);
+}
+.tpl-tag.orange { background: var(--bg-orange); color: #C2410C; }
+.tpl-tag.purple { background: var(--bg-purple); color: var(--purple); }
+
+/* ========== 互动反馈：淡入切换动画 ========== */
+.fade-enter {
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ========== 模块7：底部Tab栏增强（app.json tabBar 已有基础样式）========== */
+/* tabBar 顶部分割线通过 borderStyle 控制，选中色已在 app.json 配置 */
+
+/* ========== 微动效：入场 + 图标错落弹入 ========== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(26rpx); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.78); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.hero      { animation: fadeUp 0.5s ease-out both; }
+.grid      { animation: fadeUp 0.5s ease-out 0.06s both; }
+.city-block{ animation: fadeUp 0.5s ease-out 0.12s both; }
+.service-grid { animation: fadeUp 0.5s ease-out 0.18s both; }
+.tpl-scroll   { animation: fadeUp 0.5s ease-out 0.24s both; }
+
+/* 服务图标错落弹入（弹性曲线） */
+.svc-item {
+  animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.svc-item:nth-child(1) { animation-delay: 0.18s; }
+.svc-item:nth-child(2) { animation-delay: 0.24s; }
+.svc-item:nth-child(3) { animation-delay: 0.30s; }
+.svc-item:nth-child(4) { animation-delay: 0.36s; }
+.svc-item:nth-child(5) { animation-delay: 0.42s; }
+.svc-item:nth-child(6) { animation-delay: 0.48s; }
+.svc-item:nth-child(7) { animation-delay: 0.54s; }
+.svc-item:nth-child(8) { animation-delay: 0.60s; }
+
+/* 降低动效偏好：系统开启减弱动态时直接呈现 */
+@media (prefers-reduced-motion: reduce) {
+  .hero, .grid, .city-block, .service-grid, .tpl-scroll, .svc-item {
+    animation: none;
+  }
+}

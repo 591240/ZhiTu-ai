@@ -1,0 +1,36 @@
+<view class="page">
+  <view class="card">
+    <view class="row"><text class="label">行程标题</text><input class="val" placeholder="如：我的杭州周末游" value="{{title}}" bindinput="onTitle"/></view>
+    <view class="row"><text class="label">目的地</text><input class="val" placeholder="城市" value="{{city}}" bindinput="onCity"/></view>
+    <view class="row"><text class="label">天数</text>
+      <view class="stepper">
+        <view class="step" bindtap="setDays" data-d="-1">−</view>
+        <text class="step-val">{{days}}</text>
+        <view class="step" bindtap="setDays" data-d="1">+</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="day-block" wx:for="{{daysArr}}" wx:key="index" wx:for-index="di">
+    <view class="day-head">第 {{di+1}} 天 <text class="tip">（长按景点可拖拽排序）</text></view>
+    <view class="spot-list">
+      <view
+        class="spot {{drag && drag.di === di && drag.si === si ? 'dragging' : ''}} {{drag && drag.di === di && drag.targetSi === si && drag.si !== si ? 'drop-target' : ''}}"
+        wx:for="{{item}}" wx:for-item="s" wx:key="index" wx:for-index="si"
+        style="{{drag && drag.di === di && drag.si === si ? 'transform: translateY(' + drag.currentY + 'px);' : ''}}"
+        data-di="{{di}}" data-si="{{si}}"
+        bindlongpress="onDragStart"
+        catchtouchmove="onDragMove"
+        catchtouchend="onDragEnd"
+      >
+        <view class="drag-handle" wx:if="{{!dragging}}">⋮⋮</view>
+        <input class="spot-name" placeholder="景点名称" value="{{s.name}}" bindinput="updSpot" data-di="{{di}}" data-si="{{si}}" data-field="name" disabled="{{dragging}}"/>
+        <input class="spot-time" placeholder="时间" value="{{s.time}}" bindinput="updSpot" data-di="{{di}}" data-si="{{si}}" data-field="time" disabled="{{dragging}}"/>
+        <view class="spot-del" bindtap="delSpot" data-di="{{di}}" data-si="{{si}}">✕</view>
+      </view>
+    </view>
+    <view class="add-spot" bindtap="addSpot" data-di="{{di}}">+ 添加景点</view>
+  </view>
+
+  <button class="primary-btn" bindtap="onSave">保存行程</button>
+</view>

@@ -1,0 +1,44 @@
+<view class="page">
+  <view class="head">
+    <view class="h-icon">🧭</view>
+    <view class="h-text">
+      <text class="h-city">{{city}}</text>
+      <text wx:if="{{dayLabel}}" class="h-day">{{dayLabel}} · 距您实时距离</text>
+    </view>
+  </view>
+
+  <view wx:if="{{locateFail}}" class="loc-tip">
+    <text class="lt-ico">📍</text>
+    <view class="lt-body">
+      <text class="lt-title">未能获取您的位置</text>
+      <text class="lt-sub">开启定位权限后即可显示"距您多远"，导航仍可正常使用。</text>
+      <text class="retry" bindtap="retryLocate">重新获取定位</text>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">
+    <view class="spinner"></view>
+    <text>正在定位地点…</text>
+  </view>
+
+  <view wx:else class="list">
+    <view wx:for="{{locs}}" wx:key="name" class="loc card {{item.ok ? '' : 'fail'}}">
+      <view class="l-thumb">
+        <image wx:if="{{item.type === 'spot' && item.image}}" class="l-img" src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}" />
+        <text wx:else class="l-emoji">{{item.emoji}}</text>
+        <view class="l-badge {{item.type === 'meal' ? 'meal' : 'spot'}}">{{item.type === 'meal' ? '餐饮' : '景点'}}</view>
+      </view>
+      <view class="l-main">
+        <view class="l-name">{{item.name}}</view>
+        <view wx:if="{{item.ok}}" class="l-dist">
+          <text class="ld-ico">📏</text>{{item.distanceText}}
+        </view>
+        <view wx:else class="l-dist fail">{{item.distanceText}}</view>
+      </view>
+      <view class="l-nav" bindtap="onNav" data-i="{{index}}">导航 ›</view>
+    </view>
+    <view class="list-foot">点击「导航」将拉起腾讯地图，可一键驾车/步行前往</view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

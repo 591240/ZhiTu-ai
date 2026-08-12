@@ -1,0 +1,106 @@
+/* profile.wxss —— 个人中心页 WF-09（统一新色彩规范） */
+.page { padding: 0 32rpx; }
+
+.user-card {
+  display: flex;
+  align-items: center;
+  padding: 40rpx 0 24rpx;
+}
+.avatar-btn {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  line-height: normal;
+  overflow: hidden;
+}
+.avatar-btn::after { border: none; }
+.avatar-img {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background: #E5E7EB;
+}
+.avatar-fallback {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #60A5FA, #3B82F6);
+  color: #fff;
+  font-size: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.u-info { margin-left: 24rpx; flex: 1; }
+.u-name { font-size: 36rpx; font-weight: bold; color: var(--text-1); display: flex; align-items: center; }
+.nickname-input {
+  min-width: 200rpx;
+  max-width: 360rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: var(--text-1);
+  height: 56rpx;
+  line-height: 56rpx;
+}
+.vip-badge {
+  font-size: 20rpx;
+  color: #fff;
+  background: linear-gradient(135deg, #D4A951, #B8923D);
+  padding: 2rpx 12rpx;
+  border-radius: 20rpx;
+  margin-left: 14rpx;
+  font-weight: bold;
+}
+.u-city { font-size: 24rpx; color: var(--text-3); margin-top: 10rpx; }
+
+.stats {
+  display: flex;
+  align-items: center;
+  margin-top: 16rpx;
+  padding: 32rpx 0;
+}
+.stat { flex: 1; text-align: center; }
+.stat-num { font-size: 44rpx; font-weight: bold; color: var(--primary); }
+.stat-label { font-size: 24rpx; color: var(--text-3); margin-top: 8rpx; }
+.divider { width: 2rpx; height: 60rpx; background: var(--line); }
+
+.menu { margin-top: 24rpx; padding: 8rpx 24rpx; }
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.menu-item:last-child { border-bottom: none; }
+.mi-ico { font-size: 36rpx; margin-right: 20rpx; }
+.mi-name { flex: 1; font-size: 30rpx; color: var(--text-1); }
+.mi-arrow { color: var(--text-4); font-size: 36rpx; }
+.vip-item .mi-name { color: var(--gold-start); font-weight: bold; }
+
+.version {
+  text-align: center;
+  color: var(--text-4);
+  font-size: 22rpx;
+  margin-top: 48rpx;
+}
+
+/* 手机号菜单项：用 button 触发 getPhoneNumber，去默认样式伪装成菜单项 */
+.phone-item {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  line-height: normal;
+  padding: 28rpx 0;
+  margin: 0;
+  text-align: left;
+  font-size: 30rpx;
+  color: var(--text-1);
+  box-sizing: border-box;
+}
+.phone-item::after { border: none; }
+.mi-val { color: var(--text-3); font-size: 28rpx; margin-right: 12rpx; }

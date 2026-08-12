@@ -1,0 +1,43 @@
+.page { padding: 24rpx; }
+
+.hero {
+  background: linear-gradient(135deg, #3B82F6, #60A5FA);
+  color: #fff;
+  padding: 40rpx 32rpx;
+}
+.hero-title { font-size: 38rpx; font-weight: bold; }
+.hero-sub { font-size: 24rpx; opacity: 0.9; margin-top: 10rpx; }
+.code-row { display: flex; align-items: center; margin-top: 32rpx; }
+.code-box { flex: 1; background: rgba(255,255,255,0.16); border-radius: 16rpx; padding: 20rpx 24rpx; }
+.code-label { font-size: 22rpx; opacity: 0.85; display: block; }
+.code-val { font-size: 44rpx; font-weight: bold; letter-spacing: 4rpx; }
+.copy-btn {
+  margin-left: 20rpx; background: #fff; color: #3B82F6;
+  font-size: 28rpx; border-radius: 16rpx; padding: 0 36rpx; line-height: 72rpx; height: 72rpx;
+}
+.copy-btn::after { border: none; }
+
+.stats { display: flex; align-items: center; margin-top: 24rpx; padding: 32rpx 0; }
+.stat { flex: 1; text-align: center; }
+.stat-num { font-size: 40rpx; font-weight: bold; color: var(--text-1); }
+.stat-label { font-size: 24rpx; color: var(--text-3); margin-top: 8rpx; }
+.divider { width: 1rpx; height: 60rpx; background: var(--border); }
+
+.share-btn {
+  margin: 32rpx 0; background: var(--primary); color: #fff;
+  border-radius: 20rpx; font-size: 30rpx; line-height: 88rpx; height: 88rpx;
+}
+.share-btn::after { border: none; }
+
+.rec { padding: 28rpx; }
+.rec-title { font-size: 28rpx; font-weight: 600; color: var(--text-1); margin-bottom: 18rpx; }
+.rec-item { display: flex; align-items: center; justify-content: space-between; padding: 18rpx 0; border-bottom: 1rpx solid var(--border); }
+.rec-item:last-child { border-bottom: none; }
+.rec-left { display: flex; flex-direction: column; }
+.rec-type { font-size: 27rpx; color: var(--text-1); }
+.rec-time { font-size: 22rpx; color: var(--text-3); margin-top: 6rpx; }
+.rec-right { text-align: right; }
+.rec-amount { font-size: 30rpx; font-weight: 600; color: #D97706; }
+.rec-status { font-size: 22rpx; color: var(--text-3); display: block; margin-top: 6rpx; }
+.rec-status.s { color: #16A34A; }
+.rec-empty { padding: 40rpx; text-align: center; color: var(--text-3); font-size: 26rpx; }

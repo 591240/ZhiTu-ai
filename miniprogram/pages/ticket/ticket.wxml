@@ -1,0 +1,114 @@
+<view class="page">
+  <!-- 顶部头图 -->
+  <view class="header">
+    <view class="h-bg"></view>
+    <view class="h-title">机票高铁</view>
+    <view class="h-sub">12306 官方数据 · 行程规划参考</view>
+  </view>
+
+  <!-- 查询表单卡片 -->
+  <view class="search-card">
+    <!-- 出发 / 目的地 -->
+    <view class="route-row">
+      <view class="route-city" bindtap="focusFrom">
+        <text class="rc-label">出发</text>
+        <input class="rc-name" placeholder="北京" value="{{from}}" bindinput="onFrom" />
+      </view>
+      <view class="route-mid">
+        <view class="swap-btn" bindtap="swap">
+          <view class="swap-line"></view>
+          <view class="swap-ico">⇄</view>
+        </view>
+      </view>
+      <view class="route-city" bindtap="focusTo">
+        <text class="rc-label">到达</text>
+        <input class="rc-name" placeholder="杭州" value="{{to}}" bindinput="onTo" />
+      </view>
+    </view>
+
+    <!-- 日期 + 车次类型 -->
+    <view class="filter-row">
+      <view class="filter-cell">
+        <text class="fc-label">出发日期</text>
+        <picker mode="date" value="{{date}}" bindchange="onDate">
+          <view class="fc-value date">
+            <text class="fc-main">{{date}}</text>
+            <text class="fc-week">{{weekText}}</text>
+          </view>
+        </picker>
+      </view>
+      <view class="filter-divider"></view>
+      <view class="filter-cell">
+        <text class="fc-label">车次类型</text>
+        <view class="type-picker" bindtap="showTypeSheet">
+          <text class="fc-main">{{typeText}}</text>
+          <text class="fc-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <button class="search-btn" loading="{{loading}}" bindtap="query">查询车次</button>
+  </view>
+
+  <!-- 结果头部 -->
+  <view wx:if="{{result}}" class="result-head">
+    <view class="rh-left">
+      <text class="rh-from">{{result.from}}</text>
+      <text class="rh-arrow">→</text>
+      <text class="rh-to">{{result.to}}</text>
+    </view>
+    <text class="badge {{result.source==='12306-mcp' ? 'live' : 'off'}}">{{result.source==='12306-mcp' ? '实时数据' : '离线估算'}}</text>
+  </view>
+
+  <!-- 车次列表 -->
+  <view wx:if="{{result && result.trains.length}}" class="trains">
+    <view wx:for="{{result.trains}}" wx:key="trainNo" class="train-card">
+      <view class="tc-top">
+        <view class="tc-time-row">
+          <view class="tc-station">
+            <text class="tc-time">{{item.depart || '--:--'}}</text>
+            <text class="tc-name">{{item.fromStation || result.from}}</text>
+          </view>
+          <view class="tc-arrow">
+            <text wx:if="{{item.duration}}" class="tc-duration">{{item.duration}}</text>
+            <view class="tc-track">
+              <view class="tc-track-dot left"></view>
+              <view class="tc-track-line"></view>
+              <view class="tc-track-dot right"></view>
+            </view>
+            <text class="tc-no">{{item.trainNo}}</text>
+          </view>
+          <view class="tc-station right">
+            <text class="tc-time">{{item.arrive || '--:--'}}</text>
+            <text class="tc-name">{{item.toStation || result.to}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="tc-bottom">
+        <view class="tc-tags">
+          <text wx:if="{{item.trainNo[0] === 'G'}}" class="tag-high">高铁</text>
+          <text wx:elif="{{item.trainNo[0] === 'D'}}" class="tag-high">动车</text>
+          <text wx:elif="{{item.trainNo[0] === 'C'}}" class="tag-high">城际</text>
+          <text wx:else class="tag-normal">普速</text>
+          <text wx:if="{{item.prices.length > 1}}" class="tag-normal">多席别有票</text>
+        </view>
+        <view class="tc-price-wrap">
+          <text wx:if="{{item.prices.length}}" class="tc-price">¥{{item.prices[0]}}</text>
+          <text wx:else class="tc-price-none">票价暂无</text>
+          <text wx:if="{{item.prices.length > 1}}" class="tc-price-tag">起</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{result && !result.trains.length}}" class="empty-box">
+    <view class="empty-train">
+      <view class="et-body"></view>
+      <view class="et-window"></view>
+      <view class="et-line"></view>
+    </view>
+    <text class="empty-title">未查询到车次</text>
+    <text class="empty-desc">请尝试更换日期或调整出发/到达城市</text>
+  </view>
+</view>

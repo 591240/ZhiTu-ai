@@ -1,0 +1,152 @@
+/* detail.wxss —— 行程详情页 WF-06（统一新色彩规范 + 美化） */
+.page { padding: 0 28rpx 180rpx; background: var(--bg); }
+.d-title { font-size: 42rpx; font-weight: bold; padding: 28rpx 0 10rpx; color: var(--text-1); line-height: 1.25; }
+.d-sub { font-size: 24rpx; color: var(--text-3); display: flex; align-items: center; }
+
+.d-head { position: relative; }
+.edit-entry {
+  position: absolute; right: 0; top: 28rpx;
+  font-size: 24rpx; color: #fff;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  padding: 10rpx 24rpx; border-radius: 999rpx; box-shadow: 0 4rpx 12rpx rgba(59,130,246,0.3);
+}
+
+/* —— 行前准备（跨境/证件） —— */
+.prep { margin-top: 22rpx; background: linear-gradient(135deg, #FFF7E6, #FFF1D6); border: 1rpx solid #FFE0B2; }
+.prep-head { display: flex; align-items: center; gap: 12rpx; margin-bottom: 16rpx; }
+.prep-ico { font-size: 36rpx; }
+.prep-title { font-size: 30rpx; font-weight: bold; color: #B26A00; }
+.prep-sub { font-size: 22rpx; color: #C8881F; margin-left: 6rpx; }
+.prep-item { display: flex; gap: 16rpx; align-items: flex-start; padding: 14rpx 0; border-top: 1rpx solid #FFE7C2; }
+.prep-item:first-of-type { border-top: none; }
+.prep-item-ico { font-size: 34rpx; flex-shrink: 0; line-height: 1.3; }
+.prep-item-body { flex: 1; display: flex; flex-direction: column; }
+.prep-item-title { font-size: 26rpx; font-weight: bold; color: var(--text-1); }
+.prep-item-detail { font-size: 23rpx; color: var(--text-2); margin-top: 4rpx; line-height: 1.5; }
+
+/* —— 往返交通方案 —— */
+.tp-wrap { margin-top: 10rpx; }
+.tp-card { margin-top: 16rpx; padding: 24rpx; }
+.tp-row { display: flex; justify-content: space-between; align-items: center; font-size: 26rpx; padding: 8rpx 0; }
+.tp-k { color: var(--text-3); }
+.tp-v { color: var(--text-1); font-weight: bold; }
+.tp-pros { font-size: 24rpx; color: var(--purple); margin-top: 10rpx; }
+.tp-cons { font-size: 24rpx; color: var(--orange); margin-top: 6rpx; }
+.tp-note { font-size: 24rpx; color: var(--text-2); margin-top: 10rpx; line-height: 1.5; }
+
+.day-tabs { white-space: nowrap; margin: 26rpx 0; }
+.day-tab {
+  display: inline-block; padding: 14rpx 32rpx; margin-right: 16rpx;
+  border-radius: 16rpx; background: var(--card);
+  font-size: 26rpx; color: var(--text-2); box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+  transition: all 0.2s ease;
+}
+.day-tab:active { transform: scale(0.96); }
+.day-tab.on { background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)); color: #fff; font-weight: bold; }
+
+.block-title { font-size: 30rpx; font-weight: bold; margin: 30rpx 0 16rpx; color: var(--text-1); display: flex; align-items: center; justify-content: space-between; }
+.block-title.row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16rpx; }
+.mini-link { font-size: 24rpx; font-weight: 400; color: var(--primary); }
+.add-mini { float: right; font-size: 24rpx; color: var(--primary); font-weight: normal; }
+
+/* —— 景点卡 —— */
+.spot { margin-bottom: 20rpx; padding: 0; overflow: hidden; }
+.sp-media { position: relative; width: 100%; height: 260rpx; background: var(--bg); }
+.sp-img { width: 100%; height: 100%; display: block; }
+.sp-media-mask { position: absolute; left: 0; right: 0; bottom: 0; height: 120rpx; background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0)); }
+.sp-cat-over {
+  position: absolute; left: 20rpx; bottom: 18rpx;
+  font-size: 22rpx; color: #fff; background: rgba(0,0,0,0.35);
+  padding: 6rpx 18rpx; border-radius: 999rpx; backdrop-filter: blur(2px);
+}
+.sp-price-over {
+  position: absolute; right: 20rpx; bottom: 18rpx;
+  font-size: 26rpx; font-weight: bold; color: #fff;
+  background: var(--primary); padding: 6rpx 20rpx; border-radius: 999rpx;
+}
+.sp-price-over.free { background: var(--ok-green); }
+.sp-body { padding: 22rpx 24rpx 24rpx; }
+.sp-head { display: flex; align-items: center; gap: 14rpx; }
+.sp-slot {
+  font-size: 20rpx; color: var(--primary); background: var(--primary-light);
+  padding: 4rpx 14rpx; border-radius: 6rpx; flex-shrink: 0;
+}
+.sp-name { font-size: 32rpx; font-weight: bold; color: var(--text-1); }
+.sp-addr { font-size: 24rpx; color: var(--text-3); margin-top: 12rpx; }
+.sp-desc { font-size: 25rpx; color: var(--text-2); margin-top: 10rpx; line-height: 1.55; }
+.sp-foot { display: flex; gap: 20rpx; align-items: center; margin-top: 16rpx; font-size: 22rpx; color: var(--text-3); }
+.sp-meta { background: var(--bg); padding: 6rpx 16rpx; border-radius: 8rpx; }
+
+.sp-acts { margin-top: 18rpx; display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12rpx; }
+.sp-act { font-size: 24rpx; color: var(--primary); background: var(--primary-light); padding: 10rpx 24rpx; border-radius: 999rpx; }
+.sp-act:active { opacity: 0.85; }
+.sp-act.buy { color: #fff; background: linear-gradient(135deg, #FF8A3D, var(--orange)); }
+.sp-act.book { color: #fff; background: linear-gradient(135deg, #9B6BFF, var(--purple)); }
+.sp-act.deal { color: #fff; background: linear-gradient(135deg, #FF8A3D, var(--orange)); }
+/* AI 推荐渠道：加描边高亮，区别于普通比价入口 */
+.sp-act.rec { box-shadow: 0 6rpx 18rpx rgba(255, 138, 61, 0.35); font-weight: 600; }
+.sp-act.rec::before { content: '⚡'; margin-right: 6rpx; }
+
+/* —— 打卡点推荐 —— */
+.photo-card { margin-top: 18rpx; background: var(--bg); border-radius: 14rpx; padding: 18rpx 20rpx; }
+.pc-title { font-size: 24rpx; font-weight: bold; color: var(--primary); margin-bottom: 10rpx; }
+.pc-item { padding: 10rpx 0; border-top: 2rpx solid var(--line); }
+.pc-item:first-child { border-top: none; }
+.pc-pos { font-size: 24rpx; font-weight: bold; color: var(--text-1); }
+.pc-time { font-weight: normal; color: var(--orange); }
+.pc-tip { font-size: 22rpx; color: var(--text-2); margin-top: 6rpx; line-height: 1.5; }
+.pc-foot { font-size: 20rpx; color: var(--text-3); margin-top: 6rpx; }
+
+/* —— 餐饮卡 —— */
+.meal { margin-bottom: 16rpx; }
+.ml-row { display: flex; align-items: center; gap: 18rpx; }
+.ml-ico {
+  width: 84rpx; height: 84rpx; border-radius: 20rpx; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 44rpx;
+  background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+}
+.ml-body { flex: 1; min-width: 0; }
+.ml-top { display: flex; align-items: center; gap: 12rpx; }
+.ml-name { font-size: 30rpx; font-weight: bold; color: var(--text-1); }
+.ml-type { font-size: 20rpx; color: var(--orange); background: rgba(255,107,53,0.12); padding: 4rpx 14rpx; border-radius: 6rpx; }
+.ml-special { font-size: 24rpx; color: var(--text-2); margin-top: 8rpx; }
+.ml-price { font-size: 24rpx; color: var(--text-3); margin-top: 8rpx; }
+.ml-deal { color: var(--orange); font-weight: 600; }
+
+.trans { font-size: 24rpx; color: var(--text-2); margin-bottom: 14rpx; }
+
+/* —— 每日提示 —— */
+.day-tips { margin: 20rpx 0 4rpx; }
+.dt { font-size: 24rpx; color: var(--text-2); background: var(--bg); border-radius: 12rpx; padding: 16rpx 20rpx; margin-bottom: 12rpx; line-height: 1.5; border-left: 6rpx solid var(--primary-light); }
+.dt.season { border-left-color: var(--orange); }
+.dt.crowd { border-left-color: var(--purple); }
+
+/* —— 预算 —— */
+.summary { margin-top: 24rpx; background: var(--primary-light); }
+.sum-row { display: flex; justify-content: space-between; align-items: center; }
+.sum-budget { font-size: 34rpx; font-weight: bold; color: var(--primary); }
+.tips { font-size: 24rpx; color: var(--text-2); margin-top: 14rpx; white-space: pre-wrap; line-height: 1.6; }
+.ba { margin-top: 24rpx; }
+
+/* —— 操作栏 —— */
+.action-bar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  display: flex; gap: 20rpx; padding: 20rpx 28rpx calc(env(safe-area-inset-bottom) + 20rpx);
+  background: var(--card); box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.05);
+}
+.act-btn { flex: 1; }
+
+/* —— 编辑态 —— */
+.tip-input {
+  background: var(--bg); border-radius: 12rpx; padding: 16rpx 20rpx;
+  font-size: 24rpx; margin-bottom: 12rpx; border: 1rpx solid var(--border);
+}
+.ed-row { display: flex; align-items: center; gap: 12rpx; margin-bottom: 12rpx; }
+.ed-name { flex: 1; background: var(--bg); border-radius: 12rpx; padding: 16rpx 18rpx; font-size: 27rpx; border: 1rpx solid var(--border); }
+.ed-input { background: var(--bg); border-radius: 12rpx; padding: 16rpx 18rpx; font-size: 27rpx; border: 1rpx solid var(--border); margin-bottom: 12rpx; }
+.ed-input.flex1 { flex: 1; }
+.ed-num { width: 200rpx; background: var(--bg); border-radius: 12rpx; padding: 16rpx 18rpx; font-size: 27rpx; border: 1rpx solid var(--border); }
+.ed-picker { background: var(--bg); border-radius: 12rpx; padding: 16rpx 18rpx; font-size: 27rpx; border: 1rpx solid var(--border); }
+.ed-picker-v { color: var(--primary); }
+.ed-del { width: 56rpx; height: 56rpx; line-height: 56rpx; text-align: center; color: #fff; background: var(--danger); border-radius: 50%; font-size: 28rpx; }
+.ed-del:active { opacity: 0.8; }

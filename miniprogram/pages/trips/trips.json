@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "我的行程",
+  "usingComponents": {
+    "route-tag": "/components/route-tag/route-tag"
+  }
+}

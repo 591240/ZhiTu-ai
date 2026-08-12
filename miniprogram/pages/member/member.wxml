@@ -1,0 +1,29 @@
+<view class="page">
+  <view class="vip-card {{isVip?'on':''}}">
+    <view class="vip-top">
+      <view class="vip-name">知途 AI 旅行{{isVip?'会员':'· 免费版'}}</view>
+      <view class="vip-badge">{{isVip ? 'VIP' : 'FREE'}}</view>
+    </view>
+    <view class="vip-desc">{{isVip ? '有效期至 ' + expireText : '开通会员，解锁无限次 AI 行程规划'}}</view>
+  </view>
+
+  <view class="sec-title">选择套餐</view>
+  <view class="plans">
+    <view class="plan {{selectedType===item.type?'sel':''}}" wx:for="{{plans}}" wx:key="type" bindtap="selectPlan" data-t="{{item.type}}">
+      <view wx:if="{{item.tag}}" class="plan-tag">{{item.tag}}</view>
+      <view class="plan-name">{{item.name}}</view>
+      <view class="plan-price"><text class="cur">¥</text>{{item.price}}<text class="per">/{{item.period}}</text></view>
+      <view wx:if="{{item.original}}" class="plan-origin">原价 ¥{{item.original}}</view>
+    </view>
+  </view>
+
+  <view class="sec-title">会员专享</view>
+  <view class="benefits card">
+    <view class="benefit" wx:for="{{plans[selectedType==='year'?1:0].benefits}}" wx:key="*this">
+      <text class="tick">✓</text><text>{{item}}</text>
+    </view>
+  </view>
+
+  <button class="primary-btn" bindtap="onSubscribe">{{isVip ? '已开通会员' : '立即开通'}}</button>
+  <view class="tip">* 演示环境为模拟开通，真实环境将拉起微信支付</view>
+</view>

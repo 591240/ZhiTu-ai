@@ -1,0 +1,140 @@
+/* app.wxss —— 全局样式 + 配色变量（按 界面优化文档 ZS-UI-001 V1.1 + doc8 落地规范） */
+
+page {
+  /* === 优化文档 3.1 色彩规范 === */
+  --primary: #3B82F6;
+  --primary-light: #DBEAFE;
+  --primary-deep: #2563EB;
+  --gradient-start: #60A5FA;
+  --gradient-end: #3B82F6;
+
+  --gold-start: #D4A951;
+  --gold-end: #B8923D;
+  --wechat-green: #07C160;
+  --purple: #722ED1;
+  --danger: #FF4D4F;
+  --danger-light: #FEE2E2;
+  --orange: #FF6B35;
+  --ok-green: #52C41A;
+
+  --bg: #F9FAFB;
+  --card: #FFFFFF;
+  --text-1: #1F2937;
+  --text-2: #4B5563;
+  --text-3: #9CA3AF;
+  --text-4: #D1D5DB;
+  --border: #E5E7EB;
+  --line: #F3F4F6;
+
+  /* 辅助色（低饱和度浅色底） */
+  --bg-blue: #DBEAFE;
+  --bg-orange: #FED7AA;
+  --bg-purple: #E9D5FF;
+  --bg-mint: #BBF7D0;
+  --bg-red: #FECACA;
+  --bg-amber: #FEF3C7;
+
+  background: var(--bg);
+  color: var(--text-1);
+  font-size: 28rpx;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", "Helvetica Neue", sans-serif;
+  line-height: 1.5;
+}
+
+view, text, scroll-view, button, input, textarea, image { box-sizing: border-box; }
+
+/* === 布局工具类 === */
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-1 { flex: 1; }
+.ml-auto { margin-left: auto; }
+
+/* === 圆角规范（优化文档 3.2）=== */
+/* 大卡片 20rpx / 功能按钮 16rpx / 小模块 12rpx */
+
+/* === 卡片 === */
+.card {
+  background: var(--card);
+  border-radius: 20rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(59, 130, 246, 0.08);
+}
+
+/* === 按钮 === */
+.btn-primary {
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  color: #fff;
+  border-radius: 48rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  text-align: center;
+  padding: 22rpx 0;
+  border: none;
+  transition: transform 0.15s ease-out;
+}
+.btn-primary::after { border: none; }
+.btn-primary:active { opacity: 0.9; transform: scale(0.98); }
+
+.btn-green {
+  background: var(--wechat-green);
+  color: #fff;
+  border-radius: 48rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  text-align: center;
+  padding: 22rpx 0;
+  border: none;
+  transition: transform 0.15s ease-out;
+}
+.btn-green::after { border: none; }
+.btn-green:active { opacity: 0.9; transform: scale(0.98); }
+
+.btn-ghost {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: 48rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  text-align: center;
+  padding: 22rpx 0;
+  border: none;
+}
+.btn-ghost::after { border: none; }
+
+/* === 标签 === */
+.tag {
+  display: inline-block;
+  font-size: 20rpx;
+  font-weight: bold;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+}
+.tag-popular { background: var(--primary-light); color: var(--primary); }
+.tag-niche { background: rgba(114, 46, 209, 0.1); color: var(--purple); }
+
+/* === 文本 === */
+.t-title { font-size: 36rpx; font-weight: bold; color: var(--text-1); }
+.t-sub { font-size: 28rpx; color: var(--text-2); }
+.t-weak { font-size: 24rpx; color: var(--text-3); }
+
+/* === 安全区 === */
+.safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 20rpx); }
+
+/* === 空状态 === */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+  color: var(--text-3);
+}
+.empty .emoji { font-size: 96rpx; margin-bottom: 24rpx; }
+
+/* === 交互反馈：点击缩放 === */
+.tap-scale:active {
+  transform: scale(0.98);
+  transition: transform 0.15s ease-out;
+}

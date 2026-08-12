@@ -1,0 +1,110 @@
+<wxs module="fmt">
+function inArray(arr, val) {
+  if (!arr) return false
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] === val) return true
+  }
+  return false
+}
+module.exports = { inArray: inArray }
+</wxs>
+
+<view class="page">
+  <view class="nav-title">AI 智能表单规划</view>
+
+  <view class="form card">
+    <view class="field">
+      <view class="label">出发城市</view>
+      <input class="picker-val" placeholder="如：上海（用于生成往返交通方案）" value="{{departureCity}}" bindinput="onDeparture" />
+    </view>
+
+    <view class="field">
+      <view class="label">目的地城市</view>
+      <picker mode="selector" range="{{cities}}" value="{{city}}" bindchange="onCity">
+        <view class="picker-val">{{city}} ▾</view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <view class="label">出行日期</view>
+      <view class="seg">
+        <picker mode="date" value="{{startDate}}" bindchange="onStart">
+          <view class="picker-val">{{startDate || '出发日期 ▾'}}</view>
+        </picker>
+        <picker mode="date" value="{{endDate}}" bindchange="onEnd">
+          <view class="picker-val">{{endDate || '返程日期 ▾'}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="label">出行人数</view>
+      <view class="seg">
+        <view class="stepper">
+          <view class="step-btn" data-d="-1" bindtap="setPeople">−</view>
+          <text class="step-num">{{peopleCount}}</text>
+          <view class="step-btn" data-d="1" bindtap="setPeople">＋</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="label">出行天数</view>
+      <view class="seg">
+        <view wx:for="{{[1,2,3,4]}}" wx:key="*this" class="seg-item {{days === item ? 'on' : ''}}" data-d="{{item}}" bindtap="setDays">{{item}}天</view>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="label">出行人群</view>
+      <view class="seg wrap">
+        <view wx:for="{{CROWD}}" wx:key="*this" class="chip {{crowdIndex === index ? 'on' : ''}}" data-i="{{index}}" bindtap="setCrowd">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="label">预算范围（元/人）</view>
+      <view class="seg budget-row">
+        <input class="budget-input" type="digit" placeholder="最低" value="{{budgetMin}}" bindinput="onBudgetMin" />
+        <text class="budget-sep">—</text>
+        <input class="budget-input" type="digit" placeholder="最高" value="{{budgetMax}}" bindinput="onBudgetMax" />
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="label">游玩偏好（可多选）</view>
+      <view class="seg wrap">
+        <view wx:for="{{PREFS}}" wx:key="*this" class="chip {{fmt.inArray(prefs, item) ? 'on' : ''}}" data-p="{{item}}" bindtap="togglePref">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="label">市内交通方式</view>
+      <view class="seg wrap">
+        <view wx:for="{{TRANSPORT}}" wx:key="*this" class="chip {{transportIndex === index ? 'on' : ''}}" data-i="{{index}}" bindtap="setTransport">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="label">往返交通偏好</view>
+      <view class="seg wrap">
+        <view wx:for="{{TRANSPORT_PREF}}" wx:key="*this" class="chip {{transportPrefIndex === index ? 'on' : ''}}" data-i="{{index}}" bindtap="setTransportPref">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="label">路线风格</view>
+      <view class="seg">
+        <view wx:for="{{ROUTE}}" wx:key="v" class="seg-item {{routeIndex === index ? 'on' : ''}}" data-i="{{index}}" bindtap="setRoute">{{item.label}}</view>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="label">特殊备注</view>
+      <textarea class="remark" placeholder="例如：带老人孩子少走路；想吃地道本地菜" value="{{remark}}" bindinput="onRemark" maxlength="200"></textarea>
+    </view>
+  </view>
+
+  <button class="btn-primary gen-btn" bindtap="onGenerate" loading="{{generating}}">生成行程</button>
+  <view class="safe-bottom"></view>
+</view>

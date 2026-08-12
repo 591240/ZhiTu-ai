@@ -1,0 +1,1 @@
+<text class="tag {{type === 'niche' ? 'tag-niche' : 'tag-popular'}}">{{type === 'niche' ? '小众' : '大众'}}</text>

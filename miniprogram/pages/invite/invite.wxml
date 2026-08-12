@@ -1,0 +1,44 @@
+<view class="page">
+  <view class="hero card">
+    <view class="hero-title">邀请好友 · 赚佣金</view>
+    <view class="hero-sub">好友开通会员，你可得 {{commission_rate * 100}}% 佣金</view>
+    <view class="code-row">
+      <view class="code-box">
+        <text class="code-label">我的邀请码</text>
+        <text class="code-val">{{invite_code || '----'}}</text>
+      </view>
+      <button class="copy-btn" bindtap="copyCode">复制</button>
+    </view>
+  </view>
+
+  <view class="stats card">
+    <view class="stat">
+      <view class="stat-num">{{invited_count}}</view>
+      <view class="stat-label">成功邀请</view>
+    </view>
+    <view class="divider"></view>
+    <view class="stat">
+      <view class="stat-num">¥{{commission_total}}</view>
+      <view class="stat-label">累计佣金</view>
+    </view>
+  </view>
+
+  <button class="share-btn" open-type="share">分享小程序给好友</button>
+
+  <view class="rec card" wx:if="{{records.length}}">
+    <view class="rec-title">佣金明细</view>
+    <view wx:for="{{records}}" wx:key="id" class="rec-item">
+      <view class="rec-left">
+        <text class="rec-type">{{item.ref_type === 'order' ? '会员订单' : '注册'}}</text>
+        <text class="rec-time">{{item.created_at}}</text>
+      </view>
+      <view class="rec-right">
+        <text class="rec-amount">+¥{{item.commission}}</text>
+        <text class="rec-status {{item.status === 'settled' ? 's' : ''}}">{{item.status === 'settled' ? '已结算' : '待结算'}}</text>
+      </view>
+    </view>
+  </view>
+  <view wx:else class="rec-empty card">暂无佣金记录，快去邀请好友吧～</view>
+
+  <view class="safe-bottom"></view>
+</view>

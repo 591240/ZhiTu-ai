@@ -1,0 +1,54 @@
+<view class="page">
+  <view class="tip">上传图片或视频，AI 帮你识别并给出景点与行程</view>
+
+  <!-- 模式切换 -->
+  <view class="seg">
+    <view class="seg-item {{mode === 'itinerary' ? 'on' : ''}}" data-m="itinerary" bindtap="setMode">行程截图</view>
+    <view class="seg-item {{mode === 'scene' ? 'on' : ''}}" data-m="scene" bindtap="setMode">识景 / 识视频</view>
+  </view>
+
+  <view class="mode-hint" wx:if="{{mode === 'itinerary'}}">上传别人的行程单 / 攻略截图，自动识别城市·天数·景点并生成行程</view>
+  <view class="mode-hint" wx:else>拍一张风景照或上传一段旅行视频，AI 认出地点并推荐附近/同类景点</view>
+
+  <!-- 上传区 -->
+  <view class="upload" bindtap="choose" wx:if="{{!filePath}}">
+    <view class="up-emoji">📷</view>
+    <view class="up-text">点击拍照 / 从相册选择{{mode === 'scene' ? '（图片或视频）' : '（图片）'}}</view>
+  </view>
+
+  <view wx:else class="preview">
+    <image wx:if="{{mediaType === 'image'}}" class="img" src="{{filePath}}" mode="widthFix" bindtap="choose" />
+    <video wx:else class="img" src="{{filePath}}" controls bindtap="choose" />
+    <button class="primary" loading="{{recognizing}}" bindtap="recognize">开始识别</button>
+  </view>
+
+  <!-- 结果：行程截图 -->
+  <view class="result card" wx:if="{{result && result.mode === 'itinerary'}}">
+    <view class="r-title">识别结果</view>
+    <view class="r-line">📍 {{result.recognized.city}} · {{result.recognized.days}}天</view>
+    <view class="r-spots">
+      <view class="r-spot" wx:for="{{result.recognized.spots}}" wx:key="*this">· {{item}}</view>
+    </view>
+    <button class="primary" bindtap="useResult">生成行程</button>
+  </view>
+
+  <!-- 结果：识景 / 识视频 -->
+  <view class="result card" wx:if="{{result && result.mode === 'scene'}}">
+    <view class="r-title">识别地点</view>
+    <view class="r-place">📍 {{result.recognized.place}} · {{result.recognized.city}}</view>
+    <view class="r-desc">{{result.recognized.description}}</view>
+    <view class="r-conf">置信度 {{result.recognized.confidence * 100}}%</view>
+
+    <view class="r-title" style="margin-top:24rpx">推荐景点</view>
+    <view class="spot" wx:for="{{result.recommended_spots}}" wx:key="name">
+      <view class="spot-head">
+        <text class="spot-name">{{item.name}}</text>
+        <text class="spot-cat">{{item.category}}</text>
+      </view>
+      <view class="spot-reason">{{item.reason}}</view>
+      <view class="spot-meta">⏱ 约{{item.duration_min}}分钟 · 🎫 {{item.ticket_price > 0 ? '¥' + item.ticket_price : '免费'}}</view>
+    </view>
+
+    <button class="primary" bindtap="useResult">生成行程</button>
+  </view>
+</view>

@@ -1,0 +1,44 @@
+# ===================== 密钥 / 环境变量（绝不入库） =====================
+# 部署用的真实 .env 含数据库密码、微信 AppSecret、DeepSeek/百炼 Key 等敏感信息
+.env
+.env.local
+.env.*
+!*.example
+server/.env
+**/.env
+
+# ===================== Python =====================
+__pycache__/
+*.py[cod]
+*.pyc
+server/venv/
+server/.venv/
+.venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ===================== Node / 前端 =====================
+node_modules/
+frontend/node_modules/
+frontend/dist/
+npm-debug.log*
+yarn-error.log*
+
+# ===================== 小程序本地缓存 =====================
+miniprogram/dist/
+miniprogram/.DS_Store
+
+# ===================== 工作记忆（不向外同步） =====================
+.workbuddy/
+
+# ===================== 编辑器 / 系统 =====================
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
+
+# ===================== 本地生成的临时产物 =====================
+outputs/

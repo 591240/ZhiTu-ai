@@ -1,0 +1,35 @@
+<view class="page">
+  <block wx:if="{{!loading && template}}">
+    <view class="cover">
+      <view class="cover-emoji">{{template.cover}}</view>
+      <image wx:if="{{template.image}}" class="cover-img" src="{{template.image}}" mode="aspectFill" />
+      <view class="cover-mask"></view>
+      <view class="cover-info">
+        <view class="t-title">{{template.title}}</view>
+        <view class="t-meta">{{template.city}} · {{template.days}}天 · {{template.uses}}人用过</view>
+      </view>
+    </view>
+
+    <view class="tags">
+      <view class="tag">{{template.city}}</view>
+      <view class="tag">{{template.days}}天</view>
+      <route-tag type="{{template.route_type}}" />
+    </view>
+
+    <view class="card">
+      <view class="card-title">行程概览</view>
+      <view class="day-row" wx:for="{{days}}" wx:key="day">
+        <view class="day-badge">{{item.label}}</view>
+        <view class="day-count">{{item.count}} 个景点</view>
+      </view>
+    </view>
+
+    <view class="actions">
+      <button class="ghost" bindtap="onCollect">{{collected ? '已收藏' : '收藏'}}</button>
+      <button class="ghost" bindtap="onPublish">{{published ? '已发布' : '发布到广场'}}</button>
+      <button class="primary" bindtap="onUse">使用此模板</button>
+    </view>
+  </block>
+
+  <view wx:elif="{{loading}}" class="loading">加载中…</view>
+</view>

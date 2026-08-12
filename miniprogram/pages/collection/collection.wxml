@@ -1,0 +1,15 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="loading">加载中…</view>
+  <view wx:elif="{{list.length===0}}" class="empty">还没有收藏的模板，去模板广场逛逛吧</view>
+  <view class="tpl-list">
+    <view class="tpl" wx:for="{{list}}" wx:key="id" bindtap="open" data-id="{{item.id}}">
+      <view class="tpl-cover">{{item.cover}}</view>
+      <view class="tpl-info">
+        <view class="tpl-title">{{item.title}}</view>
+        <view class="tpl-meta">{{item.city}} · {{item.days}}天 · {{item.uses}}人用过</view>
+        <route-tag wx:if="{{item.route_type}}" type="{{item.route_type}}" />
+      </view>
+      <view class="tpl-arrow">›</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,6 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "route-tag": "/components/route-tag/route-tag"
+  }
+}

@@ -1,0 +1,103 @@
+from pathlib import Path
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+BASE_DIR = Path(__file__).resolve().parents[1]
+ENV_FILE = BASE_DIR / ".env"
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=ENV_FILE, extra="ignore")
+
+    app_env: str = "development"
+    database_url: str = "sqlite+aiosqlite:///./banyou.db"
+    redis_url: str = ""
+
+    wx_app_id: str = ""
+    wx_app_secret: str = ""
+
+    jwt_secret: str = "dev-secret-change-me-please-replace-32bytes-min"
+    jwt_expire_hours: int = 168
+
+    llm_api_url: str = ""
+    llm_api_key: str = ""
+    llm_model: str = "deepseek-v4-flash"
+    llm_thinking: bool = False
+
+    daily_plan_limit: int = 3
+
+    # 视觉多模态模型（识图/识别视频用，当前行程生成的 DeepSeek 为纯文本不可用）
+    # 支持 OpenAI 兼容协议：通义千问 Qwen-VL、GPT-4o、Gemini 等。
+    # 获取示例：阿里云百炼 https://dashscope.console.aliyun.com/ → 开通 qwen-vl 系列
+    vision_api_key: str = ""
+    vision_api_url: str = ""   # 例如 https://api.openai.com/v1 或 https://dashscope.aliyuncs.com/compatible-mode/v1
+    vision_model: str = "qwen-vl-max"  # 视觉模型名，按服务商调整
+
+    ocr_api_key: str = ""
+    ocr_secret_key: str = ""
+
+    # 短信服务（手机号验证码登录注册用）。key 到位前走 mock，send 接口会返回 dev_code 便于本地测试。
+    # provider 可选：aliyun(官方Dysmsapi) / alicloud-market(阿里云市场「三网106短信」网关) / chuangxin / luosimao。
+    sms_provider: str = "aliyun"
+    sms_api_key: str = ""
+    sms_api_secret: str = ""
+    sms_sign_name: str = ""        # 短信签名（如「知途旅行」）
+    sms_template_code: str = ""    # 短信模板 CODE（如阿里云 SMS_xxxxxxxxxxx）
+
+    # 阿里云市场「三网106短信」网关（provider=alicloud-market 时生效）。
+    # 接口文档：POST {sms_market_url}，鉴权用 APPCODE（Header: Authorization: APPCODE <AppCode>）。
+    # 请求体：mobile=手机号&templateId=模板ID&smsSignId=签名ID&param={"code":"12345"}
+    sms_app_code: str = ""         # 阿里云市场控制台「APPCODE」
+    sms_market_url: str = "https://gyytz.market.alicloudapi.com/sms/smsSend"
+    sms_market_template_id: str = ""   # 短信模板 ID（如 908e94cc0f8b4476）
+    sms_market_sign_id: str = ""       # 短信签名 ID（如 2e65b1bb3d05446）
+
+    # 阿里云市场「创信短信」网关（provider=chuangxin 时生效）。
+    # 接口：POST {chuangxin_url}，鉴权用 APPCODE（Header: Authorization: APPCODE <AppCode>）。
+    # 请求参数 (Query)：mobile=手机号&content=短信内容（签名直接写在内容里，如「【创信】你的验证码是：5」）。
+    chuangxin_app_code: str = ""   # 阿里云市场控制台「APPCODE」
+    chuangxin_url: str = "https://cxkjsms.market.alicloudapi.com/chuangxinsms/dxjk"
+    chuangxin_sign: str = "创信"   # 短信签名，会拼成「【创信】...」
+
+    # 螺丝帽 Luosimao（provider=luosimao 时生效）
+    # 官网：https://luosimao.com/service/sms
+    # 接口：POST https://sms-api.luosimao.com/v1/send.json，Basic Auth（用户名 api，密码 key-...）
+    # 签名需在后台申请，如「知途旅行」；message 末尾必须带签名，例如：验证码：123456【知途旅行】
+    luosimao_key: str = ""         # API Key，形如 key-d609b7692...
+    luosimao_sign: str = ""        # 短信签名，如「知途旅行」
+
+    wx_mch_id: str = ""
+    wx_api_v3_key: str = ""
+
+    # 分销佣金（CPS）：邀请人获得被邀请人付费金额的一定比例
+    commission_rate: float = 0.30        # 默认 30%
+    invite_code_len: int = 6             # 邀请码长度（大写字母+数字）
+
+    # 真实票务：本地 12306-mcp（Node 进程，HTTP 模式 --port）的 MCP endpoint。
+    # 启动示例：npx -y 12306-mcp --port 8801  →  endpoint 为 http://127.0.0.1:8801/mcp
+    # 留空则不调用，search 接口直接返回离线估算兜底。
+    ticket_mcp_url: str = "http://127.0.0.1:8801/mcp"
+
+    # 腾讯位置服务 WebService（地理编码：地名/景点 → 经纬度，gcj-02 坐标，
+    # 与 wx.getLocation(type=gcj02) 及 wx.openLocation 同一坐标系，零偏移匹配）。
+    # 开通：https://lbs.qq.com → 创建应用 → 选「WebServiceAPI」→ 拿到 key。
+    # 填后景点/地名即可拿到真实坐标（用于"距您 X km"与导航）；不填则走内置坐标表兜底。
+    tencent_lbs_key: str = ""
+
+    # 高德地图 MCP（站点/地名 → 经纬度，用于"在地图看站点"精准定位+导航）。
+    # 留空则走内置热门站点坐标表（零依赖，开发阶段即可用）。
+    # 来源二选一：
+    #  A) ModelScope 社区版「GaodeMapPro」(mako2026)，Hosted 免 Key：在 ModelScope MCP 广场搜 GaodeMapPro，
+    #     复制其 Hosted 的 streamable-HTTP 地址（形如 https://mcp.api-inference.modelscope.net/<id>/mcp）填入下方。
+    #  B) 官方高德 MCP（mcp.amap.com/sse?key=你的KEY），需先在 https://console.amap.com 申请 Web 服务 Key；
+    #     官方工具名为 maps_geo，请把 gaode_geocode_tool 改为 maps_geo。
+    gaode_mcp_url: str = ""
+    gaode_geocode_tool: str = "geocode"
+
+    # 高德开放平台 Web 服务 Key（REST 直连地理编码，备用）。
+    # 优先级：腾讯 LBS > 高德 MCP > 高德 REST > 内置坐标表。
+    gaode_web_key: str = ""
+
+
+settings = Settings()

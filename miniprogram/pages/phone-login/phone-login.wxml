@@ -1,0 +1,36 @@
+<view class="pl-bg">
+  <view class="status-bar" style="height: {{statusBarHeight}}px;"></view>
+
+  <view class="nav-row">
+    <view class="nav-back" bindtap="goBack">‹</view>
+    <view class="nav-title">手机号登录</view>
+  </view>
+
+  <view class="pl-header">
+    <view class="pl-title">手机号登录 / 注册</view>
+    <view class="pl-sub">未注册的手机号将自动创建账号</view>
+  </view>
+
+  <view class="pl-form">
+    <view class="field">
+      <view class="prefix">+86</view>
+      <input class="input" type="number" maxlength="11" placeholder="请输入手机号" value="{{phone}}" bindinput="onPhoneInput" />
+    </view>
+
+    <view class="field">
+      <input class="input" type="number" maxlength="6" placeholder="请输入验证码" value="{{code}}" bindinput="onCodeInput" />
+      <view class="code-btn {{counting > 0 ? 'disabled' : ''}}" bindtap="sendCode">
+        {{counting > 0 ? counting + 's' : '获取验证码'}}
+      </view>
+    </view>
+
+    <view class="dev-tip" wx:if="{{devTip}}">{{devTip}}</view>
+
+    <button class="btn-primary" loading="{{loading}}" bindtap="doLogin">登录 / 注册</button>
+
+    <view class="agree-row" bindtap="toggleAgree">
+      <view class="checkbox {{agreement ? 'checked' : ''}}">{{agreement ? '✓' : ''}}</view>
+      <text class="agree-text">已阅读并同意《用户协议》与《隐私政策》</text>
+    </view>
+  </view>
+</view>

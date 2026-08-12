@@ -1,0 +1,31 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-emoji">💬</view>
+    <view class="hero-title">一句话，行程就规划好了</view>
+    <view class="hero-sub">用大白话描述你的旅行，AI 帮你生成完整路线</view>
+  </view>
+
+  <view class="card input-card">
+    <textarea class="input" placeholder="例如：周末带爸妈去杭州玩2天，想轻松点，多看看自然风景" value="{{text}}" bindinput="onInput" maxlength="200" auto-height />
+    <view class="count">{{text.length}}/200</view>
+  </view>
+
+  <view class="examples">
+    <view class="sec-title">试试这些</view>
+    <view class="chips">
+      <view class="chip" wx:for="{{examples}}" wx:key="*this" bindtap="onExample" data-text="{{item}}">{{item}}</view>
+    </view>
+  </view>
+
+  <view class="parse" wx:if="{{parsed}}">
+    <view class="parse-label">已识别</view>
+    <view class="parse-items">
+      <view class="parse-item">📍 {{parsed.city}}</view>
+      <view class="parse-item">📅 {{parsed.days}}天</view>
+      <view class="parse-item">🧭 {{parsed.routeLabel}}</view>
+      <view class="parse-item" wx:if="{{parsed.crowd_type}}">👥 {{parsed.crowd_type}}</view>
+    </view>
+  </view>
+
+  <button class="primary-btn" loading="{{generating}}" bindtap="onGenerate" disabled="{{!text || generating}}">✨ 生成我的行程</button>
+</view>
