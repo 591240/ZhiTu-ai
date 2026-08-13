@@ -1,6 +1,8 @@
 // utils/mock.js —— 本地示例数据与 Mock 接口路由
 // 当 env.USE_MOCK=true 时，request 会走这里，无需后端即可演示全部功能。
 
+const { monetizationEnabled } = require('./features')
+
 const mockUser = {
   id: 10001,
   nickname: '微信用户',
@@ -312,10 +314,11 @@ function handleMock(url, method, data) {
     return { code: 0, data: {}, message: 'ok' }
   }
   if (url.includes('/plan/form') || url.includes('/plan/quick')) {
-    if (mockUser.points < 10) {
+    // 个人主体（MONETIZATION_ENABLED=false）：不扣积分、不拦截，AI 生成免费可用
+    if (monetizationEnabled && mockUser.points < 10) {
       return { code: 4001, data: null, message: '积分不足，请充值后再生成行程' }
     }
-    mockUser.points -= 10
+    if (monetizationEnabled) mockUser.points -= 10
     const trip = genTrip(data)
     return { code: 0, data: { trip: { id: 'gen' + Date.now(), ...trip } }, message: 'ok' }
   }
@@ -340,10 +343,11 @@ function handleMock(url, method, data) {
     return { code: 0, data: { content: t.content }, message: 'ok' }
   }
   if (url.includes('/chat/qa')) {
-    if (mockUser.points < 2) {
+    // 个人主体：不扣积分、不拦截，AI 问答免费可用
+    if (monetizationEnabled && mockUser.points < 2) {
       return { code: 4001, data: null, message: '积分不足，请充值后再提问' }
     }
-    mockUser.points -= 2
+    if (monetizationEnabled) mockUser.points -= 2
     return { code: 0, data: { answer: fakeQA(data.question) }, message: 'ok' }
   }
   if (url.includes('/chat/luggage')) {

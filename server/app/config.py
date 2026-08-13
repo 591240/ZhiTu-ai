@@ -32,6 +32,12 @@ class Settings(BaseSettings):
     points_per_plan: int = 10      # 每次 AI 生成行程消耗积分
     points_per_chat: int = 2       # 每次 AI 问答消耗积分
 
+    # 是否开启变现功能（会员/积分充值/分销佣金）。
+    # false = 个人主体上架：AI 生成与问答不扣积分、不拦截，会员/积分入口在前端隐藏。
+    # true  = 企业/个体工商户主体：启用积分扣减与会员闭环（需 .env 同时配置微信支付）。
+    # 默认关闭，与前端 config/env.js 的 MONETIZATION_ENABLED 保持一致。
+    monetization_enabled: bool = False
+
     # 视觉多模态模型（识图/识别视频用，当前行程生成的 DeepSeek 为纯文本不可用）
     # 支持 OpenAI 兼容协议：通义千问 Qwen-VL、GPT-4o、Gemini 等。
     # 获取示例：阿里云百炼 https://dashscope.console.aliyun.com/ → 开通 qwen-vl 系列

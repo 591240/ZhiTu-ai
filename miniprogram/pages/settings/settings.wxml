@@ -2,7 +2,7 @@
   <view class="nav-title">系统设置</view>
 
   <view class="group">
-    <view class="item" bindtap="goMember"><text>会员中心</text><text class="arrow">›</text></view>
+    <view class="item" bindtap="goMember" wx:if="{{monetization}}"><text>会员中心</text><text class="arrow">›</text></view>
     <view class="item" bindtap="goCollection"><text>我的收藏</text><text class="arrow">›</text></view>
     <view class="item" bindtap="goPublished"><text>我的发布</text><text class="arrow">›</text></view>
     <view class="item" bindtap="goChat"><text>随便问助手</text><text class="arrow">›</text></view>

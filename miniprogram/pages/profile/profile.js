@@ -1,13 +1,15 @@
 const { request } = require('../../utils/request')
 const storage = require('../../utils/storage')
 const auth = require('../../utils/auth')
+const { monetizationEnabled } = require('../../utils/features')
 const app = getApp()
 
 Page({
   data: {
     user: {},
     stats: { tripCount: 0, cityCount: 0 },
-    isVip: false
+    isVip: false,
+    monetization: monetizationEnabled
   },
 
   onShow() {
@@ -17,7 +19,8 @@ Page({
     }
     this.setData({
       user: storage.getUser() || app.globalData.userInfo || {},
-      isVip: storage.getIsVip()
+      isVip: storage.getIsVip(),
+      monetization: monetizationEnabled
     })
     this.loadStats()
     this.loadMe()

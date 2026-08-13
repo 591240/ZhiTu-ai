@@ -1,9 +1,11 @@
 const app = getApp()
 const { request } = require('../../utils/request')
+const { monetizationEnabled } = require('../../utils/features')
 
 Page({
   data: {
-    version: '1.0.0'
+    version: '1.0.0',
+    monetization: monetizationEnabled
   },
 
   goMember() { wx.navigateTo({ url: '/pages/member/member' }) },

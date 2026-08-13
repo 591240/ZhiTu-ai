@@ -10,11 +10,21 @@
   <view class="bottom safe-bottom">
     <button class="btn-green wx-btn" bindtap="onWechatLogin" loading="{{loading}}">微信登录</button>
 
-    <view class="switch-tip" bindtap="goPhoneLogin">使用手机号验证码登录 ›</view>
+    <view class="switch-tip" bindtap="goPhoneLogin" wx:if="{{monetization}}">使用手机号验证码登录 ›</view>
 
     <view class="agree-row" bindtap="toggleAgree">
       <view class="checkbox {{agreement ? 'checked' : ''}}">{{agreement ? '✓' : ''}}</view>
       <text class="agree-text">已阅读并同意《用户协议》与《隐私政策》</text>
+    </view>
+  </view>
+
+  <!-- 微信隐私授权弹窗（个人主体上架必需，仅微信侧要求时显示） -->
+  <view class="privacy-mask" wx:if="{{showPrivacy}}">
+    <view class="privacy-card">
+      <view class="privacy-title">隐私保护指引</view>
+      <view class="privacy-body">在使用本小程序前，请阅读并同意<text class="privacy-link" bindtap="openPrivacyContract">{{privacyContractName}}</text>。我们仅收集提供服务所必需的信息。</view>
+      <button class="privacy-agree" bindtap="onAgreePrivacy">同意并继续</button>
+      <view class="privacy-refuse" bindtap="onRefusePrivacy">暂不使用</view>
     </view>
   </view>
 </view>

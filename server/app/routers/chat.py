@@ -7,6 +7,7 @@ from app.schemas import ChatQAReq, LuggageReq, FoodReq, ok, fail
 from app.deps import get_current_user
 from app.services.chat_service import chat_service
 from app.services.points_service import points_service
+from app.config import settings
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
 
@@ -14,7 +15,8 @@ router = APIRouter(prefix="/api/chat", tags=["chat"])
 @router.post("/qa")
 async def qa(req: ChatQAReq, user=Depends(get_current_user)):
     """流式问答（SSE）。每片 data: {"text": "..."}，结束 data: {"done": true}。"""
-    if not await points_service.consume_chat(user["user_id"]):
+    # 个人主体（变现关闭）不扣积分、不拦截
+    if settings.monetization_enabled and not await points_service.consume_chat(user["user_id"]):
         return fail("积分不足，请充值后再提问", code=4001)
 
     async def event_stream():
