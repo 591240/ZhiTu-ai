@@ -42,9 +42,13 @@ class TripService:
         async with SessionLocal() as s:
             # 已存在且属于该用户 → 更新原行程（对话微调后落库）
             if tid:
+                try:
+                    tid_int = int(tid)
+                except (ValueError, TypeError) as e:
+                    raise ValueError(f"行程 id 格式错误: {tid}") from e
                 r = (
                     await s.execute(
-                        select(Trip).where(Trip.id == int(tid), Trip.user_id == user_id)
+                        select(Trip).where(Trip.id == tid_int, Trip.user_id == user_id)
                     )
                 ).scalar_one_or_none()
                 if r:
@@ -59,21 +63,25 @@ class TripService:
                     await s.commit()
                     return r.id
             # 否则新建
-            obj = Trip(
-                user_id=user_id,
-                title=trip.get("title", "我的行程"),
-                city=trip.get("city", ""),
-                days=trip.get("days", 1),
-                route_type=trip.get("route_type", "popular"),
-                crowd_type=trip.get("crowd_type", "朋友"),
-                budget_level=trip.get("budget_level", "舒适"),
-                total_budget=content.get("total_budget", 0),
-                content=content,
-            )
-            s.add(obj)
-            await s.commit()
-            await s.refresh(obj)
-            return obj.id
+            try:
+                obj = Trip(
+                    user_id=user_id,
+                    title=trip.get("title", "我的行程"),
+                    city=trip.get("city", ""),
+                    days=trip.get("days", 1),
+                    route_type=trip.get("route_type", "popular"),
+                    crowd_type=trip.get("crowd_type", "朋友"),
+                    budget_level=trip.get("budget_level", "舒适"),
+                    total_budget=content.get("total_budget", 0),
+                    content=content,
+                )
+                s.add(obj)
+                await s.commit()
+                await s.refresh(obj)
+                return obj.id
+            except Exception as e:
+                await s.rollback()
+                raise
 
     async def delete(self, trip_id: int, user_id: int):
         async with SessionLocal() as s:

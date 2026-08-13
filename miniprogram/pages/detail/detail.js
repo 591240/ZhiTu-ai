@@ -214,7 +214,9 @@ Page({
       wx.showToast({ title: '已保存', icon: 'success' })
     } catch (e) {
       wx.hideLoading()
-      wx.showToast({ title: '保存失败', icon: 'none' })
+      console.error('保存行程失败', e)
+      const msg = (e && (e.message || e.errMsg || e)) || '保存失败'
+      wx.showToast({ title: String(msg).slice(0, 60), icon: 'none' })
     }
   },
 
@@ -309,7 +311,9 @@ Page({
       setTimeout(() => wx.switchTab({ url: '/pages/trips/trips' }), 600)
     } catch (e) {
       wx.hideLoading()
-      wx.showToast({ title: '保存失败', icon: 'none' })
+      console.error('保存行程失败', e)
+      const msg = (e && (e.message || e.errMsg || e)) || '保存失败'
+      wx.showToast({ title: String(msg).slice(0, 60), icon: 'none' })
     }
   },
 
