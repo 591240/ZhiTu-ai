@@ -24,11 +24,14 @@
   background: var(--card);
   border: 6rpx solid rgba(255, 255, 255, 0.85);
   box-sizing: border-box;
-  min-width: 0;
-  min-height: 0;
+  min-width: 136rpx;
+  min-height: 136rpx;
   line-height: 1;
-  overflow: visible;
+  overflow: hidden;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-shadow: 0 10rpx 32rpx rgba(31, 94, 197, 0.35);
 }
 .avatar-btn::after { border: none; }
@@ -37,6 +40,7 @@
   height: 100%;
   border-radius: 50%;
   display: block;
+  flex-shrink: 0;
 }
 .avatar-fallback {
   width: 100%;

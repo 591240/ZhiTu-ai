@@ -18,7 +18,21 @@
   transition: border-color 0.2s ease;
 }
 .picker-val:active { border-color: var(--primary); }
-.city-input { width: 100%; }
+.city-input-wrap { position: relative; }
+.city-input {
+  width: 100%;
+  padding-right: 64rpx;
+}
+.city-edit-icon {
+  position: absolute;
+  right: 22rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 28rpx;
+  color: var(--text-3);
+  pointer-events: none;
+  opacity: 0.85;
+}
 
 .ph { color: var(--text-3); }
 

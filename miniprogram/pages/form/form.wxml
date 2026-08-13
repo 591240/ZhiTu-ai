@@ -20,7 +20,10 @@ module.exports = { inArray: inArray }
   <view class="form card anim-up d1">
     <view class="field">
       <view class="f-label">出发城市</view>
-      <input class="picker-val city-input" placeholder-class="ph" placeholder="如：上海" value="{{departureCity}}" bindinput="onDeparture" />
+      <view class="city-input-wrap">
+        <input class="picker-val city-input" placeholder-class="ph" placeholder="请输入出发城市，如上海" value="{{departureCity}}" bindinput="onDeparture" />
+        <text class="city-edit-icon">✏️</text>
+      </view>
     </view>
 
     <view class="field">
