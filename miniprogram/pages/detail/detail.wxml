@@ -77,7 +77,16 @@ module.exports = { slotLabel: slotLabel, mealLabel: mealLabel, idx: idx };
           <view wx:if="{{item.type === 'transport'}}" class="tl-trans">
             <view class="tl-time"></view>
             <view class="tl-axis"><view class="tl-dot sm"></view></view>
-            <view class="tl-trans-card">🚗 {{item.from}} → {{item.to}} · {{item.mode}} · 约{{item.duration_min}}分钟</view>
+            <view class="tl-trans-card">
+              <view class="tl-trans-main">{{(item.mode === '公交' || item.mode === 'subway' || item.mode === 'bus') ? '🚌' : (item.mode === '步行' ? '🚶' : '🚗')}} {{item.from}} → {{item.to}} · 约{{item.duration_min}}分钟 · ¥{{item.cost}}</view>
+              <view wx:if="{{item.detail}}" class="tl-trans-detail">{{item.detail}}</view>
+              <view wx:if="{{item.segments && item.segments.length}}" class="tl-trans-segs">
+                <view wx:for="{{item.segments}}" wx:for-item="seg" wx:key="index" class="tl-trans-seg {{seg.type}}">
+                  <text wx:if="{{seg.type === 'walking'}}">🚶 {{seg.instruction}} · {{seg.duration_min}}分钟</text>
+                  <text wx:elif="{{seg.type === 'bus' || seg.type === 'subway'}}">🚌 {{seg.line}}：{{seg.from_stop}} → {{seg.to_stop}}（{{seg.stations}}站）</text>
+                </view>
+              </view>
+            </view>
           </view>
           <view wx:else class="tl-node">
             <view class="tl-time">{{item.time}}</view>
@@ -187,6 +196,7 @@ module.exports = { slotLabel: slotLabel, mealLabel: mealLabel, idx: idx };
     <view class="block-title">🚌 交通建议</view>
     <view wx:for="{{currentDay.transport}}" wx:key="from" class="trans card">
       {{item.from}} → {{item.to}} · {{item.mode}} · {{item.duration_min}}分钟 · ¥{{item.cost}}
+      <view wx:if="{{item.detail}}" class="trans-detail">{{item.detail}}</view>
     </view>
     </block>
 

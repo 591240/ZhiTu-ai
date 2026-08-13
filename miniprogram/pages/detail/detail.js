@@ -83,15 +83,19 @@ Page({
     nodes.sort((a, b) => a.time.localeCompare(b.time))
     const timeline = []
     let prev = '酒店'
+    let ti = 0
+    const transports = day.transport || []
     nodes.forEach((n) => {
       if (prev !== n.name) {
-        timeline.push({ type: 'transport', from: prev, to: n.name, mode: '地铁', duration_min: 30, cost: 5 })
+        const t = transports[ti++] || { from: prev, to: n.name, mode: '地铁', duration_min: 30, cost: 5 }
+        timeline.push(Object.assign({ type: 'transport' }, t))
         prev = n.name
       }
       timeline.push(Object.assign({ type: n.kind }, n))
     })
     if (nodes.length) {
-      timeline.push({ type: 'transport', from: prev, to: '酒店', mode: '地铁', duration_min: 30, cost: 5 })
+      const t = transports[ti++] || { from: prev, to: '酒店', mode: '地铁', duration_min: 30, cost: 5 }
+      timeline.push(Object.assign({ type: 'transport' }, t))
     }
     return timeline
   },

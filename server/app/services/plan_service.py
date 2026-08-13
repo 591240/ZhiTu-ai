@@ -4,7 +4,7 @@ import re
 
 from app.ai.llm_client import llm_client
 from app.config import settings
-from app.services import image_service
+from app.services import image_service, route_service
 
 logger = logging.getLogger(__name__)
 
@@ -2619,6 +2619,64 @@ def _fill_obj(obj, city):
     return obj
 
 
+def _build_transport(nodes: list, city: str, transport_mode: str) -> list:
+    """
+    根据当天节点（景点/餐饮）按时间顺序生成市内交通段。
+    公共交通/混合：优先调用高德公交路径规划获取真实线路/车次；
+    自驾/步行：回退到简化估算。
+    """
+    transport = []
+    mode = transport_mode or "地铁"
+    use_route = "公共" in mode or "混合" in mode
+    prev = "酒店"
+    for n in nodes:
+        if n["name"] == prev:
+            continue
+        if use_route:
+            route = route_service.get_transit_route(prev, n["name"], city, mode)
+            if route:
+                transport.append({
+                    "from": prev,
+                    "to": n["name"],
+                    "mode": route["mode"],
+                    "duration_min": route["duration_min"],
+                    "cost": route["cost"],
+                    "detail": route["detail"],
+                    "segments": route["segments"],
+                })
+                prev = n["name"]
+                continue
+        # 步行/自驾/公交查询失败时的兜底
+        if "步行" in mode:
+            transport.append({"from": prev, "to": n["name"], "mode": "步行", "duration_min": 15, "cost": 0, "detail": f"步行约15分钟从{prev}到{n['name']}"})
+        elif "自驾" in mode:
+            transport.append({"from": prev, "to": n["name"], "mode": "驾车", "duration_min": 20, "cost": 10, "detail": f"自驾/打车约20分钟从{prev}到{n['name']}"})
+        else:
+            transport.append({"from": prev, "to": n["name"], "mode": "公交", "duration_min": 30, "cost": 2, "detail": f"建议乘坐公交从{prev}到{n['name']}，约30分钟"})
+        prev = n["name"]
+    if nodes:
+        if use_route:
+            route = route_service.get_transit_route(prev, "酒店", city, mode)
+            if route:
+                transport.append({
+                    "from": prev,
+                    "to": "酒店",
+                    "mode": route["mode"],
+                    "duration_min": route["duration_min"],
+                    "cost": route["cost"],
+                    "detail": route["detail"],
+                    "segments": route["segments"],
+                })
+                return transport
+        if "步行" in mode:
+            transport.append({"from": prev, "to": "酒店", "mode": "步行", "duration_min": 15, "cost": 0, "detail": f"步行约15分钟从{prev}返回酒店"})
+        elif "自驾" in mode:
+            transport.append({"from": prev, "to": "酒店", "mode": "驾车", "duration_min": 20, "cost": 10, "detail": f"自驾/打车约20分钟从{prev}返回酒店"})
+        else:
+            transport.append({"from": prev, "to": "酒店", "mode": "公交", "duration_min": 30, "cost": 2, "detail": f"建议乘坐公交从{prev}返回酒店，约30分钟"})
+    return transport
+
+
 def gen_trip(p: dict) -> dict:
     city = p.get("city") or "杭州"
     days = max(1, min(int(p.get("days") or 2), 4))
@@ -2656,7 +2714,9 @@ def gen_trip(p: dict) -> dict:
         spots = []
         for s in raw:
             _fill_photo(s)
-            s["image"] = image_service.get_spot_image(s.get("name", ""), city) or ""
+            info = image_service.get_spot_info(s.get("name", ""), city) or {}
+            s["image"] = info.get("image") or ""
+            s["location"] = info.get("location") or ""
             slot = s.get("time_slot", "morning")
             start = slot_next[slot]
             s["start_time"] = to_hhmm(start)
@@ -2673,21 +2733,14 @@ def gen_trip(p: dict) -> dict:
             _arr = meals_by_type.get(_t) or []
             if not _arr:
                 continue
-            _mm = dict(_arr[(i - 1) % len(_arr)])
+            _mm = _fill_obj(dict(_arr[(i - 1) % len(_arr)]), city)
             _mm["start_time"] = to_hhmm(meal_time.get(_t, 750))
             _mm.setdefault("deal_channel", "美团")
             day_meals.append(_mm)
         nodes = [{"name": s["name"], "time": s["start_time"]} for s in spots]
         nodes += [{"name": _m["name"], "time": _m["start_time"]} for _m in day_meals]
         nodes.sort(key=lambda n: n["time"])
-        transport = []
-        prev = "酒店"
-        for _n in nodes:
-            if _n["name"] != prev:
-                transport.append({"from": prev, "to": _n["name"], "mode": p.get("transport_mode") or "地铁", "duration_min": 30, "cost": 5})
-                prev = _n["name"]
-        if nodes:
-            transport.append({"from": prev, "to": "酒店", "mode": p.get("transport_mode") or "地铁", "duration_min": 30, "cost": 5})
+        transport = _build_transport(nodes, city, p.get("transport_mode") or "地铁")
         budget = max(100, per_day_avg + (i % 3 - 1) * 30)
         total += budget
         itinerary.append({
@@ -2928,8 +2981,12 @@ class PlanService:
                 spot.setdefault("description", "")
                 spot.setdefault("category", "")
                 spot.setdefault("address", "")
-                if not spot.get("image"):
-                    spot["image"] = image_service.get_spot_image(spot.get("name", ""), trip_city) or ""
+                if not spot.get("image") or not spot.get("location"):
+                    info = image_service.get_spot_info(spot.get("name", ""), trip_city) or {}
+                    if not spot.get("image"):
+                        spot["image"] = info.get("image") or ""
+                    if not spot.get("location"):
+                        spot["location"] = info.get("location") or ""
                 for ps in spot["photo_spots"]:
                     ps.setdefault("position", "")
                     ps.setdefault("best_time", "")
@@ -2943,6 +3000,11 @@ class PlanService:
                 meal.setdefault("specialty", "")
                 meal.setdefault("address", "")
                 meal.setdefault("type", "lunch")
+            # 用真实公交/步行路线重建市内交通段
+            nodes = [{"name": s["name"], "time": s.get("start_time", "09:00")} for s in day["spots"]]
+            nodes += [{"name": m["name"], "time": m.get("start_time", "12:00")} for m in day["meals"]]
+            nodes.sort(key=lambda n: n["time"])
+            day["transport"] = _build_transport(nodes, trip_city, p.get("transport_mode") or "地铁")
         return data
 
     async def adjust(self, trip: dict, instruction: str):
