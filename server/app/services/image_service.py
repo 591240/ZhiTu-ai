@@ -22,7 +22,7 @@ def _cache_key(name: str, city: str = "") -> str:
 
 
 def _pick_image(pois: list) -> str | None:
-    """从 POI 列表里挑一张可用的真实图片 URL。"""
+    """从 POI 列表里挑一张可用的真实图片 URL（统一返回 https，适配小程序真机）。"""
     if not pois:
         return None
     photos = pois[0].get("photos") or []
@@ -31,6 +31,8 @@ def _pick_image(pois: list) -> str | None:
         img_url = photo.get("url")
         if not img_url or not str(img_url).startswith("http"):
             continue
+        # 微信真机默认禁止 http 图片，统一升级为 https
+        img_url = str(img_url).replace("http://", "https://", 1)
         if "store.is.autonavi.com" in img_url:
             candidates.insert(0, img_url)
         else:

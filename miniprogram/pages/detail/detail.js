@@ -109,6 +109,18 @@ Page({
     this.setData({ transportIndex: e.currentTarget.dataset.i })
   },
 
+  // 景点封面图加载失败：降级显示默认 emoji 封面
+  onImgError(e) {
+    const ti = e.currentTarget.dataset.ti
+    const timeline = this.data.timeline.slice()
+    const item = timeline[ti]
+    if (item && item.data) {
+      item.data = Object.assign({}, item.data, { _imgError: true })
+      timeline[ti] = Object.assign({}, item, { data: item.data })
+      this.setData({ timeline })
+    }
+  },
+
   // 跳转火车票实时查询（预填目的地=行程城市）
   goTicket() {
     const to = (this.data.trip && this.data.trip.city) || ''

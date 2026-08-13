@@ -93,8 +93,8 @@ module.exports = { slotLabel: slotLabel, mealLabel: mealLabel, idx: idx };
             <view class="tl-axis"><view class="tl-dot"></view></view>
             <view class="tl-card">
               <block wx:if="{{item.type === 'spot'}}">
-                <view class="sp-media" wx:if="{{item.data.image}}">
-                  <image class="sp-img" src="{{item.data.image}}" mode="aspectFill" lazy-load="{{true}}" />
+                <view class="sp-media" wx:if="{{item.data.image && !item.data._imgError}}">
+                  <image class="sp-img" src="{{item.data.image}}" mode="aspectFill" lazy-load="{{true}}" data-ti="{{ti}}" binderror="onImgError" />
                   <view class="sp-media-mask"></view>
                   <text wx:if="{{item.data.category}}" class="sp-cat-over">{{item.data.category}}</text>
                   <text class="sp-price-over {{((item.data.best_price || item.data.ticket_price) === 0) ? 'free' : ''}}">{{(item.data.best_price || item.data.ticket_price) === 0 ? '免费' : ('¥' + (item.data.best_price || item.data.ticket_price))}}</text>
