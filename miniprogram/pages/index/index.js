@@ -83,7 +83,7 @@ Page({
       const r = await request({ url: '/api/template/hot' })
       const list = (r.data.list || []).map(t => ({
         ...t,
-        image: media.cityImage(t.city),
+        image: media.cityImageOnline(t.city),
         hot: (t.uses || 0) >= 80
       }))
       this.setData({ templates: list })
@@ -163,15 +163,9 @@ Page({
     }, 100)
   },
 
-  // 模板封面图加载失败时：本地图不存在 -> 尝试在线关键词图 -> 再回退 emoji
+  // 模板封面图加载失败时回退 emoji
   onImgError(e) {
     const idx = e.currentTarget.dataset.index
-    const t = this.data.templates[idx]
-    const current = t.image || ''
-    if (current.startsWith('/images/cities/')) {
-      this.setData({ [`templates[${idx}].image`]: media.cityImageOnline(t.city) })
-    } else {
-      this.setData({ [`templates[${idx}].image`]: '' })
-    }
+    this.setData({ [`templates[${idx}].image`]: '' })
   }
 })

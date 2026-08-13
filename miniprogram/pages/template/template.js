@@ -18,12 +18,19 @@ Page({
       const days = (t.content && t.content.itinerary)
         ? t.content.itinerary.map(d => ({ day: d.day_number, label: d.date_label, count: (d.spots || []).length }))
         : []
-      const template = Object.assign({}, t, { image: media.cityImage(t.city) })
+      const template = Object.assign({}, t, { image: media.cityImageOnline(t.city) })
       this.setData({ template, days, loading: false })
     } catch (e) {
       this.setData({ loading: false })
       wx.showToast({ title: '加载失败', icon: 'none' })
     }
+  },
+
+  onImgError() {
+    const t = this.data.template
+    if (!t) return
+    // 在线图也失败时，清空 image 让 emoji 兜底显示
+    this.setData({ 'template.image': '' })
   },
 
   async onCollect() {

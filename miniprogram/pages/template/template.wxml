@@ -2,7 +2,7 @@
   <block wx:if="{{!loading && template}}">
     <view class="cover">
       <view class="cover-emoji">{{template.cover}}</view>
-      <image wx:if="{{template.image}}" class="cover-img" src="{{template.image}}" mode="aspectFill" />
+      <image wx:if="{{template.image}}" class="cover-img" src="{{template.image}}" mode="aspectFill" binderror="onImgError" />
       <view class="cover-mask"></view>
       <view class="cover-info">
         <view class="t-title">{{template.title}}</view>
