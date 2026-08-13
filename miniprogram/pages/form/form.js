@@ -41,7 +41,7 @@ Page({
     this.setData({ cities: mock.mockCities.map(c => c.name), city: storage.getCity() })
   },
 
-  onCity(e) { this.setData({ city: this.data.cities[e.detail.value] }) },
+  onCityInput(e) { this.setData({ city: e.detail.value }) },
   onDeparture(e) { this.setData({ departureCity: e.detail.value }) },
   setDays(e) {
     const days = Number(e.currentTarget.dataset.d)

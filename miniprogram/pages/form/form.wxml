@@ -28,9 +28,10 @@ module.exports = { inArray: inArray }
 
     <view class="field">
       <view class="f-label">目的地城市</view>
-      <picker mode="selector" range="{{cities}}" value="{{city}}" bindchange="onCity">
-        <view class="picker-val">{{city}} ▾</view>
-      </picker>
+      <view class="city-input-wrap">
+        <input class="picker-val city-input" placeholder-class="ph" placeholder="请输入目的地城市，如杭州" value="{{city}}" bindinput="onCityInput" />
+        <text class="city-edit-icon">✏️</text>
+      </view>
     </view>
 
     <view class="field">
