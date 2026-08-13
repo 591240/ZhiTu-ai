@@ -14,38 +14,53 @@
   color: #fff;
   box-shadow: var(--shadow-blue);
 }
+/* 微信 button 只负责触发 chooseAvatar，视觉样式交给内部 .avatar-visual */
 .avatar-btn {
   position: relative;
-  width: 136rpx;
-  height: 136rpx;
-  border-radius: 50%;
-  padding: 0;
+  width: auto;
+  height: auto;
+  padding: 0 !important;
   margin: 0;
-  background: var(--card);
-  border: 6rpx solid rgba(255, 255, 255, 0.85);
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
   box-sizing: border-box;
-  min-width: 136rpx;
-  min-height: 136rpx;
+  min-width: 0 !important;
+  min-height: 0 !important;
   line-height: 1;
-  overflow: hidden;
+  overflow: visible;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10rpx 32rpx rgba(31, 94, 197, 0.35);
 }
-.avatar-btn::after { border: none; }
+.avatar-btn::after { border: none !important; }
+.avatar-visual {
+  position: relative;
+  width: 136rpx;
+  height: 136rpx;
+  border-radius: 50%;
+  border: 6rpx solid rgba(255, 255, 255, 0.85);
+  box-sizing: border-box;
+  background: var(--card);
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 10rpx 32rpx rgba(31, 94, 197, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .avatar-img {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: 0;
   display: block;
   flex-shrink: 0;
 }
 .avatar-fallback {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--grad-sky);
   color: #fff;
   font-size: 52rpx;
@@ -70,6 +85,7 @@
   justify-content: center;
   box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.15);
   border: 2rpx solid rgba(255,255,255,0.9);
+  z-index: 2;
 }
 .u-info { margin-left: 28rpx; flex: 1; min-width: 0; }
 .u-name {

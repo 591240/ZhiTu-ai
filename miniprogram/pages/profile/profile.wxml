@@ -2,9 +2,11 @@
   <!-- 个人信息横幅 -->
   <view class="profile-hero anim-up">
     <button class="avatar-btn" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-      <image wx:if="{{user.avatar}}" class="avatar-img" src="{{user.avatar}}" mode="aspectFill" />
-      <view wx:else class="avatar-fallback">{{user.nickname ? user.nickname[0] : '游'}}</view>
-      <view class="avatar-edit">📷</view>
+      <view class="avatar-visual">
+        <image wx:if="{{user.avatar}}" class="avatar-img" src="{{user.avatar}}" mode="aspectFill" />
+        <view wx:else class="avatar-fallback">{{user.nickname ? user.nickname[0] : '游'}}</view>
+        <view class="avatar-edit">📷</view>
+      </view>
     </button>
     <view class="u-info">
       <view class="u-name">
