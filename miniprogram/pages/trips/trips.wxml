@@ -6,9 +6,27 @@
     <view class="tab {{tab === 'all' ? 'on' : ''}}" data-tab="all" bindtap="switchTab">全部行程</view>
   </view>
 
-  <view wx:if="{{list.length === 0}}" class="empty">
-    <view class="emoji">🧳</view>
-    <text>还没有行程，去首页规划一个吧</text>
+  <view wx:if="{{loading}}" class="loading-state">
+    <view class="skeleton-card" wx:for="{{[1,2]}}" wx:key="*this">
+      <view class="sk-cover"></view>
+      <view class="sk-body">
+        <view class="sk-line short"></view>
+        <view class="sk-line"></view>
+        <view class="sk-line short"></view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:elif="{{list.length === 0}}" class="empty">
+    <view class="empty-illust">
+      <view class="suitcase">
+        <view class="suitcase-stripe"></view>
+        <view class="suitcase-tag"></view>
+      </view>
+    </view>
+    <view class="empty-title">还没有行程</view>
+    <view class="empty-desc">去首页用 AI 规划一次短途旅行吧</view>
+    <view class="empty-btn" bindtap="goPlan">去规划行程</view>
   </view>
 
   <view wx:else class="list">
@@ -17,15 +35,15 @@
         <view class="tc-emoji">{{item.cover}}</view>
         <view class="tc-cover-mask"></view>
         <view class="tc-cover-top">
-          <view class="tc-city">📍 {{item.city}}</view>
-          <route-tag type="{{item.route_type}}" />
+          <view class="tc-city">📍 {{item.city || '未知城市'}}</view>
+          <route-tag type="{{item.route_type || 'popular'}}" />
         </view>
       </view>
       <view class="tc-body">
-        <view class="tc-title">{{item.title}}</view>
-        <view class="tc-meta">{{item.days}}天 · {{item.crowd_type}}</view>
+        <view class="tc-title">{{item.title || '未命名行程'}}</view>
+        <view class="tc-meta">{{item.days || 1}}天 · {{item.crowd_type || ''}}</view>
         <view class="tc-foot">
-          <view class="tc-budget"><text class="cur">¥</text>{{item.total_budget}}</view>
+          <view class="tc-budget"><text class="cur">¥</text>{{item.total_budget || 0}}</view>
           <text class="tc-del" catchtap="onDelete" data-id="{{item.id}}">删除</text>
         </view>
       </view>

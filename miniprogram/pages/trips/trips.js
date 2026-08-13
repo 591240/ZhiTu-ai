@@ -6,7 +6,8 @@ const media = require('../../utils/media')
 Page({
   data: {
     tab: 'active',
-    list: []
+    list: [],
+    loading: false
   },
 
   onShow() {
@@ -23,19 +24,34 @@ Page({
   },
 
   async loadList() {
+    this.setData({ loading: true })
     try {
       const r = await request({ url: '/api/trip/list', data: { status: this.data.tab } })
       const list = (r.data.list || []).map(t => ({
         ...t,
+        title: t.title || '未命名行程',
+        city: t.city || '未知城市',
+        days: t.days || 1,
+        crowd_type: t.crowd_type || '',
+        route_type: t.route_type || 'popular',
+        total_budget: t.total_budget || 0,
         cover: media.cityEmoji(t.city),
-        timeText: fmt.fromNow(t.created_at)
+        timeText: fmt.fromNow(t.created_at || Date.now())
       }))
-      this.setData({ list })
-    } catch (e) {}
+      this.setData({ list, loading: false })
+    } catch (e) {
+      console.error('加载行程失败', e)
+      wx.showToast({ title: '加载失败', icon: 'none' })
+      this.setData({ loading: false })
+    }
   },
 
   goDetail(e) {
     wx.navigateTo({ url: '/pages/detail/detail?id=' + e.currentTarget.dataset.id })
+  },
+
+  goPlan() {
+    wx.switchTab({ url: '/pages/index/index' })
   },
 
   onDelete(e) {
