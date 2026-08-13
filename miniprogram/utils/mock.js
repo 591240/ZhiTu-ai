@@ -9,7 +9,7 @@ const mockUser = {
   isVip: false,
   is_vip: false,
   vipExpireAt: null,
-  points: 100
+  points: 20
 }
 
 // 城市库（含快捷服务跳转的第三方小程序 appid 占位）

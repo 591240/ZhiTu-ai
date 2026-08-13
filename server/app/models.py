@@ -17,7 +17,7 @@ class User(Base):
     city: Mapped[str] = mapped_column(String(32), default="杭州")
     is_vip: Mapped[bool] = mapped_column(Boolean, default=False)
     vip_expire_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
-    points: Mapped[int] = mapped_column(Integer, default=100)  # 积分余额
+    points: Mapped[int] = mapped_column(Integer, default=20)  # 积分余额（注册赠送 20）
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     invite_code: Mapped[str] = mapped_column(String(32), unique=True, index=True, nullable=True)
     invited_by: Mapped[int] = mapped_column(Integer, index=True, nullable=True)

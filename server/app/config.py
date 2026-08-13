@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     daily_plan_limit: int = 3
 
     # 积分制（登录送积分，AI 生成扣积分，用完人工充值）
-    points_signup: int = 100       # 注册/首次登录赠送积分
+    points_signup: int = 20        # 注册/首次登录赠送积分
     points_per_plan: int = 10      # 每次 AI 生成行程消耗积分
     points_per_chat: int = 2       # 每次 AI 问答消耗积分
 
