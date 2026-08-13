@@ -86,6 +86,7 @@
 }
 .qrcode-text { font-size: 36rpx; color: var(--text-3); font-weight: 600; }
 .qrcode-sub { font-size: 22rpx; color: var(--text-4); margin-top: 12rpx; }
+.qrcode-img { width: 340rpx; height: 340rpx; border-radius: var(--r-md); background: #fff; }
 .qrcode-amount { font-size: 28rpx; color: var(--text-1); margin-top: 20rpx; }
 .qrcode-amount .amount { color: var(--orange); font-weight: 700; font-size: 34rpx; }
 .qrcode-note { font-size: 24rpx; color: var(--text-3); margin-top: 14rpx; line-height: 1.6; }

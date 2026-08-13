@@ -26,8 +26,11 @@
     <view class="qrcode-tip">请使用微信/支付宝扫码支付</view>
     <view class="qrcode-placeholder">
       <view class="qrcode-border">
-        <view class="qrcode-text">收款码</view>
-        <view class="qrcode-sub">替换 images/pay-qrcode.png</view>
+        <image wx:if="{{!qrcodeError}}" class="qrcode-img" src="/images/pay-qrcode.png" mode="aspectFit" binderror="onQrcodeError" />
+        <block wx:else>
+          <view class="qrcode-text">收款码</view>
+          <view class="qrcode-sub">替换 images/pay-qrcode.png</view>
+        </block>
       </view>
     </view>
     <view class="qrcode-amount">应付金额：<text class="amount">¥{{selectedAmount}}</text></view>

@@ -16,7 +16,8 @@ Page({
     amount: '',
     contact: '',
     note: '',
-    submitting: false
+    submitting: false,
+    qrcodeError: false
   },
 
   onLoad() {
@@ -44,6 +45,10 @@ Page({
   onAmount(e) { this.setData({ amount: e.detail.value }) },
   onContact(e) { this.setData({ contact: e.detail.value }) },
   onNote(e) { this.setData({ note: e.detail.value }) },
+
+  onQrcodeError() {
+    this.setData({ qrcodeError: true })
+  },
 
   async onSubmit() {
     const amount = parseFloat(this.data.amount)
