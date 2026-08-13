@@ -27,7 +27,8 @@ const env = {
   //    前端接口统一以 /api 开头，BASE_URL 不含 /api
   //  · 真机 / 上线：必须填 HTTPS 公网域名（如 https://api.你的域名.com），并在公众平台「开发设置 → 服务器域名 → request 合法域名」添加
   //  —— 当前联调用电脑局域网 IP（手机与电脑同一路由器）：
-  BASE_URL: 'http://192.168.10.8:8009',
+  //    注意：电脑从以太网切到 WLAN 后 IP 会变化，若真机突然全部超时，先 ipconfig 确认本机 IP。
+  BASE_URL: 'http://192.168.101.236:8009',
 
   // 微信小程序 AppID：登录 mp.weixin.qq.com → 开发管理 → 开发设置 → AppID(小程序ID) 复制填写
   // 注册即有（无需上线）；测试号不支持跳转，必须用真实 AppID
@@ -47,7 +48,7 @@ const env = {
     car:    { appId: 'wxaf35009675aa0b2a', name: '滴滴出行' }, // 打车（高可信）
     hotel:  { appId: 'wx0e6ed4f51db9d078', name: '携程旅行' }, // 酒店
     food:   { appId: 'wxde8ac0a21135c07d', name: '美团' },     // 美食（AppID 待核实）
-    flight: { appId: 'wx336c1c31c3c8a81a', name: '同程旅行' }, // 机票高铁（同程艺龙酒店机票火车）
+    flight: { appId: 'wx0e6ed4f51db9d078', name: '携程旅行' }, // 机票高铁（携程可订机票+火车票，AppID 已验证可用）
     ticket: { appId: 'wx0e6ed4f51db9d078', name: '携程旅行' }, // 景区门票
     movie:  { appId: 'wxde8ac0a21135c07d', name: '美团' },     // 电影票（猫眼在美团内）
     takeout:{ appId: 'wxde8ac0a21135c07d', name: '美团' }      // 外卖（AppID 待核实）
