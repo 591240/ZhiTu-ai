@@ -24,8 +24,8 @@
         catchtouchend="onDragEnd"
       >
         <view class="drag-handle" wx:if="{{!dragging}}">⋮⋮</view>
-        <input class="spot-name" placeholder="景点名称" value="{{s.name}}" bindinput="updSpot" data-di="{{di}}" data-si="{{si}}" data-field="name" disabled="{{dragging}}"/>
-        <input class="spot-time" placeholder="时间" value="{{s.time}}" bindinput="updSpot" data-di="{{di}}" data-si="{{si}}" data-field="time" disabled="{{dragging}}"/>
+        <input class="spot-name" placeholder="景点名称" placeholder-class="input-ph" value="{{s.name}}" bindinput="updSpot" data-di="{{di}}" data-si="{{si}}" data-field="name" disabled="{{dragging}}"/>
+        <input class="spot-time" placeholder="时间" placeholder-class="input-ph" value="{{s.time}}" bindinput="updSpot" data-di="{{di}}" data-si="{{si}}" data-field="time" disabled="{{dragging}}"/>
         <view class="spot-del" bindtap="delSpot" data-di="{{di}}" data-si="{{si}}">✕</view>
       </view>
     </view>

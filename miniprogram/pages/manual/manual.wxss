@@ -63,20 +63,28 @@
 }
 .spot-name {
   flex: 1;
+  min-width: 0;
   background: var(--card);
   border-radius: var(--r-md);
-  padding: 18rpx 20rpx;
+  padding: 18rpx 16rpx;
   font-size: 27rpx;
   border: 1rpx solid var(--border);
 }
 .spot-time {
-  width: 160rpx;
+  width: 200rpx;
   margin-left: 14rpx;
   background: var(--card);
   border-radius: var(--r-md);
-  padding: 18rpx 20rpx;
+  padding: 18rpx 16rpx;
   font-size: 27rpx;
   border: 1rpx solid var(--border);
+}
+.input-ph {
+  color: var(--text-3);
+  font-size: 24rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .spot-del { margin-left: 14rpx; color: var(--text-4); font-size: 32rpx; padding: 0 10rpx; }
 .placeholder {
