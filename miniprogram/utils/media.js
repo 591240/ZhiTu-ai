@@ -19,22 +19,26 @@ function spotImage(name) {
   return `https://loremflickr.com/600/400/${encodeURIComponent(n)}?lock=${lock}`
 }
 
-// 城市封面图：优先使用精选的真实风景照；未配置城市再回退到 loremflickr
-// 说明：以下 URL 来自公开图库，本地开发需勾选「不校验合法域名」；
-// 正式上线前建议下载到 images/cities/ 本地目录，避免外部域名白名单问题。
-const CITY_IMAGES = {
-  '杭州': 'https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?auto=format&fit=crop&w=640&q=80',
-  '成都': 'https://images.unsplash.com/photo-1590736969955-71cc94901144?auto=format&fit=crop&w=640&q=80',
-  '西安': 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=640&q=80',
-  '苏州': 'https://images.unsplash.com/photo-1584596859861-39d7a5243952?auto=format&fit=crop&w=640&q=80',
-  '重庆': 'https://images.unsplash.com/photo-1542059604-ef4a225f6b54?auto=format&fit=crop&w=640&q=80',
-  '厦门': 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=640&q=80',
-  '长沙': 'https://images.unsplash.com/photo-1598887142487-3c854d51eabb?auto=format&fit=crop&w=640&q=80',
-  '南京': 'https://images.unsplash.com/photo-1569423304452-85b61b63c224?auto=format&fit=crop&w=640&q=80'
+// 城市封面图：优先使用本地真实照片 /images/cities/城市名.jpg；
+// 没有本地图时，走 loremflickr 关键词图（保证城市内容相关，不会西安配长城）。
+// 上线前建议把真实摄影图放到 miniprogram/images/cities/ 目录，避免外部域名白名单问题。
+const CITY_ONLINE = {
+  '杭州': 'https://loremflickr.com/640/360/hangzhou,westlake?lock=201',
+  '成都': 'https://loremflickr.com/640/360/chengdu,panda?lock=202',
+  '西安': 'https://loremflickr.com/640/360/xian,terracotta?lock=203',
+  '苏州': 'https://loremflickr.com/640/360/suzhou,garden?lock=204',
+  '重庆': 'https://loremflickr.com/640/360/chongqing,hongyadong?lock=205',
+  '厦门': 'https://loremflickr.com/640/360/xiamen,gulangyu?lock=206',
+  '长沙': 'https://loremflickr.com/640/360/changsha,orangeisle?lock=207',
+  '南京': 'https://loremflickr.com/640/360/nanjing,confucius?lock=208'
 }
 function cityImage(city) {
   const n = (city || '旅行').trim()
-  if (CITY_IMAGES[n]) return CITY_IMAGES[n]
+  return `/images/cities/${n}.jpg`
+}
+function cityImageOnline(city) {
+  const n = (city || '旅行').trim()
+  if (CITY_ONLINE[n]) return CITY_ONLINE[n]
   const lock = hashStr(n) % 1000
   return `https://loremflickr.com/640/360/${encodeURIComponent(n)}?lock=${lock}`
 }
@@ -208,6 +212,7 @@ function openDealChannel(meal) {
 module.exports = {
   spotImage,
   cityImage,
+  cityImageOnline,
   cityEmoji,
   openPlatform,
   platformSearchUrl,

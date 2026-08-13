@@ -6,7 +6,7 @@
       <view class="cover-mask"></view>
       <view class="cover-info">
         <view class="t-title">{{template.title}}</view>
-        <view class="t-meta">{{template.city}} · {{template.days}}天 · {{template.uses}}人用过</view>
+        <view class="t-meta">{{template.city}} · {{template.days}}天</view>
       </view>
     </view>
 

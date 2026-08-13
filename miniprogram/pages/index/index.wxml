@@ -91,7 +91,6 @@
             <text class="tpl-tag purple" wx:if="{{item.route_type === '小众'}}">深度探索</text>
           </view>
           <view class="tpl-foot">
-            <text class="uses">已用 {{item.uses}} 次</text>
             <route-tag type="{{item.route_type}}" />
           </view>
         </view>
