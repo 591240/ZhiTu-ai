@@ -85,6 +85,28 @@ Page({
 
   onService(e) {
     const key = e.currentTarget.dataset.key
+    // 导航：不走小程序跳转白名单，直接用 wx.openLocation 拉起系统地图
+    if (key === 'map') {
+      wx.showLoading({ title: '定位中' })
+      wx.getLocation({
+        type: 'gcj02',
+        success: (res) => {
+          wx.hideLoading()
+          wx.openLocation({
+            latitude: res.latitude,
+            longitude: res.longitude,
+            name: '我的位置',
+            address: '当前定位',
+            scale: 16
+          })
+        },
+        fail: () => {
+          wx.hideLoading()
+          wx.showToast({ title: '定位失败，请授权位置权限', icon: 'none' })
+        }
+      })
+      return
+    }
     const link = env.SERVICE_LINKS[key]
     const name = (link && link.name) || e.currentTarget.dataset.name
     if (!link || !link.appId) {
