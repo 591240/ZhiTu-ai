@@ -65,7 +65,13 @@ Page({
 
   onChooseAvatar(e) {
     const url = e.detail.avatarUrl
-    if (url) this.updateProfile({ avatar: url })
+    if (!url) return
+    // 先本地立即更新，用户立刻看到变化；再同步后端/存储
+    const user = { ...this.data.user, avatar: url }
+    this.setData({ user })
+    storage.setUser(user)
+    app.globalData.userInfo = user
+    this.updateProfile({ avatar: url })
   },
 
   onNicknameChange(e) {

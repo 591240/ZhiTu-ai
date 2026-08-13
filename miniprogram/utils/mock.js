@@ -3,7 +3,8 @@
 
 const { monetizationEnabled } = require('./features')
 
-const mockUser = {
+// 从本地存储恢复 mock 用户信息（头像/昵称修改后可持久化）
+let mockUser = wx.getStorageSync('mockUser') || {
   id: 10001,
   nickname: '微信用户',
   avatar: '',
@@ -2825,6 +2826,13 @@ function handleMock(url, method, data) {
     return { code: 0, data: { token: 'mock-token-' + Date.now(), user: mockUser }, message: 'ok' }
   }
   if (url.includes('/user/info') || url.includes('/user/me')) {
+    return { code: 0, data: mockUser, message: 'ok' }
+  }
+  if (url.includes('/user/profile')) {
+    if (data.avatar !== undefined) mockUser.avatar = data.avatar
+    if (data.nickname !== undefined) mockUser.nickname = data.nickname
+    if (data.phone !== undefined) mockUser.phone = data.phone
+    wx.setStorageSync('mockUser', mockUser)
     return { code: 0, data: mockUser, message: 'ok' }
   }
   if (url.includes('/user/stats')) {
