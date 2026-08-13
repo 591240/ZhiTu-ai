@@ -43,13 +43,55 @@ Page({
 
   onCity(e) { this.setData({ city: this.data.cities[e.detail.value] }) },
   onDeparture(e) { this.setData({ departureCity: e.detail.value }) },
-  setDays(e) { this.setData({ days: e.currentTarget.dataset.d }) },
+  setDays(e) {
+    const days = Number(e.currentTarget.dataset.d)
+    let { startDate, endDate } = this.data
+    if (startDate) {
+      endDate = this._offsetDate(startDate, days - 1)
+    } else if (endDate) {
+      startDate = this._offsetDate(endDate, -(days - 1))
+    }
+    this.setData({ days, startDate, endDate })
+  },
   setCrowd(e) { this.setData({ crowdIndex: e.currentTarget.dataset.i }) },
   setTransport(e) { this.setData({ transportIndex: e.currentTarget.dataset.i }) },
   setRoute(e) { this.setData({ routeIndex: e.currentTarget.dataset.i }) },
   setTransportPref(e) { this.setData({ transportPrefIndex: e.currentTarget.dataset.i }) },
-  onStart(e) { this.setData({ startDate: e.detail.value }) },
-  onEnd(e) { this.setData({ endDate: e.detail.value }) },
+  onStart(e) {
+    const startDate = e.detail.value
+    let { endDate, days } = this.data
+    if (endDate) {
+      days = this._calcDays(startDate, endDate)
+    } else if (startDate) {
+      endDate = this._offsetDate(startDate, days - 1)
+    }
+    this.setData({ startDate, endDate, days })
+  },
+  onEnd(e) {
+    const endDate = e.detail.value
+    let { startDate, days } = this.data
+    if (startDate) {
+      days = this._calcDays(startDate, endDate)
+    } else if (endDate) {
+      startDate = this._offsetDate(endDate, -(days - 1))
+    }
+    this.setData({ startDate, endDate, days })
+  },
+  _calcDays(start, end) {
+    const s = new Date(start + 'T00:00:00')
+    const e = new Date(end + 'T00:00:00')
+    const diff = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1
+    return Math.max(1, Math.min(4, diff))
+  },
+  _offsetDate(dateStr, offsetDays) {
+    const d = new Date(dateStr + 'T00:00:00')
+    d.setDate(d.getDate() + offsetDays)
+    return this._fmtDate(d)
+  },
+  _fmtDate(d) {
+    const pad = n => String(n).padStart(2, '0')
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+  },
   setPeople(e) {
     const delta = Number(e.currentTarget.dataset.d)
     const n = Math.max(1, Math.min(20, this.data.peopleCount + delta))
