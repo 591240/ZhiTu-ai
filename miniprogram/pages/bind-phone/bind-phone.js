@@ -34,27 +34,7 @@ Page({
         if (app) app.globalData.userInfo = r.data
       }
     } catch (e) {
-      // 头像昵称保存失败不影响手机号绑定
-    }
-  },
-
-  // 微信手机号一键绑定
-  async onGetPhone(e) {
-    const { errMsg, code: phoneCode } = e.detail
-    if (errMsg !== 'getPhoneNumber:ok' || !phoneCode) {
-      wx.showToast({ title: '已取消授权', icon: 'none' })
-      return
-    }
-    wx.showLoading({ title: '绑定中' })
-    try {
-      await this.saveProfile()
-      await auth.bindPhone(phoneCode)
-      wx.hideLoading()
-      wx.showToast({ title: '绑定成功', icon: 'success' })
-      this.goHome()
-    } catch (e) {
-      wx.hideLoading()
-      wx.showToast({ title: '绑定失败，请重试', icon: 'none' })
+      // 头像昵称保存失败不影响进入小程序
     }
   },
 

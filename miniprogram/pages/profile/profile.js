@@ -86,22 +86,7 @@ Page({
   goCollection() { wx.navigateTo({ url: '/pages/collection/collection' }) },
   goPublished() { wx.navigateTo({ url: '/pages/published/published' }) },
   goSettings() { wx.navigateTo({ url: '/pages/settings/settings' }) },
-  goInvite() { wx.navigateTo({ url: '/pages/invite/invite' }) },
+  goInvite() { wx.showToast({ title: '邀请功能暂未开放', icon: 'none' }) },
   onShare() { wx.showToast({ title: '分享功能开发中', icon: 'none' }) },
-  onService() { wx.showToast({ title: '客服功能开发中', icon: 'none' }) },
-  async onBindPhone(e) {
-    const { errMsg, code: phoneCode } = e.detail
-    if (errMsg !== 'getPhoneNumber:ok' || !phoneCode) {
-      wx.showToast({ title: '已取消', icon: 'none' })
-      return
-    }
-    try {
-      const phone = await auth.bindPhone(phoneCode)
-      const user = Object.assign({}, this.data.user, { phone })
-      this.setData({ user })
-      wx.showToast({ title: '绑定成功', icon: 'success' })
-    } catch (err) {
-      wx.showToast({ title: '绑定失败，请重试', icon: 'none' })
-    }
-  }
+  onService() { wx.showToast({ title: '客服功能开发中', icon: 'none' }) }
 })

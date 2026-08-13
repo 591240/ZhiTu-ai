@@ -3,7 +3,6 @@
     "pages/index/index",
     "pages/login/login",
     "pages/phone-login/phone-login",
-    "pages/bind-phone/bind-phone",
     "pages/trips/trips",
     "pages/profile/profile",
     "pages/form/form",
@@ -11,7 +10,6 @@
     "pages/detail/detail",
     "pages/chat/chat",
     "pages/template/template",
-    "pages/member/member",
     "pages/collection/collection",
     "pages/published/published",
     "pages/settings/settings",
@@ -19,7 +17,6 @@
     "pages/feedback/feedback",
     "pages/manual/manual",
     "pages/ocr/ocr",
-    "pages/invite/invite",
     "pages/ticket/ticket",
     "pages/navig/navig"
   ],
