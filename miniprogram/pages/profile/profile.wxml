@@ -1,17 +1,18 @@
 <view class="page">
   <!-- 个人信息横幅 -->
   <view class="profile-hero anim-up">
-    <view class="ph-decor"></view>
     <button class="avatar-btn" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
       <image wx:if="{{user.avatar}}" class="avatar-img" src="{{user.avatar}}" mode="aspectFill" />
       <view wx:else class="avatar-fallback">{{user.nickname ? user.nickname[0] : '游'}}</view>
+      <view class="avatar-edit">📷</view>
     </button>
     <view class="u-info">
       <view class="u-name">
         <input class="nickname-input" type="nickname" placeholder="填写昵称" value="{{user.nickname}}" bindblur="onNicknameChange" />
       </view>
-      <view class="u-city">📍 {{user.city || '杭州'}}</view>
+      <view class="u-city"><text class="loc-pin">📍</text>{{user.city || '杭州'}}</view>
     </view>
+    <view class="hero-arrow">›</view>
   </view>
 
   <!-- 数据统计 -->
