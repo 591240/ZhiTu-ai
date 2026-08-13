@@ -15,8 +15,8 @@
   width: 160rpx;
   height: 160rpx;
   border-radius: 36rpx;
-  background: #fff;
-  box-shadow: 0 12rpx 32rpx rgba(74, 144, 217, 0.25);
+  background: var(--card);
+  box-shadow: var(--shadow-blue);
 }
 .app-name {
   font-size: 56rpx;
@@ -80,7 +80,7 @@
 }
 .privacy-card {
   width: 100%;
-  background: #fff;
+  background: var(--card);
   border-radius: 28rpx 28rpx 0 0;
   padding: 40rpx 40rpx 60rpx;
   box-sizing: border-box;
@@ -99,14 +99,6 @@
 }
 .privacy-link {
   color: var(--primary);
-}
-.privacy-agree {
-  margin-top: 36rpx;
-  background: var(--grad-sky);
-  color: #fff;
-  font-size: 30rpx;
-  border-radius: 44rpx;
-  box-shadow: var(--shadow-blue);
 }
 .privacy-refuse {
   margin-top: 24rpx;

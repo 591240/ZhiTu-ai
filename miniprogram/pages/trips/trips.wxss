@@ -1,25 +1,5 @@
 /* trips.wxss —— 我的行程列表页 WF-07（统一高级感设计系统） */
-.page { padding: 0 28rpx; background: var(--bg); }
-
-.tabs {
-  display: flex;
-  gap: 44rpx;
-  padding: 16rpx 0 22rpx;
-  border-bottom: 2rpx solid var(--line);
-}
-.tab { font-size: 30rpx; color: var(--text-3); position: relative; padding-bottom: 12rpx; }
-.tab.on { color: var(--text-1); font-weight: bold; }
-.tab.on::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 48rpx;
-  height: 6rpx;
-  border-radius: 3rpx;
-  background: var(--grad-sky);
-}
+.page { padding: 0 28rpx; background: var(--bg); --sk: #E8ECF3; --sk-2: #F2F5F9; }
 
 .list { margin-top: 22rpx; }
 
@@ -35,7 +15,7 @@
 }
 .sk-cover {
   height: 200rpx;
-  background: linear-gradient(90deg, #E8ECF3 25%, #F2F5F9 50%, #E8ECF3 75%);
+  background: linear-gradient(90deg, var(--sk) 25%, var(--sk-2) 50%, var(--sk) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
 }
@@ -43,7 +23,7 @@
 .sk-line {
   height: 24rpx;
   border-radius: 6rpx;
-  background: #E8ECF3;
+  background: var(--sk);
   margin-bottom: 16rpx;
   width: 60%;
 }
@@ -54,14 +34,6 @@
   100% { background-position: -200% 0; }
 }
 
-/* 空状态 */
-.empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 160rpx;
-  padding: 0 40rpx;
-}
 .empty-illust {
   width: 180rpx;
   height: 180rpx;
@@ -114,17 +86,7 @@
 }
 .empty-title { font-size: 34rpx; font-weight: 700; color: var(--text-1); }
 .empty-desc { font-size: 26rpx; color: var(--text-3); margin-top: 12rpx; }
-.empty-btn {
-  margin-top: 40rpx;
-  padding: 22rpx 56rpx;
-  border-radius: var(--r-full);
-  background: var(--grad-sky);
-  color: #fff;
-  font-size: 28rpx;
-  font-weight: 600;
-  box-shadow: var(--shadow-blue);
-}
-.empty-btn:active { opacity: 0.9; transform: scale(0.98); }
+.empty-btn { margin-top: 40rpx; width: 60%; align-self: center; }
 
 .trip-card {
   background: var(--card);

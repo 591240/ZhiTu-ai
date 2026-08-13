@@ -54,6 +54,6 @@
     </view>
   </view>
 
-  <button class="primary-btn" bindtap="onSubmit" loading="{{submitting}}">提交充值申请</button>
+  <button class="btn-primary" bindtap="onSubmit" loading="{{submitting}}">提交充值申请</button>
   <view class="tip">* 充值申请提交后，请添加客服微信并提供支付截图，客服确认后为您加积分</view>
 </view>

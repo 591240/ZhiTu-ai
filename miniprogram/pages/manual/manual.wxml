@@ -1,5 +1,12 @@
 <view class="page">
-  <view class="card">
+  <view class="page-header anim-up">
+    <view class="ph-badge">手动编排</view>
+    <view class="ph-title">手动规划行程</view>
+    <view class="ph-sub">自定义每日景点，长按可拖拽排序</view>
+    <view class="ph-decor"></view>
+  </view>
+
+  <view class="panel">
     <view class="row"><text class="label">行程标题</text><input class="val" placeholder="如：我的杭州周末游" value="{{title}}" bindinput="onTitle"/></view>
     <view class="row"><text class="label">目的地</text><input class="val" placeholder="城市" value="{{city}}" bindinput="onCity"/></view>
     <view class="row"><text class="label">天数</text>
@@ -32,5 +39,5 @@
     <view class="add-spot" bindtap="addSpot" data-di="{{di}}">+ 添加景点</view>
   </view>
 
-  <button class="primary-btn" bindtap="onSave">保存行程</button>
+  <button class="btn-primary save-btn" bindtap="onSave">保存行程</button>
 </view>

@@ -288,7 +288,7 @@
 .tpl-cover {
   width: 340rpx;
   height: 190rpx;
-  background: linear-gradient(135deg, #DBEAFE, #93C5FD);
+  background: linear-gradient(135deg, var(--primary-light), #93C5FD);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -23,7 +23,7 @@
     </view>
   </view>
 
-  <button class="share-btn" open-type="share">分享小程序给好友</button>
+  <button class="btn-primary" open-type="share">分享小程序给好友</button>
 
   <view class="rec card" wx:if="{{records.length}}">
     <view class="rec-title">佣金明细</view>

@@ -7,7 +7,10 @@
   </view>
 
   <view wx:if="{{loading}}" class="loading">加载中…</view>
-  <view wx:elif="{{list.length===0}}" class="empty">还没有收藏的模板，去模板广场逛逛吧</view>
+  <view wx:elif="{{list.length===0}}" class="empty">
+    <view class="emoji">📭</view>
+    <view>还没有收藏的模板，去模板广场逛逛吧</view>
+  </view>
   <view class="tpl-list">
     <view class="tpl" wx:for="{{list}}" wx:key="id" bindtap="open" data-id="{{item.id}}">
       <view class="tpl-cover">{{item.cover}}</view>

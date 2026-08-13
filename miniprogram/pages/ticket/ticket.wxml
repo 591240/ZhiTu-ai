@@ -47,7 +47,7 @@
       </view>
     </view>
 
-    <button class="search-btn" loading="{{loading}}" bindtap="query">查询车次</button>
+    <button class="btn-primary" loading="{{loading}}" bindtap="query">查询车次</button>
   </view>
 
   <!-- 结果头部 -->

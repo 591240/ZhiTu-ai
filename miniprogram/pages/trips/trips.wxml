@@ -6,9 +6,9 @@
     <view class="ph-decor"></view>
   </view>
 
-  <view class="tabs">
-    <view class="tab {{tab === 'active' ? 'on' : ''}}" data-tab="active" bindtap="switchTab">使用中</view>
-    <view class="tab {{tab === 'all' ? 'on' : ''}}" data-tab="all" bindtap="switchTab">全部行程</view>
+  <view class="tabs-underline">
+    <view class="tb {{tab === 'active' ? 'on' : ''}}" data-tab="active" bindtap="switchTab">使用中</view>
+    <view class="tb {{tab === 'all' ? 'on' : ''}}" data-tab="all" bindtap="switchTab">全部行程</view>
   </view>
 
   <view wx:if="{{loading}}" class="loading-state">
@@ -31,7 +31,7 @@
     </view>
     <view class="empty-title">还没有行程</view>
     <view class="empty-desc">去首页用 AI 规划一次短途旅行吧</view>
-    <view class="empty-btn" bindtap="goPlan">去规划行程</view>
+    <view class="btn-primary empty-btn" bindtap="goPlan">去规划行程</view>
   </view>
 
   <view wx:else class="list">

@@ -11,8 +11,8 @@
     </view>
 
     <view class="tags">
-      <view class="tag">{{template.city}}</view>
-      <view class="tag">{{template.days}}天</view>
+      <view class="tag tag-solid">{{template.city}}</view>
+      <view class="tag tag-solid">{{template.days}}天</view>
       <route-tag type="{{template.route_type}}" />
     </view>
 
@@ -25,11 +25,16 @@
     </view>
 
     <view class="actions">
-      <button class="ghost" bindtap="onCollect">{{collected ? '已收藏' : '收藏'}}</button>
-      <button class="ghost" bindtap="onPublish">{{published ? '已发布' : '发布到广场'}}</button>
-      <button class="primary" bindtap="onUse">使用此模板</button>
+      <button class="btn-ghost" bindtap="onCollect">{{collected ? '已收藏' : '收藏'}}</button>
+      <button class="btn-ghost" bindtap="onPublish">{{published ? '已发布' : '发布到广场'}}</button>
+      <button class="btn-primary" bindtap="onUse">使用此模板</button>
     </view>
   </block>
 
   <view wx:elif="{{loading}}" class="loading">加载中…</view>
+
+  <view wx:elif="{{!template}}" class="empty">
+    <view class="emoji">🔍</view>
+    <view>未找到模板</view>
+  </view>
 </view>

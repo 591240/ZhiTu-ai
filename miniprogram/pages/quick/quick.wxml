@@ -28,5 +28,5 @@
     </view>
   </view>
 
-  <button class="btn-primary primary-btn anim-up d4" loading="{{generating}}" bindtap="onGenerate" disabled="{{!text || generating}}">✨ 生成我的行程</button>
+  <button class="btn-primary gen-btn anim-up d4" loading="{{generating}}" bindtap="onGenerate" disabled="{{!text || generating}}">✨ 生成我的行程</button>
 </view>

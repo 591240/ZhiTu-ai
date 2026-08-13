@@ -22,7 +22,7 @@
   </view>
 
   <view wx:else class="list">
-    <view wx:for="{{locs}}" wx:key="name" class="loc card {{item.ok ? '' : 'fail'}}">
+    <view wx:for="{{locs}}" wx:key="name" class="loc {{item.ok ? '' : 'fail'}}">
       <view class="l-thumb">
         <image wx:if="{{item.type === 'spot' && item.image}}" class="l-img" src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}" />
         <text wx:else class="l-emoji">{{item.emoji}}</text>

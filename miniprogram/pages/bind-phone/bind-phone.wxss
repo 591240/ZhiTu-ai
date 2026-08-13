@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  background: #fff;
+  background: var(--bg);
   padding: 120rpx 60rpx 80rpx;
   box-sizing: border-box;
   display: flex;
@@ -15,12 +15,12 @@
 .title {
   font-size: 48rpx;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-1);
   letter-spacing: 2rpx;
 }
 .sub {
   font-size: 28rpx;
-  color: #6B7280;
+  color: var(--text-3);
   margin-top: 16rpx;
 }
 
@@ -46,15 +46,15 @@
   height: 200rpx;
   border-radius: 50%;
   box-shadow: 0 16rpx 48rpx rgba(59, 130, 246, 0.22);
-  background: #fff;
+  background: var(--card);
 }
 .avatar-fallback {
   position: relative;
   width: 200rpx;
   height: 200rpx;
   border-radius: 50%;
-  background: #fff;
-  border: 4rpx solid #EFF6FF;
+  background: var(--card);
+  border: 4rpx solid var(--primary-lighter);
   box-shadow: 0 16rpx 48rpx rgba(59, 130, 246, 0.14);
   display: flex;
   align-items: center;
@@ -72,7 +72,7 @@
   width: 48rpx;
   height: 48rpx;
   border-radius: 50%;
-  background: #2563EB;
+  background: var(--primary-deep);
   color: #fff;
   font-size: 32rpx;
   line-height: 48rpx;
@@ -82,17 +82,17 @@
 .avatar-hint {
   margin-top: 20rpx;
   font-size: 24rpx;
-  color: #9CA3AF;
+  color: var(--text-4);
 }
 
 /* 昵称卡片 */
 .form-card {
   width: 100%;
-  background: #F9FAFB;
-  border-radius: 20rpx;
+  background: var(--card-soft);
+  border-radius: var(--r-md);
   padding: 0 32rpx;
   margin-bottom: 64rpx;
-  border: 2rpx solid #F3F4F6;
+  border: 2rpx solid var(--line);
 }
 .form-row {
   height: 110rpx;
@@ -102,41 +102,21 @@
 .form-label {
   width: 100rpx;
   font-size: 30rpx;
-  color: #374151;
+  color: var(--text-2);
   font-weight: 500;
 }
 .form-input {
   flex: 1;
   height: 110rpx;
   font-size: 30rpx;
-  color: #111827;
+  color: var(--text-1);
 }
-.ph { color: #9CA3AF; }
-
-/* 绑定按钮 */
-.bind-btn {
-  width: 100%;
-  height: 96rpx;
-  border-radius: 48rpx;
-  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-  color: #fff;
-  font-size: 32rpx;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 16rpx 40rpx rgba(37, 99, 235, 0.28);
-  margin: 0;
-  padding: 0;
-  line-height: normal;
-  letter-spacing: 1rpx;
-}
-.bind-btn::after { border: none; }
+.ph { color: var(--text-4); }
 
 /* 跳过 */
 .skip {
   margin-top: 44rpx;
   text-align: center;
   font-size: 26rpx;
-  color: #9CA3AF;
+  color: var(--text-4);
 }

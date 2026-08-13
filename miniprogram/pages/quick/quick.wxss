@@ -1,14 +1,6 @@
 /* quick.wxss —— 一句话快规划页 WF-03（统一高级感设计系统） */
 .page { padding: 0 28rpx 60rpx; min-height: 100vh; background: var(--bg); }
 
-.card {
-  background: var(--card);
-  border-radius: var(--r-lg);
-  padding: 28rpx;
-  box-shadow: var(--shadow-md);
-  border: 1rpx solid rgba(255, 255, 255, 0.85);
-}
-
 .input-card { position: relative; }
 .input { width: 100%; min-height: 180rpx; font-size: 30rpx; color: var(--text-1); line-height: 1.6; }
 .count { text-align: right; font-size: 22rpx; color: var(--text-4); margin-top: 8rpx; }
@@ -16,25 +8,13 @@
 .examples { margin-top: 36rpx; }
 .sec-title { font-size: 30rpx; font-weight: 700; color: var(--text-1); margin-bottom: 20rpx; }
 .chips { display: flex; flex-wrap: wrap; gap: 16rpx; }
-.chip-pill { background: var(--primary-lighter); color: var(--primary); font-size: 26rpx; padding: 16rpx 24rpx; border-radius: var(--r-full); transition: all 0.2s ease; }
-.chip-pill:active { transform: scale(0.96); background: var(--primary-light); }
+/* 复用全局 .chip-pill */
 
 .parse { margin-top: 36rpx; background: var(--primary-lighter); border-radius: var(--r-md); padding: 24rpx; border: 1rpx solid var(--primary-light); }
 .parse-label { font-size: 24rpx; color: var(--primary); margin-bottom: 14rpx; font-weight: 600; }
 .parse-items { display: flex; flex-wrap: wrap; gap: 16rpx; }
 .parse-item { background: var(--card); color: var(--text-1); font-size: 26rpx; padding: 12rpx 22rpx; border-radius: var(--r-sm); box-shadow: var(--shadow-sm); }
 
-.primary-btn {
-  margin-top: 48rpx;
-  background: var(--grad-sky);
-  color: #fff;
-  font-size: 32rpx;
-  font-weight: 600;
-  border-radius: 48rpx;
-  padding: 26rpx 0;
-  border: none;
-  box-shadow: var(--shadow-blue);
-  transition: transform 0.15s ease-out;
-}
-.primary-btn:active { transform: scale(0.98); }
-.primary-btn[disabled] { background: var(--text-4); box-shadow: none; color: #fff; }
+/* 主按钮复用全局 .btn-primary；禁用态统一透明 */
+.btn-primary:disabled { opacity: 0.5; }
+.gen-btn { margin-top: 48rpx; }

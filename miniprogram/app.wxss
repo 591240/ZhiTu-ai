@@ -293,6 +293,32 @@ view, text, scroll-view, button, input, textarea, image { box-sizing: border-box
   border-color: var(--primary);
 }
 
+/* === 下划线 Tab（trips/agreement 等列表切换统一） === */
+.tabs-underline {
+  display: flex;
+  border-bottom: 1rpx solid var(--border);
+}
+.tabs-underline .tb {
+  position: relative;
+  padding: 24rpx 4rpx;
+  margin-right: 44rpx;
+  font-size: 28rpx;
+  color: var(--text-3);
+  transition: color 0.2s ease;
+}
+.tabs-underline .tb.on {
+  color: var(--text-1);
+  font-weight: 700;
+}
+.tabs-underline .tb.on::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1rpx;
+  height: 5rpx;
+  border-radius: var(--r-full);
+  background: var(--grad-sky);
+}
+
 /* === 字段标签（带色点） === */
 .f-label {
   display: flex;

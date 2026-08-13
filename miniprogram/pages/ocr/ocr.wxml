@@ -1,8 +1,15 @@
 <view class="page">
+  <view class="page-header anim-up">
+    <view class="ph-badge">AI 识图</view>
+    <view class="ph-title">识别景点</view>
+    <view class="ph-sub">拍照或上传视频，AI 帮你识别地点</view>
+    <view class="ph-decor"></view>
+  </view>
+
   <view class="tip">上传图片或视频，AI 帮你识别并给出景点与行程</view>
 
   <!-- 模式切换 -->
-  <view class="seg">
+  <view class="seg-pill">
     <view class="seg-item {{mode === 'itinerary' ? 'on' : ''}}" data-m="itinerary" bindtap="setMode">行程截图</view>
     <view class="seg-item {{mode === 'scene' ? 'on' : ''}}" data-m="scene" bindtap="setMode">识景 / 识视频</view>
   </view>
@@ -19,7 +26,7 @@
   <view wx:else class="preview">
     <image wx:if="{{mediaType === 'image'}}" class="img" src="{{filePath}}" mode="widthFix" bindtap="choose" />
     <video wx:else class="img" src="{{filePath}}" controls bindtap="choose" />
-    <button class="primary" loading="{{recognizing}}" bindtap="recognize">开始识别</button>
+    <button class="btn-primary" loading="{{recognizing}}" bindtap="recognize">开始识别</button>
   </view>
 
   <!-- 结果：行程截图 -->
@@ -29,7 +36,7 @@
     <view class="r-spots">
       <view class="r-spot" wx:for="{{result.recognized.spots}}" wx:key="*this">· {{item}}</view>
     </view>
-    <button class="primary" bindtap="useResult">生成行程</button>
+    <button class="btn-primary" bindtap="useResult">生成行程</button>
   </view>
 
   <!-- 结果：识景 / 识视频 -->
@@ -49,6 +56,6 @@
       <view class="spot-meta">⏱ 约{{item.duration_min}}分钟 · 🎫 {{item.ticket_price > 0 ? '¥' + item.ticket_price : '免费'}}</view>
     </view>
 
-    <button class="primary" bindtap="useResult">生成行程</button>
+    <button class="btn-primary" bindtap="useResult">生成行程</button>
   </view>
 </view>
