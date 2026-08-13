@@ -2837,7 +2837,7 @@ SCHEMA_HINT = """你是专业旅游行程规划师。严格只输出如下 JSON 
         "season_tip":"当前为旺季/淡季，热门景点人多，建议错峰",
         "crowd_tip":"建议上午9点前到达避开人流高峰",
         "spots":[
-          {"name":"景点名","address":"地址","time_slot":"morning/afternoon/evening","duration_min":120,"ticket_price":0,"best_price":0,"ticket_channel":"景区官方/携程/美团/抖音团购（AI预估最划算购票渠道）","need_booking":False,"official_account":"","category":"自然风光/人文历史/美食/网红打卡/休闲度假","description":"一句话简介","photo_spots":[{"position":"观景台东侧","best_time":"日出/日落/上午/下午/夜晚","tip":"低角度拍湖面反光更有层次","avoid_crowd":"开园前30分钟抵达","day_night":"日/夜","suitable_for":"摄影爱好者/家庭/情侣"}]}
+          {"name":"景点名","address":"地址","time_slot":"morning/afternoon/evening","duration_min":120,"ticket_price":0,"best_price":0,"ticket_channel":"景区官方/携程/美团/抖音团购（AI预估最划算购票渠道）","need_booking":False,"official_account":"公众号名称|gh_xxx（若能查到原始ID则填原始ID，否则只填名称）","category":"自然风光/人文历史/美食/网红打卡/休闲度假","description":"一句话简介","photo_spots":[{"position":"观景台东侧","best_time":"日出/日落/上午/下午/夜晚","tip":"低角度拍湖面反光更有层次","avoid_crowd":"开园前30分钟抵达","day_night":"日/夜","suitable_for":"摄影爱好者/家庭/情侣"}]}
         ],
         "meals":[{"name":"餐厅名","type":"lunch/dinner/breakfast","avg_price":80,"deal_channel":"美团/大众点评/抖音团购（AI预估最划算团购渠道）","specialty":"招牌菜","address":"地址"}],
         "transport":[{"from":"酒店","to":"景点","mode":"地铁/公交/步行/打车","duration_min":30,"cost":5}],
@@ -2936,6 +2936,7 @@ class PlanService:
             f"往返偏好={p.get('transport_preference') or '未指定'}，"
             f"出发日期={p.get('start_date') or '未指定'}，返程日期={p.get('end_date') or '未指定'}，"
             f"路线={p.get('route_type')}，备注={p.get('remark', '')}。"
+            f"必看风景/必去地点={p.get('must_see') or '未指定'}。"
             f"\n{env_hint}\n只输出JSON。"
         )
 

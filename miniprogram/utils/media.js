@@ -154,21 +154,58 @@ function chooseTicketChannel(ch) {
   })
 }
 
-// 需预约景点：复制官方公众号名 + 引导在微信搜索预约
+// 预约/购票：优先打开公众号资料页；没有原始 ID 则跳第三方小程序搜景点
 function openBooking(spot) {
   const name = (spot && spot.name) || '该景点'
-  const account = (spot && spot.official_account) || name
-  const tip = (spot && spot.official_account)
-    ? `请打开微信 → 搜索「${account}」公众号，进入菜单预约/购票（该景点需提前预约）。`
-    : `请打开微信 → 搜索「${name}」官方公众号，进入菜单预约（该景点需提前预约）。`
-  wx.setClipboardData({
-    data: account,
-    success: () => {
-      wx.showModal({
-        title: '已复制预约渠道',
-        content: tip,
-        showCancel: false,
-        confirmText: '去微信'
+  const raw = (spot && spot.official_account) || ''
+  const parts = raw.split('|').map((s) => s.trim()).filter(Boolean)
+  const gh = parts.find((s) => s.startsWith('gh_')) || (raw.trim().startsWith('gh_') ? raw.trim() : '')
+  const accountName = parts.find((s) => !s.startsWith('gh_')) || (raw.trim() && !raw.trim().startsWith('gh_') ? raw.trim() : '')
+
+  // 有公众号原始 ID，直接打开公众号资料页
+  if (gh && wx.openOfficialAccountProfile) {
+    wx.openOfficialAccountProfile({
+      username: gh,
+      success: () => {},
+      fail: () => openBookingFallback(name, accountName)
+    })
+    return
+  }
+
+  openBookingFallback(name, accountName)
+}
+
+function openBookingFallback(spotName, accountName) {
+  const channels = [
+    { name: '美团', appId: 'wxde8ac0a21135c07d' },
+    { name: '大众点评', appId: 'wx734c1ad7b3562129' },
+    { name: '携程', appId: 'wx0e6ed4f51db9d078' }
+  ]
+  wx.showActionSheet({
+    itemList: channels.map((c) => `打开${c.name}搜「${spotName}」`),
+    success: (res) => {
+      const ch = channels[res.tapIndex]
+      wx.navigateToMiniProgram({
+        appId: ch.appId,
+        extraData: { keyword: spotName },
+        success: () => {
+          wx.showToast({ title: `已打开${ch.name}，请搜索预约`, icon: 'none' })
+        },
+        fail: () => {
+          // 跳转失败 fallback：复制公众号名称
+          const copy = accountName || spotName
+          wx.setClipboardData({
+            data: copy,
+            success: () => {
+              wx.showModal({
+                title: '已复制预约渠道',
+                content: `请打开微信 → 搜索「${copy}」公众号，进入菜单预约/购票。`,
+                showCancel: false,
+                confirmText: '知道了'
+              })
+            }
+          })
+        }
       })
     }
   })

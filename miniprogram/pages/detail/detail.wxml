@@ -119,7 +119,7 @@ module.exports = { slotLabel: slotLabel, mealLabel: mealLabel, idx: idx };
                       <block wx:if="{{item.data.ticket_channel}}">AI推荐 ¥{{item.data.best_price || item.data.ticket_price}} · 去{{item.data.ticket_channel}}购买 ›</block>
                       <block wx:else>购票/查低价 ›</block>
                     </text>
-                    <text wx:if="{{item.data.need_booking}}" class="sp-act book" data-di="{{dayIndex}}" data-si="{{item._i}}" bindtap="onSpotBooking">公众号预约 ›</text>
+                    <text wx:if="{{item.data.need_booking}}" class="sp-act book" data-di="{{dayIndex}}" data-si="{{item._i}}" bindtap="onSpotBooking">预约/购票 ›</text>
                     <text class="sp-act" bindtap="onSpotMedia" data-name="{{item.data.name}}">看视频/攻略 ›</text>
                   </view>
                   <view wx:if="{{item.data.photo_spots.length}}" class="photo-card">
