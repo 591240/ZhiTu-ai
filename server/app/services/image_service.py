@@ -107,10 +107,20 @@ def get_spot_info(name: str, city: str = "") -> dict | None:
         return None
 
 
+def _fallback_image(name: str, city: str = "") -> str:
+    """当高德 POI 没有真实图片时，返回一张在线关键词图兜底，保证任何景点都有图可显示。"""
+    keywords = ",".join(filter(bool, [city, name])) or "travel"
+    lock = int(hashlib.md5(f"{city}|{name}".encode("utf-8")).hexdigest(), 16) % 100000
+    return f"https://loremflickr.com/640/360/{quote(keywords)}/all?lock={lock}"
+
+
 def get_spot_image(name: str, city: str = "") -> str | None:
     """根据景点名称和城市，从高德 POI 搜索获取一张真实封面图 URL（同步请求）。"""
     info = get_spot_info(name, city)
-    return info.get("image") if info else None
+    if info and info.get("image"):
+        return info.get("image")
+    # 高德无图时返回在线关键词兜底图，避免前端灰块
+    return _fallback_image(name, city)
 
 
 def get_spot_location(name: str, city: str = "") -> str | None:

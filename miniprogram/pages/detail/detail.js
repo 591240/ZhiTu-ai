@@ -6,9 +6,10 @@ const app = getApp()
 // 给缺失 image 的景点补上封面图（覆盖后端真实行程）
 function decorateTrip(trip) {
   if (!trip || !trip.content || !trip.content.itinerary) return trip
+  const city = trip.city || ''
   trip.content.itinerary.forEach((day) => {
     (day.spots || []).forEach((s) => {
-      if (!s.image) s.image = spotImage(s.name)
+      if (!s.image) s.image = spotImage(s.name, city)
     })
   })
   return trip
@@ -109,16 +110,23 @@ Page({
     this.setData({ transportIndex: e.currentTarget.dataset.i })
   },
 
-  // 景点封面图加载失败：降级显示默认 emoji 封面
+  // 景点封面图加载失败：先用在线关键词图兜底，再失败才显示 emoji
   onImgError(e) {
     const ti = e.currentTarget.dataset.ti
     const timeline = this.data.timeline.slice()
     const item = timeline[ti]
-    if (item && item.data) {
+    if (!item || !item.data) return
+    const name = item.data.name || ''
+    const city = (this.data.trip && this.data.trip.city) || ''
+    const fallback = spotImage(name, city)
+    // 当前已经是兜底图或没有兜底图，才标记失败显示 emoji
+    if (item.data.image === fallback || !fallback) {
       item.data = Object.assign({}, item.data, { _imgError: true })
-      timeline[ti] = Object.assign({}, item, { data: item.data })
-      this.setData({ timeline })
+    } else {
+      item.data = Object.assign({}, item.data, { image: fallback })
     }
+    timeline[ti] = Object.assign({}, item, { data: item.data })
+    this.setData({ timeline })
   },
 
   // 跳转火车票实时查询（预填目的地=行程城市）

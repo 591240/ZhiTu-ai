@@ -12,10 +12,14 @@ function hashStr(s) {
   return Math.abs(h)
 }
 
-// 景点封面图：真实图片由后端在生成行程时通过高德 POI 接口填充；
-// 前端兜底不再返回占位图（避免 loremflickr 的猫图），无图时显示默认封面。
-function spotImage(name) {
-  return ''
+// 景点封面图兜底：当后端未返回图片或图片加载失败时使用。
+// 用 loremflickr 按景点名关键词搜索，保证任何城市/景点都有图显示。
+function spotImage(name, city) {
+  const n = (name || '景点').trim()
+  const c = (city || '').trim()
+  const q = c ? `${encodeURIComponent(c)},${encodeURIComponent(n)}` : encodeURIComponent(n)
+  const lock = hashStr(n + c) % 1000
+  return `https://loremflickr.com/640/360/${q}/all?lock=${lock}`
 }
 
 // 城市封面图：优先使用本地真实照片 /images/cities/城市名.jpg；
