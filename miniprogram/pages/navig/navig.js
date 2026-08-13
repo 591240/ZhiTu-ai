@@ -16,10 +16,13 @@ Page({
   },
 
   async onLoad(options) {
-    const names = (options.names || '').split(',').filter(Boolean)
-    const types = (options.types || '').split(',').filter(Boolean)
-    const dayLabel = options.dayLabel || ''
-    const city = options.city || ''
+    const decode = (v) => {
+      try { return v ? decodeURIComponent(v) : '' } catch (e) { return v || '' }
+    }
+    const names = decode(options.names || '').split(',').filter(Boolean)
+    const types = decode(options.types || '').split(',').filter(Boolean)
+    const dayLabel = decode(options.dayLabel)
+    const city = decode(options.city)
     this.setData({ city, dayLabel })
     if (!names.length) {
       this.setData({ loading: false })
