@@ -113,17 +113,18 @@ function ticketChannels(spot) {
     })
   }
   const ota = [
-    { key: 'ctrip', name: '携程', note: '比价常用 · 退改灵活', search: `https://www.ctrip.com/search?q=${encodeURIComponent(name + ' 门票')}` },
-    { key: 'meituan', name: '美团', note: '常有限时折扣', search: `https://www.meituan.com/search?q=${encodeURIComponent(name + ' 门票')}` },
-    { key: 'fliggy', name: '飞猪', note: '阿里会员价', search: `https://www.fliggy.com/search?q=${encodeURIComponent(name + ' 门票')}` },
-    { key: 'tongcheng', name: '同程旅行', note: '周边游常用', search: `https://www.ly.com/search?q=${encodeURIComponent(name + ' 门票')}` },
-    { key: 'douyin', name: '抖音团购', note: '节假日常更便宜', search: `https://www.douyin.com/search/${encodeURIComponent(name + ' 团购')}` }
+    { key: 'ctrip', name: '携程', note: '比价常用 · 退改灵活', search: `https://www.ctrip.com/search?q=${encodeURIComponent(name + ' 门票')}`, appId: 'wx0e6ed4f51db9d078', keyword: name + ' 门票' },
+    { key: 'meituan', name: '美团', note: '常有限时折扣', search: `https://www.meituan.com/search?q=${encodeURIComponent(name + ' 门票')}`, appId: 'wxde8ac0a21135c07d', keyword: name + ' 门票' },
+    { key: 'dianping', name: '大众点评', note: '看评价 · 买票团购', search: `https://www.dianping.com/search?q=${encodeURIComponent(name + ' 门票')}`, appId: 'wx734c1ad7b3562129', keyword: name + ' 门票' },
+    { key: 'fliggy', name: '飞猪', note: '阿里会员价', search: `https://www.fliggy.com/search?q=${encodeURIComponent(name + ' 门票')}`, keyword: name + ' 门票' },
+    { key: 'tongcheng', name: '同程旅行', note: '周边游常用', search: `https://www.ly.com/search?q=${encodeURIComponent(name + ' 门票')}`, keyword: name + ' 门票' },
+    { key: 'douyin', name: '抖音团购', note: '节假日常更便宜', search: `https://www.douyin.com/search/${encodeURIComponent(name + ' 团购')}`, keyword: name + ' 团购' }
   ]
   ota.forEach((c) => channels.push(Object.assign({ recommend: false, kind: 'search' }, c)))
   return channels
 }
 
-// 点击某个购票渠道：官方复制公众号名并引导微信搜索；OTA 复制搜索链接并引导打开
+// 点击某个购票渠道：官方复制公众号名并引导微信搜索；OTA 支持小程序的直接跳转，否则复制搜索链接
 function chooseTicketChannel(ch) {
   if (!ch) return
   if (ch.kind === 'account') {
@@ -140,13 +141,37 @@ function chooseTicketChannel(ch) {
     })
     return
   }
-  // OTA 比价
+  // OTA 比价：能跳转小程序的直接跳
+  if (ch.appId) {
+    openMiniProgramSearch(ch.appId, ch.name, ch.keyword || '')
+    return
+  }
+  // 不支持小程序的 OTA（飞猪/同程/抖音/小红书）复制搜索链接
   wx.setClipboardData({
     data: ch.search,
     success: () => {
       wx.showModal({
         title: `已复制${ch.name}搜索链接`,
         content: `请在${ch.name}App 或浏览器粘贴打开，对比「${ch.name}」上的票价后再下单。`,
+        showCancel: false,
+        confirmText: '知道了'
+      })
+    }
+  })
+}
+
+// 跳转到第三方小程序并尝试带搜索关键词（extraData 由目标小程序自行解析）
+function openMiniProgramSearch(appId, platformName, keyword) {
+  wx.navigateToMiniProgram({
+    appId: appId,
+    extraData: { keyword: keyword || '' },
+    success: () => {
+      wx.showToast({ title: `已打开${platformName}，请搜索预约`, icon: 'none' })
+    },
+    fail: () => {
+      wx.showModal({
+        title: '跳转失败',
+        content: `无法直接打开${platformName}，请确认已在「设置-小程序」中授权，或在App内搜索该景点。`,
         showCancel: false,
         confirmText: '知道了'
       })
@@ -215,10 +240,10 @@ function openBookingFallback(spotName, accountName) {
 function dealChannels(meal) {
   const name = (meal && meal.name) || '该餐厅'
   const channels = [
-    { key: 'meituan', name: '美团', note: '到店套餐/代金券常用', search: `https://www.meituan.com/search?q=${encodeURIComponent(name + ' 团购')}` },
-    { key: 'dianping', name: '大众点评', note: '看真实评价+买单优惠', search: `https://www.dianping.com/search?q=${encodeURIComponent(name)}` },
-    { key: 'douyin', name: '抖音团购', note: '短视频套餐常更便宜', search: `https://www.douyin.com/search/${encodeURIComponent(name + ' 团购')}` },
-    { key: 'xiaohongshu', name: '小红书', note: '探店笔记/隐藏优惠', search: `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(name + ' 团购')}` }
+    { key: 'meituan', name: '美团', note: '到店套餐/代金券常用', search: `https://www.meituan.com/search?q=${encodeURIComponent(name + ' 团购')}`, appId: 'wxde8ac0a21135c07d', keyword: name + ' 团购' },
+    { key: 'dianping', name: '大众点评', note: '看真实评价+买单优惠', search: `https://www.dianping.com/search?q=${encodeURIComponent(name)}`, appId: 'wx734c1ad7b3562129', keyword: name },
+    { key: 'douyin', name: '抖音团购', note: '短视频套餐常更便宜', search: `https://www.douyin.com/search/${encodeURIComponent(name + ' 团购')}`, keyword: name + ' 团购' },
+    { key: 'xiaohongshu', name: '小红书', note: '探店笔记/隐藏优惠', search: `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(name + ' 团购')}`, keyword: name + ' 团购' }
   ]
   channels.forEach((c) => Object.assign(c, { recommend: false, kind: 'search' }))
   return channels
