@@ -20,7 +20,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "自然风光",
                     "description": "断桥残雪、苏堤春晓，建议骑行或步行环湖，清晨人少景美。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -49,7 +49,7 @@ SPOTS = {
                     "ticket_price": 75,
                     "category": "人文历史",
                     "description": "千年古刹，需先买飞来峰门票再入寺，寺内素面值得一试。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "灵隐寺",
                     "photo_spots": [
                         {
@@ -80,7 +80,7 @@ SPOTS = {
                     "ticket_price": 80,
                     "category": "自然风光",
                     "description": "城市湿地，摇橹船体验最佳，深秋芦花似雪。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -101,7 +101,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "老字号小吃与伴手礼集中地，定胜糕、葱包桧必尝。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -124,7 +124,7 @@ SPOTS = {
                     "ticket_price": 320,
                     "category": "休闲度假",
                     "description": "大型千古情演出+市井街景，适合家庭一日游。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "宋城演艺",
                     "photo_spots": [
                         {
@@ -145,7 +145,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "桥西历史街区夜游，博物馆群与手工艺活态展示。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -170,7 +170,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "自然风光",
                     "description": "本地人私藏徒步路线，林荫溪水，秋天最美。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -191,7 +191,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "世界遗产，人少清静，鹿苑与稻田很出片。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -214,7 +214,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "休闲度假",
                     "description": "采茶品茗，避开人流，茶农家可体验炒茶。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -235,7 +235,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "老杭州烟火气，凤凰山脚下的市井生活。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -285,7 +285,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "老成都院落文化代表，喝茶掏耳体验慢生活。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -306,7 +306,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "三国文化+小吃街，三大炮、糖油果子现做现卖。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -329,7 +329,7 @@ SPOTS = {
                     "ticket_price": 55,
                     "category": "亲子",
                     "description": "早上8点前到可看饲养员喂熊猫，幼年熊猫最活跃。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "成都熊猫基地",
                     "photo_spots": [
                         {
@@ -358,7 +358,7 @@ SPOTS = {
                     "ticket_price": 50,
                     "category": "人文历史",
                     "description": "中国唯一的君臣合祀祠庙，红墙竹影是出片机位。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "成都武侯祠",
                     "photo_spots": [
                         {
@@ -381,7 +381,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "太古里开放式街区+IFS爬墙熊猫，潮牌与川西元素混搭。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -402,7 +402,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "休闲度假",
                     "description": "赵雷歌声里的小巷，文艺青年聚集，夜生活刚刚好。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -427,7 +427,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "旧工厂改造的文创园，火车头广场与涂鸦墙很潮。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -448,7 +448,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "休闲度假",
                     "description": "老社区里的live house与精酿，本地音乐人常驻。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -471,7 +471,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "百年茶馆，老茶客与摄影人，一碗茶可以坐一上午。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -492,7 +492,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "自然风光",
                     "description": "水上建筑与艺术展，A4美术馆常设好展。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -542,7 +542,7 @@ SPOTS = {
                     "ticket_price": 120,
                     "category": "人文历史",
                     "description": "世界第八大奇迹，建议请讲解或租语音导览，一号坑最震撼。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "秦始皇帝陵博物院",
                     "photo_spots": [
                         {
@@ -571,7 +571,7 @@ SPOTS = {
                     "ticket_price": 120,
                     "category": "人文历史",
                     "description": "唐皇家温泉行宫，《长恨歌》实景演出值得一看。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "华清宫",
                     "photo_spots": [
                         {
@@ -594,7 +594,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "华夏宝库，何家村窖藏与唐俑必看，需提前预约。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "陕西历史博物馆",
                     "photo_spots": [
                         {
@@ -615,7 +615,7 @@ SPOTS = {
                     "ticket_price": 50,
                     "category": "网红打卡",
                     "description": "夜游不夜城，不倒翁小姐姐与诗词灯街氛围拉满。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "大雁塔",
                     "photo_spots": [
                         {
@@ -638,7 +638,7 @@ SPOTS = {
                     "ticket_price": 54,
                     "category": "人文历史",
                     "description": "中国现存最完整古城墙，骑行一圈13.7公里约1.5小时。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "西安城墙",
                     "photo_spots": [
                         {
@@ -659,7 +659,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "集中泡馍、烤肉、柿子饼，贾三灌汤包是老字号。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -684,7 +684,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "人少清静，唐代古塔与庭院很适合慢慢逛。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -705,7 +705,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "碑林旁的书画街，淘笔墨纸砚与拓片。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -728,7 +728,7 @@ SPOTS = {
                     "ticket_price": 60,
                     "category": "人文历史",
                     "description": "盛唐宫殿遗址，开阔如公园，丹凤门遗址馆值得看。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -749,7 +749,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "非遗美食街区，子长煎饼、柞水糍粑，比回民街更本地。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -799,7 +799,7 @@ SPOTS = {
                     "ticket_price": 70,
                     "category": "人文历史",
                     "description": "江南古典园林代表作，借景与框景极致，建议早到。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "苏州园林",
                     "photo_spots": [
                         {
@@ -828,7 +828,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "贝聿铭封笔之作，几何光影与片石假山是打卡点。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "苏州博物馆",
                     "photo_spots": [
                         {
@@ -849,7 +849,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "保留水巷格局的老街，评弹、手作与小吃沿河排开。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -872,7 +872,7 @@ SPOTS = {
                     "ticket_price": 60,
                     "category": "自然风光",
                     "description": "吴中第一名胜，云岩寺塔斜而不倒，登塔看古城。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -893,7 +893,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "七里山塘，水乡夜色与评弹馆，坐游船更惬意。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -914,7 +914,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "休闲度假",
                     "description": "现代苏州一面，湖景喷泉与24小时书店。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -939,7 +939,7 @@ SPOTS = {
                     "ticket_price": 45,
                     "category": "人文历史",
                     "description": "四大名园之一，冠云峰与回廊移步换景。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -960,7 +960,7 @@ SPOTS = {
                     "ticket_price": 25,
                     "category": "人文历史",
                     "description": "夫妻园林，小而精致，几乎无游客。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -983,7 +983,7 @@ SPOTS = {
                     "ticket_price": 100,
                     "category": "自然风光",
                     "description": "退思园是世界遗产，水乡晨雾极美，可住一晚。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1004,7 +1004,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "休闲度假",
                     "description": "临水当代美术馆，周末有市集与茶席。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1054,7 +1054,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "山城地标，洪崖洞吊脚楼夜景如千与千寻。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1075,7 +1075,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "步行过桥看两江交汇与渝中夜景，最佳机位之一。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1098,7 +1098,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "千年码头古镇，陈麻花与手工酸辣粉现做现卖。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1119,7 +1119,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "轻轨穿楼奇观，观景平台拍列车进楼。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1140,7 +1140,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "休闲度假",
                     "description": "旧印刷厂改造文创园，天台看江景日落。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1163,7 +1163,7 @@ SPOTS = {
                     "ticket_price": 30,
                     "category": "休闲度假",
                     "description": "空中巴士过江，俯瞰长江与两岸高楼。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "长江索道",
                     "photo_spots": [
                         {
@@ -1184,7 +1184,7 @@ SPOTS = {
                     "ticket_price": 30,
                     "category": "自然风光",
                     "description": "俯瞰渝中半岛夜景的制高点，建议傍晚上山。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1205,7 +1205,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "江边酒吧与火锅一条街，看对岸璀璨灯火。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1230,7 +1230,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "老重庆生活剖面，悬空栈道与老城墙，本地人散步道。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1251,7 +1251,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "川美旁整街涂鸦，四川美院老校区也值得逛。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1274,7 +1274,7 @@ SPOTS = {
                     "ticket_price": 95,
                     "category": "自然风光",
                     "description": "喀斯特天坑群，《变形金刚》取景地，建议跟一日游。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "武隆景区",
                     "photo_spots": [
                         {
@@ -1295,7 +1295,7 @@ SPOTS = {
                     "ticket_price": 100,
                     "category": "自然风光",
                     "description": "陶渊明笔下的秘境，溶洞与世外田园。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1345,7 +1345,7 @@ SPOTS = {
                     "ticket_price": 50,
                     "category": "自然风光",
                     "description": "世界遗产小岛，万国建筑与钢琴之岛，需轮渡上岛。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "鼓浪屿",
                     "photo_spots": [
                         {
@@ -1374,7 +1374,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "骑楼老街，沙茶面、海蛎煎与伴手礼一条龙。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1397,7 +1397,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "闽南古刹，素饼出名，可顺登五老峰看厦大。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1418,7 +1418,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "休闲度假",
                     "description": "嘉庚风格校舍与白城海滩相连，环岛路骑行起点。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1439,7 +1439,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "文艺渔村改造的夜市，民宿与小吃密集。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1462,7 +1462,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "自然风光",
                     "description": "最美海滨骑行线，黄厝清晨人少适合看日出。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1483,7 +1483,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "老避风坞改造的文创港，涂鸦、买手店与咖啡。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1504,7 +1504,7 @@ SPOTS = {
                     "ticket_price": 80,
                     "category": "休闲度假",
                     "description": "乘船夜游鼓浪屿海域，看两岸灯光秀。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1529,7 +1529,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "嘉庚建筑群与龙舟池，学村红砖琉璃顶极美。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1550,7 +1550,7 @@ SPOTS = {
                     "ticket_price": 80,
                     "category": "亲子",
                     "description": "自驾区近距离看散养动物，适合带娃。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1573,7 +1573,7 @@ SPOTS = {
                     "ticket_price": 40,
                     "category": "休闲度假",
                     "description": "微缩故宫风格影城，汉服拍照出片。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1594,7 +1594,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "厦大旁的猫咪主题街，咖啡与手作小店。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1644,7 +1644,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "自然风光",
                     "description": "湘江中流的绿洲，青年毛泽东雕像与江景大道。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1665,7 +1665,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "自然风光",
                     "description": "停车坐爱枫林晚，秋天红叶满山，可俯瞰全城。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1686,7 +1686,7 @@ SPOTS = {
                     "ticket_price": 40,
                     "category": "人文历史",
                     "description": "千年学府，书院夜读氛围安静厚重。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "岳麓书院",
                     "photo_spots": [
                         {
@@ -1709,7 +1709,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "马王堆辛追夫人轰动世界，需提前预约。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "湖南博物院",
                     "photo_spots": [
                         {
@@ -1730,7 +1730,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "贾谊故居旁的老街，糖油粑粑与臭豆腐发源地。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1751,7 +1751,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "长沙美食总汇，火宫殿小吃庙会氛围浓。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1774,7 +1774,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "城市中心地标，IFS楼顶KAWS雕塑必合影。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1795,7 +1795,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "复古市井空间，老长沙场景还原，拍照如穿越。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1816,7 +1816,7 @@ SPOTS = {
                     "ticket_price": 60,
                     "category": "休闲度假",
                     "description": "杜甫江阁登阁看橘子洲焰火（节日），平日夜景也好。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1841,7 +1841,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "自然风光",
                     "description": "城市绿肺，春季郁金香与樱花很出片。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1862,7 +1862,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "休闲度假",
                     "description": "湖畔艺术聚落，咖啡、画廊与旧厂房改造。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1885,7 +1885,7 @@ SPOTS = {
                     "ticket_price": 100,
                     "category": "人文历史",
                     "description": "唐代窑址主题古镇，打铁花与机器人博物馆有趣。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "铜官窑",
                     "photo_spots": [
                         {
@@ -1906,7 +1906,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "湘江畔安静古镇，少商业，适合慢逛。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1956,7 +1956,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "近代建筑杰作，392级台阶登顶俯瞰紫金山。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -1977,7 +1977,7 @@ SPOTS = {
                     "ticket_price": 70,
                     "category": "人文历史",
                     "description": "明代皇陵，石象路神道秋色绝美。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "明孝陵",
                     "photo_spots": [
                         {
@@ -1998,7 +1998,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "桨声灯影秦淮河，小吃与画舫夜游。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2021,7 +2021,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "仅次于故宫的博物院，民国馆可拍照穿越。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "南京博物院",
                     "photo_spots": [
                         {
@@ -2042,7 +2042,7 @@ SPOTS = {
                     "ticket_price": 35,
                     "category": "人文历史",
                     "description": "近代政治中枢，江南园林与西式建筑并存。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "南京总统府",
                     "photo_spots": [
                         {
@@ -2063,7 +2063,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "比夫子庙更文艺的老城南，蒋有记锅贴与手作店。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2086,7 +2086,7 @@ SPOTS = {
                     "ticket_price": 10,
                     "category": "人文历史",
                     "description": "南朝名刹，樱花季如雪，可顺登明城墙。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "鸡鸣寺",
                     "photo_spots": [
                         {
@@ -2107,7 +2107,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "自然风光",
                     "description": "城中湖，环湖步道与情侣园，可划船。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2128,7 +2128,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "中华第一商圈，德基广场与地下连廊极繁华。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2153,7 +2153,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "休闲度假",
                     "description": "防空洞改造的人文书店，十字架长廊是打卡点。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2174,7 +2174,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "民国公馆建筑群，梧桐掩映的安静街区。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2197,7 +2197,7 @@ SPOTS = {
                     "ticket_price": 98,
                     "category": "人文历史",
                     "description": "佛顶宫地宫震撼，舍利供奉处建筑奇绝。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "牛首山",
                     "photo_spots": [
                         {
@@ -2218,7 +2218,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "自然风光",
                     "description": "近郊文艺村落，稻田与咖啡馆，适合周末放空。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2268,7 +2268,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "万国建筑群与陆家嘴天际线隔江对望，清晨人少。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2297,7 +2297,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "美食",
                     "description": "中华商业第一街，老字号食品与霓虹橱窗。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2318,7 +2318,7 @@ SPOTS = {
                     "ticket_price": 40,
                     "category": "人文历史",
                     "description": "明代园林与老城厢小吃，南翔小笼发源地。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "豫园",
                     "photo_spots": [
                         {
@@ -2341,7 +2341,7 @@ SPOTS = {
                     "ticket_price": 160,
                     "category": "网红打卡",
                     "description": "登塔看三件套与黄浦江，透明观光廊刺激。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "东方明珠",
                     "photo_spots": [
                         {
@@ -2362,7 +2362,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "青铜与书画顶级收藏，需预约。",
-                    "need_booking": true,
+                    "need_booking": True,
                     "official_account": "上海博物馆",
                     "photo_spots": [
                         {
@@ -2383,7 +2383,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "休闲度假",
                     "description": "石库门改造的时尚街区，酒吧与精致餐饮。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2406,7 +2406,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "梧桐掩映的百年马路，武康大楼是地标。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2427,7 +2427,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "休闲度假",
                     "description": "花园洋房群与独立书店，安静文艺。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2448,7 +2448,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "看陆家嘴最佳新机位，人比外滩少。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2473,7 +2473,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "网红打卡",
                     "description": "石库门里弄改造的创意市集，巷弄迷宫有趣。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2494,7 +2494,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "人文历史",
                     "description": "鲁迅、茅盾旧居云集，老派文化街。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2517,7 +2517,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "自然风光",
                     "description": "工业遗存改造的滨江步道，绿之丘如空中花园。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2538,7 +2538,7 @@ SPOTS = {
                     "ticket_price": 0,
                     "category": "休闲度假",
                     "description": "话剧中心与小众买手店，上海时髦精聚集地。",
-                    "need_booking": false,
+                    "need_booking": False,
                     "official_account": "",
                     "photo_spots": [
                         {
@@ -2782,7 +2782,7 @@ SCHEMA_HINT = """你是专业旅游行程规划师。严格只输出如下 JSON 
         "season_tip":"当前为旺季/淡季，热门景点人多，建议错峰",
         "crowd_tip":"建议上午9点前到达避开人流高峰",
         "spots":[
-          {"name":"景点名","address":"地址","time_slot":"morning/afternoon/evening","duration_min":120,"ticket_price":0,"best_price":0,"ticket_channel":"景区官方/携程/美团/抖音团购（AI预估最划算购票渠道）","need_booking":false,"official_account":"","category":"自然风光/人文历史/美食/网红打卡/休闲度假","description":"一句话简介","photo_spots":[{"position":"观景台东侧","best_time":"日出/日落/上午/下午/夜晚","tip":"低角度拍湖面反光更有层次","avoid_crowd":"开园前30分钟抵达","day_night":"日/夜","suitable_for":"摄影爱好者/家庭/情侣"}]}
+          {"name":"景点名","address":"地址","time_slot":"morning/afternoon/evening","duration_min":120,"ticket_price":0,"best_price":0,"ticket_channel":"景区官方/携程/美团/抖音团购（AI预估最划算购票渠道）","need_booking":False,"official_account":"","category":"自然风光/人文历史/美食/网红打卡/休闲度假","description":"一句话简介","photo_spots":[{"position":"观景台东侧","best_time":"日出/日落/上午/下午/夜晚","tip":"低角度拍湖面反光更有层次","avoid_crowd":"开园前30分钟抵达","day_night":"日/夜","suitable_for":"摄影爱好者/家庭/情侣"}]}
         ],
         "meals":[{"name":"餐厅名","type":"lunch/dinner/breakfast","avg_price":80,"deal_channel":"美团/大众点评/抖音团购（AI预估最划算团购渠道）","specialty":"招牌菜","address":"地址"}],
         "transport":[{"from":"酒店","to":"景点","mode":"地铁/公交/步行/打车","duration_min":30,"cost":5}],
