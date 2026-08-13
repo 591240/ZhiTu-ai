@@ -1,13 +1,21 @@
-/* app.wxss —— 全局样式 + 配色变量（按 界面优化文档 ZS-UI-001 V1.1 + doc8 落地规范） */
+/* app.wxss —— 全局设计系统（高级感升级版） */
 
 page {
-  /* === 优化文档 3.1 色彩规范 === */
+  /* === 核心品牌色 === */
   --primary: #3B82F6;
-  --primary-light: #DBEAFE;
   --primary-deep: #2563EB;
-  --gradient-start: #60A5FA;
-  --gradient-end: #3B82F6;
+  --primary-light: #DBEAFE;
+  --primary-lighter: #EFF6FF;
 
+  /* 高级渐变 */
+  --grad-blue: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+  --grad-sky: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%);
+  --grad-ocean: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%);
+  --grad-sunset: linear-gradient(135deg, #FA709A 0%, #FEE140 100%);
+  --grad-forest: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%);
+  --grad-dusk: linear-gradient(135deg, #30CFD0 0%, #330867 100%);
+
+  /* 功能色 */
   --gold-start: #D4A951;
   --gold-end: #B8923D;
   --wechat-green: #07C160;
@@ -17,22 +25,30 @@ page {
   --orange: #FF6B35;
   --ok-green: #52C41A;
 
-  --bg: #F9FAFB;
+  /* 中性色（更通透） */
+  --bg: #F7F8FC;
   --card: #FFFFFF;
-  --text-1: #1F2937;
-  --text-2: #4B5563;
-  --text-3: #9CA3AF;
-  --text-4: #D1D5DB;
+  --card-soft: #F8FAFF;
+  --text-1: #111827;
+  --text-2: #374151;
+  --text-3: #6B7280;
+  --text-4: #9CA3AF;
   --border: #E5E7EB;
   --line: #F3F4F6;
+  --divider: rgba(0, 0, 0, 0.06);
 
-  /* 辅助色（低饱和度浅色底） */
-  --bg-blue: #DBEAFE;
-  --bg-orange: #FED7AA;
-  --bg-purple: #E9D5FF;
-  --bg-mint: #BBF7D0;
-  --bg-red: #FECACA;
-  --bg-amber: #FEF3C7;
+  /* 阴影层级 */
+  --shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 12rpx 40rpx rgba(0, 0, 0, 0.10);
+  --shadow-blue: 0 8rpx 24rpx rgba(59, 130, 246, 0.16);
+
+  /* 圆角 */
+  --r-sm: 12rpx;
+  --r-md: 20rpx;
+  --r-lg: 32rpx;
+  --r-xl: 40rpx;
+  --r-full: 999rpx;
 
   background: var(--bg);
   color: var(--text-1);
@@ -51,90 +67,112 @@ view, text, scroll-view, button, input, textarea, image { box-sizing: border-box
 .flex-1 { flex: 1; }
 .ml-auto { margin-left: auto; }
 
-/* === 圆角规范（优化文档 3.2）=== */
-/* 大卡片 20rpx / 功能按钮 16rpx / 小模块 12rpx */
-
-/* === 卡片 === */
+/* === 卡片（高级感） === */
 .card {
   background: var(--card);
-  border-radius: 20rpx;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(59, 130, 246, 0.08);
+  border-radius: var(--r-lg);
+  padding: 32rpx;
+  box-shadow: var(--shadow-md);
+  border: 1rpx solid rgba(255, 255, 255, 0.9);
+}
+.card-flat {
+  background: var(--card);
+  border-radius: var(--r-lg);
+  padding: 32rpx;
+  box-shadow: var(--shadow-sm);
 }
 
-/* === 按钮 === */
+/* === 按钮（高级感） === */
 .btn-primary {
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  background: var(--grad-sky);
   color: #fff;
-  border-radius: 48rpx;
+  border-radius: var(--r-full);
   font-size: 32rpx;
-  font-weight: bold;
+  font-weight: 600;
   text-align: center;
-  padding: 22rpx 0;
+  padding: 24rpx 0;
   border: none;
-  transition: transform 0.15s ease-out;
+  box-shadow: var(--shadow-blue);
+  transition: all 0.2s ease;
 }
 .btn-primary::after { border: none; }
-.btn-primary:active { opacity: 0.9; transform: scale(0.98); }
+.btn-primary:active { opacity: 0.92; transform: scale(0.98); }
 
 .btn-green {
   background: var(--wechat-green);
   color: #fff;
-  border-radius: 48rpx;
+  border-radius: var(--r-full);
   font-size: 32rpx;
-  font-weight: bold;
+  font-weight: 600;
   text-align: center;
-  padding: 22rpx 0;
+  padding: 24rpx 0;
   border: none;
-  transition: transform 0.15s ease-out;
+  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.2);
+  transition: all 0.2s ease;
 }
 .btn-green::after { border: none; }
-.btn-green:active { opacity: 0.9; transform: scale(0.98); }
+.btn-green:active { opacity: 0.92; transform: scale(0.98); }
 
 .btn-ghost {
-  background: var(--primary-light);
+  background: var(--primary-lighter);
   color: var(--primary);
-  border-radius: 48rpx;
+  border-radius: var(--r-full);
   font-size: 32rpx;
-  font-weight: bold;
+  font-weight: 600;
   text-align: center;
-  padding: 22rpx 0;
+  padding: 24rpx 0;
   border: none;
+  transition: all 0.2s ease;
 }
 .btn-ghost::after { border: none; }
+.btn-ghost:active { opacity: 0.85; transform: scale(0.98); }
 
 /* === 标签 === */
 .tag {
   display: inline-block;
-  font-size: 20rpx;
-  font-weight: bold;
-  padding: 4rpx 14rpx;
-  border-radius: 8rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  padding: 8rpx 20rpx;
+  border-radius: var(--r-full);
 }
 .tag-popular { background: var(--primary-light); color: var(--primary); }
-.tag-niche { background: rgba(114, 46, 209, 0.1); color: var(--purple); }
+.tag-niche { background: rgba(114, 46, 209, 0.12); color: var(--purple); }
 
-/* === 文本 === */
-.t-title { font-size: 36rpx; font-weight: bold; color: var(--text-1); }
+/* === 文本层级 === */
+.t-title { font-size: 44rpx; font-weight: 700; color: var(--text-1); letter-spacing: -0.5rpx; }
+.t-title-md { font-size: 36rpx; font-weight: 700; color: var(--text-1); }
 .t-sub { font-size: 28rpx; color: var(--text-2); }
 .t-weak { font-size: 24rpx; color: var(--text-3); }
+.t-caption { font-size: 22rpx; color: var(--text-4); }
 
 /* === 安全区 === */
-.safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 20rpx); }
+.safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 24rpx); }
 
-/* === 空状态 === */
+/* === 空状态（全局） === */
 .empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 120rpx 0;
+  padding: 160rpx 40rpx;
   color: var(--text-3);
 }
 .empty .emoji { font-size: 96rpx; margin-bottom: 24rpx; }
 
-/* === 交互反馈：点击缩放 === */
+/* === 交互反馈 === */
 .tap-scale:active {
   transform: scale(0.98);
   transition: transform 0.15s ease-out;
 }
+
+/* === 通用输入框 === */
+.input-primary {
+  background: var(--card-soft);
+  border-radius: var(--r-md);
+  padding: 24rpx 28rpx;
+  font-size: 28rpx;
+  color: var(--text-1);
+  border: 1rpx solid var(--border);
+  transition: border-color 0.2s ease;
+}
+.input-primary:focus { border-color: var(--primary); }

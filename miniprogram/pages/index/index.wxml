@@ -1,17 +1,17 @@
 <view class="page" style="padding-top: {{statusBarHeight + navHeight}}px;">
-  <!-- 自定义导航栏：图标 + 标题 -->
+  <!-- 自定义导航栏 -->
   <view class="custom-navbar" style="height: {{statusBarHeight + navHeight}}px; padding-top: {{statusBarHeight}}px;">
     <view class="navbar-inner">
-      <view class="navbar-title">
-        <image class="navbar-logo" src="/images/logo.png" mode="aspectFit" />
-        <text>知途 AI 旅行</text>
-      </view>
+      <view class="navbar-title">知途 AI 旅行</view>
     </view>
   </view>
 
-  <!-- 模块1：顶部城市选择器 -->
+  <!-- 模块1：欢迎语 + 城市选择 -->
   <view class="header">
-    <view class="welcome-text">发现你的下一站</view>
+    <view class="welcome-wrap">
+      <view class="welcome-text">发现你的下一站</view>
+      <view class="welcome-sub">AI 为你定制专属短途旅行</view>
+    </view>
     <view class="city-picker" bindtap="onPickCity">
       <view class="loc-ico"></view>
       <text class="city-name">{{city}}</text>
@@ -23,31 +23,31 @@
   <view class="hero" bindtap="goForm" hover-class="hero-press" hover-stay-time="120">
     <view class="hero-badge">AI 智能规划</view>
     <view class="hero-title">开始规划行程</view>
-    <view class="hero-sub">AI 智能生成专属旅行路线</view>
+    <view class="hero-sub">一句话，生成你的专属路线</view>
     <view class="hero-decor"></view>
     <view class="hero-mountains"></view>
   </view>
 
-  <!-- 模块3：四大规划入口（2×2 核心/次要分层） -->
+  <!-- 模块3：四大规划入口 -->
   <view class="section">
     <view class="sec-title">开始规划</view>
     <view class="grid">
-      <view class="grid-item core" bindtap="goChat" hover-class="gi-press" hover-stay-time="120">
+      <view class="grid-item" bindtap="goChat" hover-class="gi-press" hover-stay-time="120">
         <view class="gi-ico chat"></view>
         <view class="gi-name">AI 问一问</view>
         <view class="gi-desc">AI 随便问答</view>
       </view>
-      <view class="grid-item core" bindtap="goQuick" hover-class="gi-press" hover-stay-time="120">
+      <view class="grid-item" bindtap="goQuick" hover-class="gi-press" hover-stay-time="120">
         <view class="gi-ico quick"></view>
         <view class="gi-name">一句话快规划</view>
         <view class="gi-desc">说句话，秒出方案</view>
       </view>
-      <view class="grid-item secondary" bindtap="goOcr" hover-class="gi-press" hover-stay-time="120">
+      <view class="grid-item" bindtap="goOcr" hover-class="gi-press" hover-stay-time="120">
         <view class="gi-ico ocr"></view>
         <view class="gi-name">截图识行程</view>
         <view class="gi-desc">上传攻略图片</view>
       </view>
-      <view class="grid-item secondary" bindtap="goManual" hover-class="gi-press" hover-stay-time="120">
+      <view class="grid-item" bindtap="goManual" hover-class="gi-press" hover-stay-time="120">
         <view class="gi-ico manual"></view>
         <view class="gi-name">手动编排</view>
         <view class="gi-desc">自由拖拽编排</view>
@@ -55,16 +55,7 @@
     </view>
   </view>
 
-  <!-- 模块4：城市选择独立区块 -->
-  <view class="city-block" bindtap="onPickCity">
-    <text class="cb-label">目的地</text>
-    <view class="cb-location">
-      <text class="cb-city">{{city}}</text>
-    </view>
-    <text class="cb-arrow">▾</text>
-  </view>
-
-  <!-- 模块5：快捷服务栏 -->
+  <!-- 模块4：快捷服务 -->
   <view class="section">
     <view class="sec-title">快捷服务</view>
     <view class="service-grid">
@@ -75,15 +66,15 @@
     </view>
   </view>
 
-  <!-- 模块6：精选模板广场 -->
+  <!-- 模块5：精选模板 -->
   <view class="section">
-      <view class="sec-head">
-        <view class="sec-title">精选行程模板</view>
-        <view class="refresh" bindtap="onRefreshTpl">
-          <view class="refresh-ico"></view>
-          <text>换一批</text>
-        </view>
+    <view class="sec-head">
+      <view class="sec-title">精选行程模板</view>
+      <view class="refresh" bindtap="onRefreshTpl">
+        <view class="refresh-ico"></view>
+        <text>换一批</text>
       </view>
+    </view>
     <scroll-view scroll-x class="tpl-scroll" enhanced show-scrollbar="{{false}}">
       <view class="tpl-card {{tplAnimate ? 'fade-enter' : ''}}" wx:for="{{templates}}" wx:key="id" bindtap="goTemplate" data-id="{{item.id}}">
         <view class="tpl-cover">
