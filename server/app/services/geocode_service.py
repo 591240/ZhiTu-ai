@@ -142,6 +142,80 @@ class GeocodeService:
             out.append(await self.geocode(n, city))
         return out
 
+    async def reverse_geocode(self, lat: float, lng: float) -> dict | None:
+        """经纬度 → 城市名（gcj-02 坐标系）。优先腾讯位置服务，降级高德 REST。"""
+        # 1) 腾讯位置服务逆地址解析
+        key = settings.tencent_lbs_key
+        if key:
+            try:
+                city = await self._reverse_geocode_tencent(lat, lng, key)
+                if city:
+                    return {"city": city, "source": "tencent-lbs"}
+            except Exception as e:
+                logger.warning("腾讯位置服务 reverse-geocode 失败：%s", e)
+
+        # 2) 高德 REST 逆地理编码
+        gd_key = settings.gaode_web_key
+        if gd_key:
+            try:
+                city = await self._reverse_geocode_gaode_rest(lat, lng, gd_key)
+                if city:
+                    return {"city": city, "source": "gaode-rest"}
+            except Exception as e:
+                logger.warning("高德 REST reverse-geocode 失败：%s", e)
+
+        return None
+
+    @staticmethod
+    def normalize_city(raw: str | None) -> str | None:
+        """把逆地理编码返回的行政区划名统一成 mockCities 中的城市名（无'市'后缀）。"""
+        if not raw:
+            return None
+        raw = raw.strip()
+        if not raw:
+            return None
+        # 直辖市
+        for direct in ("北京", "上海", "天津", "重庆"):
+            if direct in raw:
+                return direct
+        # 去掉常见后缀：市、地区、自治州、盟
+        cleaned = raw.replace("市", "").replace("地区", "").replace("自治州", "").replace("盟", "")
+        cleaned = cleaned.strip()
+        return cleaned or None
+
+    @staticmethod
+    async def _reverse_geocode_tencent(lat: float, lng: float, key: str) -> str | None:
+        params = {"location": f"{lat},{lng}", "key": key, "get_poi": 0}
+        async with httpx.AsyncClient() as client:
+            r = await client.get(
+                "https://apis.map.qq.com/ws/geocoder/v1/",
+                params=params, timeout=10,
+            )
+        obj = r.json()
+        if obj.get("status") != 0:
+            logger.warning("腾讯位置服务 reverse-geocode 返回异常：%s", obj.get("message"))
+            return None
+        ac = (obj.get("result") or {}).get("address_component") or {}
+        city = ac.get("city") or ac.get("province")
+        return GeocodeService.normalize_city(city)
+
+    @staticmethod
+    async def _reverse_geocode_gaode_rest(lat: float, lng: float, key: str) -> str | None:
+        """高德逆地理编码：location=经度,纬度。"""
+        params = {"key": key, "location": f"{lng},{lat}", "extensions": "base", "output": "JSON"}
+        async with httpx.AsyncClient() as client:
+            r = await client.get(
+                "https://restapi.amap.com/v3/geocode/regeo",
+                params=params, timeout=10,
+            )
+        obj = r.json()
+        if str(obj.get("status")) != "1":
+            logger.warning("高德 REST reverse-geocode 返回异常：status=%s info=%s", obj.get("status"), obj.get("info"))
+            return None
+        ac = (obj.get("regeocode") or {}).get("addressComponent") or {}
+        city = ac.get("city") or ac.get("province")
+        return GeocodeService.normalize_city(city)
+
     @staticmethod
     async def _geocode_tencent(name: str, key: str, city: str = "") -> dict | None:
         params = {"address": name, "key": key}

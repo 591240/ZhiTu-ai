@@ -7,6 +7,22 @@ from app.services.geocode_service import geocode_service
 router = APIRouter(prefix="/api/map", tags=["map"])
 
 
+@router.get("/reverse-geocode")
+async def reverse_geocode(
+    lat: float = Query(..., description="纬度，如 30.2741"),
+    lng: float = Query(..., description="经度，如 120.1551"),
+    user=Depends(get_current_user),
+):
+    """经纬度 → 城市名（gcj-02，与 wx.getLocation(type='gcj02') 同坐标系）。"""
+    try:
+        data = await geocode_service.reverse_geocode(lat, lng)
+    except Exception as e:
+        return fail(str(e))
+    if not data:
+        return fail("无法根据当前坐标解析城市")
+    return ok(data)
+
+
 @router.get("/geocode")
 async def geocode(
     name: str = Query(..., description="地点/车站名，如 杭州东站"),

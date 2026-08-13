@@ -38,7 +38,34 @@ Page({
       statusBarHeight: info.statusBarHeight || 20,
       navHeight: 44
     })
+    // 首次没有手动选过城市时，尝试自动定位当前城市
+    const rawCity = storage.get(storage.KEYS.CITY, '')
+    if (!rawCity) {
+      this.autoLocate()
+    }
     this.loadTemplates()
+  },
+
+  autoLocate() {
+    wx.getLocation({
+      type: 'gcj02',
+      success: (res) => {
+        request({
+          url: '/api/map/reverse-geocode',
+          data: { lat: res.latitude, lng: res.longitude }
+        }).then(r => {
+          const city = (r.data || {}).city
+          if (!city) return
+          const cityIndex = Math.max(0, this.data.cityNames.indexOf(city))
+          storage.setCity(city)
+          getApp().globalData.city = city
+          this.setData({ city, cityIndex })
+        }).catch(() => {})
+      },
+      fail: () => {
+        // 用户拒绝授权或定位失败，静默 fallback 到默认杭州/已有存储
+      }
+    })
   },
 
   onShow() {
