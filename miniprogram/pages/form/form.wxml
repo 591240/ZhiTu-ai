@@ -20,18 +20,12 @@ module.exports = { inArray: inArray }
   <view class="form card anim-up d1">
     <view class="field">
       <view class="f-label">出发城市</view>
-      <view class="city-input-wrap">
-        <input class="picker-val city-input" placeholder-class="ph" placeholder="请输入出发城市，如上海" value="{{departureCity}}" bindinput="onDeparture" />
-        <text class="city-edit-icon">✏️</text>
-      </view>
+      <input class="picker-val city-input" placeholder-class="ph" placeholder="请输入出发城市，如上海" value="{{departureCity}}" bindinput="onDeparture" />
     </view>
 
     <view class="field">
       <view class="f-label">目的地城市</view>
-      <view class="city-input-wrap">
-        <input class="picker-val city-input" placeholder-class="ph" placeholder="请输入目的地城市，如杭州" value="{{city}}" bindinput="onCityInput" />
-        <text class="city-edit-icon">✏️</text>
-      </view>
+      <input class="picker-val city-input" placeholder-class="ph" placeholder="请输入目的地城市，如杭州" value="{{city}}" bindinput="onCityInput" />
     </view>
 
     <view class="field">
