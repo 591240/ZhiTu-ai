@@ -4,6 +4,7 @@ import re
 
 from app.ai.llm_client import llm_client
 from app.config import settings
+from app.services import image_service
 
 logger = logging.getLogger(__name__)
 
@@ -2655,6 +2656,7 @@ def gen_trip(p: dict) -> dict:
         spots = []
         for s in raw:
             _fill_photo(s)
+            s["image"] = image_service.get_spot_image(s.get("name", ""), city) or ""
             slot = s.get("time_slot", "morning")
             start = slot_next[slot]
             s["start_time"] = to_hhmm(start)
@@ -2905,6 +2907,7 @@ class PlanService:
         content.setdefault("transport_plans", [])
         content.setdefault("budget_analysis", "")
         content.setdefault("preparations", [])
+        trip_city = data.get("city", "")
         for day in content["itinerary"]:
             day.setdefault("weather_tip", "")
             day.setdefault("season_tip", "")
@@ -2925,6 +2928,8 @@ class PlanService:
                 spot.setdefault("description", "")
                 spot.setdefault("category", "")
                 spot.setdefault("address", "")
+                if not spot.get("image"):
+                    spot["image"] = image_service.get_spot_image(spot.get("name", ""), trip_city) or ""
                 for ps in spot["photo_spots"]:
                     ps.setdefault("position", "")
                     ps.setdefault("best_time", "")

@@ -2625,10 +2625,10 @@ const GENERIC = {
 
 function fill(tpl, city) { return JSON.parse(JSON.stringify(tpl).replace(/\{city\}/g, city)) }
 
-// 给景点附加封面图（按景点名取稳定真实照片）
+// 给景点附加封面图（mock 模式不配置外部图床，避免返回占位猫图；上线后由后端返回真实图片）
 function attachImage(spot) {
   const s = Object.assign({}, spot)
-  s.image = `https://loremflickr.com/600/400/${encodeURIComponent(spot.name)}?lock=${(function (str) { let h = 0; for (let i = 0; i < str.length; i++) { h = (h << 5) - h + str.charCodeAt(i); h |= 0 } return Math.abs(h) % 1000 })(spot.name)}`
+  s.image = spot.image || ''
   return s
 }
 

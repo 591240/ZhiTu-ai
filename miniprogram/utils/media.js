@@ -12,11 +12,10 @@ function hashStr(s) {
   return Math.abs(h)
 }
 
-// 景点封面图：带稳定性后缀，开发者工具需勾"不校验合法域名"
+// 景点封面图：真实图片由后端在生成行程时通过高德 POI 接口填充；
+// 前端兜底不再返回占位图（避免 loremflickr 的猫图），无图时显示默认封面。
 function spotImage(name) {
-  const n = (name || '景点').trim()
-  const lock = hashStr(n) % 1000
-  return `https://loremflickr.com/600/400/${encodeURIComponent(n)}?lock=${lock}`
+  return ''
 }
 
 // 城市封面图：优先使用本地真实照片 /images/cities/城市名.jpg；
