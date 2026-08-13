@@ -2819,6 +2819,8 @@ function fakeQA(q) {
 // Mock 接口路由：返回 { code, data, message }
 function handleMock(url, method, data) {
   data = data || {}
+  const deletedMockIds = wx.getStorageSync('deletedMockTripIds') || []
+  const visibleMockTrips = MOCK_TRIPS.filter(t => !deletedMockIds.includes(t.id))
   if (url.includes('/auth/login')) {
     return { code: 0, data: { token: 'mock-token-' + Date.now(), user: mockUser }, message: 'ok' }
   }
@@ -2826,7 +2828,8 @@ function handleMock(url, method, data) {
     return { code: 0, data: mockUser, message: 'ok' }
   }
   if (url.includes('/user/stats')) {
-    return { code: 0, data: { tripCount: MOCK_TRIPS.length, cityCount: 6 }, message: 'ok' }
+    const local = wx.getStorageSync('localTrips') || []
+    return { code: 0, data: { tripCount: visibleMockTrips.length + local.length, cityCount: 6 }, message: 'ok' }
   }
   if (url.includes('/user/points')) {
     return { code: 0, data: { points: mockUser.points }, message: 'ok' }
@@ -2836,7 +2839,7 @@ function handleMock(url, method, data) {
   }
   if (url.includes('/trip/list')) {
     const status = data.status
-    let list = MOCK_TRIPS
+    let list = visibleMockTrips
     if (status === 'active') list = list.filter(t => t.status === 'active')
     // 合并本地保存的行程
     const local = wx.getStorageSync('localTrips') || []
@@ -2844,9 +2847,9 @@ function handleMock(url, method, data) {
     return { code: 0, data: { list }, message: 'ok' }
   }
   if (url.includes('/trip/detail')) {
-    const all = MOCK_TRIPS.concat(wx.getStorageSync('localTrips') || [])
+    const all = visibleMockTrips.concat(wx.getStorageSync('localTrips') || [])
     const t = all.find(x => x.id === data.id)
-    return { code: 0, data: { trip: t || MOCK_TRIPS[0] }, message: 'ok' }
+    return { code: 0, data: { trip: t || visibleMockTrips[0] || MOCK_TRIPS[0] }, message: 'ok' }
   }
   if (url.includes('/trip/save')) {
     const local = wx.getStorageSync('localTrips') || []
@@ -2856,9 +2859,19 @@ function handleMock(url, method, data) {
     return { code: 0, data: { id: trip.id }, message: 'ok' }
   }
   if (url.includes('/trip/delete')) {
-    let local = wx.getStorageSync('localTrips') || []
-    local = local.filter(t => t.id !== data.id)
-    wx.setStorageSync('localTrips', local)
+    const sid = String(data.id || '')
+    if (sid.startsWith('t')) {
+      // 预置示例行程：记录到删除列表，下次 list/detail 过滤掉
+      const ids = wx.getStorageSync('deletedMockTripIds') || []
+      if (!ids.includes(data.id)) {
+        ids.push(data.id)
+        wx.setStorageSync('deletedMockTripIds', ids)
+      }
+    } else {
+      let local = wx.getStorageSync('localTrips') || []
+      local = local.filter(t => t.id !== data.id)
+      wx.setStorageSync('localTrips', local)
+    }
     return { code: 0, data: {}, message: 'ok' }
   }
   if (url.includes('/plan/form') || url.includes('/plan/quick')) {
