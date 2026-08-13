@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     database_url: str = "sqlite+aiosqlite:///./banyou.db"
     redis_url: str = ""
 
+    # 后端对外可访问的基础 URL，用于生成头像等静态资源永久链接
+    # 示例：http://192.168.101.236:8009 或 https://your-domain.com
+    public_base_url: str = ""
+
     wx_app_id: str = ""
     wx_app_secret: str = ""
 

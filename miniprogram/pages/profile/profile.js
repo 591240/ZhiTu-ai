@@ -64,14 +64,40 @@ Page({
   },
 
   onChooseAvatar(e) {
-    const url = e.detail.avatarUrl
-    if (!url) return
-    // 先本地立即更新，用户立刻看到变化；再同步后端/存储
-    const user = { ...this.data.user, avatar: url }
+    const tempUrl = e.detail.avatarUrl
+    if (!tempUrl) return
+    // 先本地立即更新临时 URL，用户立刻看到变化
+    const user = { ...this.data.user, avatar: tempUrl }
     this.setData({ user })
     storage.setUser(user)
     app.globalData.userInfo = user
-    this.updateProfile({ avatar: url })
+
+    // 上传头像到后端换取永久 URL
+    const token = storage.getToken()
+    wx.uploadFile({
+      url: require('../../config/env').BASE_URL + '/api/user/avatar',
+      filePath: tempUrl,
+      name: 'file',
+      header: { Authorization: token ? `Bearer ${token}` : '' },
+      success: (res) => {
+        try {
+          const data = JSON.parse(res.data)
+          if (data.code === 0 && data.data && data.data.avatar) {
+            const updated = { ...this.data.user, avatar: data.data.avatar }
+            this.setData({ user: updated })
+            storage.setUser(updated)
+            app.globalData.userInfo = updated
+          } else {
+            wx.showToast({ title: data.message || '头像保存失败', icon: 'none' })
+          }
+        } catch (err) {
+          wx.showToast({ title: '头像上传异常', icon: 'none' })
+        }
+      },
+      fail: () => {
+        wx.showToast({ title: '头像上传失败', icon: 'none' })
+      }
+    })
   },
 
   onNicknameChange(e) {
@@ -79,6 +105,10 @@ Page({
     if (nickname && nickname !== this.data.user.nickname) {
       this.updateProfile({ nickname })
     }
+  },
+
+  onAvatarError() {
+    this.setData({ user: { ...this.data.user, avatar: '' } })
   },
 
   async loadStats() {

@@ -1,10 +1,16 @@
-from fastapi import APIRouter, Depends
+import os
+import shutil
+from datetime import datetime
+from pathlib import Path
+
+from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy import select, func
 
 from app.schemas import ok, fail, UserProfileReq, FeedbackReq, RechargeReq
 from app.deps import get_current_user
 from app.database import SessionLocal
 from app.models import Trip, User, Feedback
+from app.config import settings, BASE_DIR
 
 router = APIRouter(prefix="/api/user", tags=["user"])
 
@@ -49,7 +55,48 @@ async def update_profile(req: UserProfileReq, user=Depends(get_current_user)):
         return ok(_user_dict(u))
 
 
-@router.post("/feedback")
+@router.post("/avatar")
+async def upload_avatar(file: UploadFile = File(...), user=Depends(get_current_user)):
+    """上传头像并返回永久可访问 URL。"""
+    allowed_content_types = {"image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp"}
+    if file.content_type not in allowed_content_types:
+        return fail("仅支持 jpg/png/gif/webp 图片", code=400)
+
+    ext = Path(file.filename or "avatar.jpg").suffix.lower()
+    if ext not in {".jpg", ".jpeg", ".png", ".gif", ".webp"}:
+        ext = ".jpg"
+
+    avatar_dir = BASE_DIR / "static" / "avatars"
+    avatar_dir.mkdir(parents=True, exist_ok=True)
+
+    ts = datetime.now().strftime("%Y%m%d%H%M%S")
+    filename = f"u{user['user_id']}_{ts}{ext}"
+    filepath = avatar_dir / filename
+
+    try:
+        with open(filepath, "wb") as f:
+            shutil.copyfileobj(file.file, f)
+    except Exception as e:
+        return fail(f"保存头像失败: {e}", code=500)
+    finally:
+        await file.close()
+
+    # 生成永久 URL
+    base_url = (settings.public_base_url or "").rstrip("/")
+    if not base_url:
+        # 未配置时默认用请求 host
+        base_url = ""
+    url = f"{base_url}/static/avatars/{filename}"
+
+    # 同步写入用户表
+    async with SessionLocal() as s:
+        u = (await s.execute(select(User).where(User.id == user["user_id"]))).scalar_one_or_none()
+        if u:
+            u.avatar = url
+            await s.commit()
+            await s.refresh(u)
+            return ok(_user_dict(u))
+    return ok({"avatar": url})
 async def submit_feedback(req: FeedbackReq, user=Depends(get_current_user)):
     """提交意见反馈。"""
     if not req.content or not req.content.strip():
