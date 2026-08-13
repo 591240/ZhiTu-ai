@@ -15,9 +15,16 @@ page {
   --grad-forest: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%);
   --grad-dusk: linear-gradient(135deg, #30CFD0 0%, #330867 100%);
 
+  /* 渐变别名（detail / navig 等复用，避免未定义变量导致背景失效） */
+  --gradient-start: #60A5FA;
+  --gradient-end: #3B82F6;
+
   /* 功能色 */
   --gold-start: #D4A951;
   --gold-end: #B8923D;
+  --bg-amber: #FFF7E6;
+  --amber-text: #8A5A00;
+  --amber-border: #FFE0B2;
   --wechat-green: #07C160;
   --purple: #722ED1;
   --danger: #FF4D4F;
