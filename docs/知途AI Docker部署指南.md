@@ -9,10 +9,12 @@
 
 | 服务 | 镜像 | 作用 | 对外暴露 |
 | --- | --- | --- | --- |
-| `mysql` | mysql:8.0 | 业务数据库 `zhisuibanyou` | 仅 `127.0.0.1:3306`（SSH 隧道用） |
+| `mysql` | mysql:8.0 | 业务数据库 `zhisuibanyou` | 仅 `127.0.0.1:3307`（SSH 隧道用） |
 | `redis` | redis:7-alpine | 缓存 / 限流 / 扩展能力 | 仅 Compose 内网 |
 | `backend` | 自构建（python:3.11-slim） | FastAPI 接口、AI 规划、OCR、问答 | 仅内网 `8000` |
-| `frontend` | 自构建（nginx:alpine） | Vue3 运营/自检面板 + 反代 `/api` | 公网 `80` |
+| `frontend` | 自构建（nginx:alpine） | Vue3 运营/自检面板 + 反代 `/api` | 公网 `8081` |
+
+> **多项目共存说明**：当前服务器 `114.132.239.20` 已部署「高保真项目」并占用 `80`、`3306` 等常规端口，因此本方案将知途AI的 frontend 映射到 `8081`，MySQL 映射到 `3307`，避免端口冲突。后续若要为知途AI配置独立域名，可在服务器外层 Nginx（或腾讯 CLB）做反向代理到 `127.0.0.1:8081`。
 
 > **关于「前端」说明**：本项目的真实用户端是**微信小程序**（由微信平台托管，不进容器）。此处 `frontend` 是一个轻量 Vue3 面板，用于展示后端与依赖健康状态、提供 `/docs` 接口文档入口，并通过 Nginx 把 `/api/*` 反代到 `backend:8000`。这样既满足「Vue3 前端 Dockerfile（基于 dist）+ Nginx 站点配置」的交付要求，又完整跑通全栈。
 
@@ -248,15 +250,17 @@ df -h /
 
 ## 10. 公网 IP 访问测试
 
-1. 浏览器打开 `http://114.132.239.20/`，应看到「知途 AI 旅行 · 服务状态」面板。
+> 因服务器 `80` 端口已被「高保真项目」占用，知途AI的 frontend 对外使用 `8081` 端口，测试地址需带 `:8081`。
+
+1. 浏览器打开 `http://114.132.239.20:8081/`，应看到「知途 AI 旅行 · 服务状态」面板。
 2. 点击「重新检测」，后端 API 状态应显示「正常」。
-3. 打开 `http://114.132.239.20/docs`，确认 Swagger 接口文档可加载。
+3. 打开 `http://114.132.239.20:8081/docs`，确认 Swagger 接口文档可加载。
 4. 命令行接口自检：
    ```bash
-   curl -fsS http://114.132.239.20/api/health
-   curl -fsS http://114.132.239.20/api/openapi.json >/dev/null
+   curl -fsS http://114.132.239.20:8081/api/health
+   curl -fsS http://114.132.239.20:8081/api/openapi.json >/dev/null
    ```
-5. **微信小程序联调**：将小程序 `config/env.js` 的 `BASE_URL` 改为 `http://114.132.239.20/api`，`USE_MOCK=false`，即可在开发者工具中走真实后端（注意第 13 节的 HTTPS/合法域名要求）。
+5. **微信小程序联调**：将小程序 `config/env.js` 的 `BASE_URL` 改为 `http://114.132.239.20:8081/api`，`USE_MOCK=false`，即可在开发者工具中走真实后端（注意第 13 节的 HTTPS/合法域名要求）。
 
 ---
 
@@ -340,7 +344,8 @@ SQL
 | 内存不足 / OOM | `free -h`；`swapon --show`；`docker stats` | 确认 1G swap 已挂载；`docker builder prune` 清理构建缓存 |
 | Redis 启动失败 | `docker compose logs redis` | 密码含特殊字符需转义；`--maxmemory` 参数格式 |
 | 前端构建 `heap out of memory` | `free -h` | 未开 swap 或堆上限过低；开 swap 后重建 |
-| Navicat 连不上 MySQL | `docker compose ps mysql`；`docker port $(docker compose ps -q mysql)`；`sudo ss -lntp \| grep 3306` | 必须 `127.0.0.1:3306` 已发布；用 SSH 隧道（主机 114.132.239.20:22 + 本地 127.0.0.1:3306） |
+| Navicat 连不上 MySQL | `docker compose ps mysql`；`docker port $(docker compose ps -q mysql)`；`sudo ss -lntp \| grep 3307` | 必须 `127.0.0.1:3307` 已发布；用 SSH 隧道（主机 114.132.239.20:22 + 本地 127.0.0.1:3307） |
+| 容器启动报 `bind: address already in use` | `sudo ss -lntp \| grep -E ':(80\|8081\|3306\|3307)'` | 与服务器上已有项目（如高保真）端口冲突；修改 `.env` 里的 `FRONTEND_PORT` / `MYSQL_HOST_PORT` 后重建容器 |
 | 容器日志占满磁盘 | `docker system df` | 配置 Docker 日志轮转（见第 15 节） |
 
 ---
@@ -379,4 +384,4 @@ docker compose cp backend:/tmp/zt_$(date +%Y%m%d).sql ./backup/
 | `.env` / `.env.example` | 部署环境变量（真实值已填，生产请换随机密钥） |
 | `docs/知途AI Docker部署指南.md` | 本文件 |
 
-部署完成后，浏览器访问 `http://114.132.239.20/` 即可看到服务状态面板；小程序端将 `BASE_URL` 指向该地址（生产需域名 + HTTPS）即可联调真实后端。
+部署完成后，浏览器访问 `http://114.132.239.20:8081/` 即可看到服务状态面板；小程序端将 `BASE_URL` 指向 `http://114.132.239.20:8081/api`（生产需域名 + HTTPS）即可联调真实后端。
