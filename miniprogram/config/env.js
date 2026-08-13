@@ -48,7 +48,7 @@ const env = {
     car:    { appId: 'wxaf35009675aa0b2a', name: '滴滴出行' }, // 打车（高可信）
     hotel:  { appId: 'wx0e6ed4f51db9d078', name: '携程旅行' }, // 酒店
     food:   { appId: 'wxde8ac0a21135c07d', name: '美团' },     // 美食（AppID 待核实）
-    flight: { appId: 'wx0e6ed4f51db9d078', name: '携程旅行' }, // 机票高铁（携程可订机票+火车票，AppID 已验证可用）
+    flight: { appId: 'wxb84362f15c06b3f2', name: '铁路12306' }, // 机票高铁（火车票官方渠道，查票/购票最权威）
     ticket: { appId: 'wx0e6ed4f51db9d078', name: '携程旅行' }, // 景区门票
     movie:  { appId: 'wxde8ac0a21135c07d', name: '美团' },     // 电影票（猫眼在美团内）
     takeout:{ appId: 'wxde8ac0a21135c07d', name: '美团' }      // 外卖（AppID 待核实）
