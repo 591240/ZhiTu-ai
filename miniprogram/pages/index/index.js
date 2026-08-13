@@ -8,6 +8,8 @@ const media = require('../../utils/media')
 Page({
   data: {
     city: '杭州',
+    cityNames: [],
+    cityIndex: 0,
     services: [
       { key: 'map', name: '导航' },
       { key: 'car', name: '打车' },
@@ -26,8 +28,13 @@ Page({
 
   onLoad() {
     const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
+    const city = storage.getCity() || '杭州'
+    const cityNames = mock.mockCities.map(c => c.name)
+    const cityIndex = Math.max(0, cityNames.indexOf(city))
     this.setData({
-      city: storage.getCity(),
+      city,
+      cityNames,
+      cityIndex,
       statusBarHeight: info.statusBarHeight || 20,
       navHeight: 44
     })
@@ -39,7 +46,9 @@ Page({
       wx.reLaunch({ url: '/pages/login/login?redirect=' + encodeURIComponent('/pages/index/index') })
       return
     }
-    this.setData({ city: storage.getCity() })
+    const city = storage.getCity() || '杭州'
+    const cityIndex = Math.max(0, this.data.cityNames.indexOf(city))
+    this.setData({ city, cityIndex })
   },
 
   async loadTemplates() {

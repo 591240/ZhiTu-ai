@@ -12,11 +12,13 @@
       <view class="welcome-text">发现你的下一站</view>
       <view class="welcome-sub">AI 为你定制专属短途旅行</view>
     </view>
-    <view class="city-picker" bindtap="onPickCity">
-      <view class="loc-ico"></view>
-      <text class="city-name">{{city}}</text>
-      <text class="arrow">▾</text>
-    </view>
+    <picker mode="selector" range="{{cityNames}}" value="{{cityIndex}}" bindchange="onCityChange">
+      <view class="city-picker" hover-class="city-picker-press" hover-stay-time="120">
+        <view class="loc-ico"></view>
+        <text class="city-name">{{city}}</text>
+        <text class="arrow">▾</text>
+      </view>
+    </picker>
   </view>
 
   <!-- 模块2：Hero Banner -->

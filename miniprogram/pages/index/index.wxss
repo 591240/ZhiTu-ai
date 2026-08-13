@@ -67,7 +67,8 @@
   border: 1rpx solid rgba(255, 255, 255, 0.8);
   transition: transform 0.15s ease-out;
 }
-.city-picker:active { transform: scale(0.96); }
+.city-picker:active,
+.city-picker-press { transform: scale(0.96); }
 .loc-ico { margin-right: 8rpx; }
 .arrow { color: var(--primary); margin-left: 8rpx; font-size: 24rpx; }
 

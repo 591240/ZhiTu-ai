@@ -12,7 +12,7 @@ const ROUTE = [
   { v: 'niche', label: '小众深度' }
 ]
 // 往返交通偏好（与市内交通 transport_mode 区分）
-const TRANSPORT_PREF = ['高铁优先', '飞机优先', '大巴优先', '性价比优先', '省时优先']
+const TRANSPORT_PREF = ['高铁优先', '火车出行', '飞机优先', '大巴优先', '性价比优先', '省时优先']
 
 Page({
   data: {
