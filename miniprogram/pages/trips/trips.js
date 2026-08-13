@@ -56,15 +56,23 @@ Page({
 
   onDelete(e) {
     const id = e.currentTarget.dataset.id
+    if (!id) return
     wx.showModal({
       title: '删除行程',
       content: '确定删除该行程？删除后不可恢复。',
       confirmColor: '#FF4D4F',
       success: async (res) => {
-        if (res.confirm) {
+        if (!res.confirm) return
+        try {
+          wx.showLoading({ title: '删除中', mask: true })
           await request({ url: '/api/trip/delete', method: 'POST', data: { id } })
-          this.loadList()
+          wx.hideLoading()
+          await this.loadList()
           wx.showToast({ title: '已删除', icon: 'success' })
+        } catch (err) {
+          wx.hideLoading()
+          console.error('删除行程失败', err)
+          wx.showToast({ title: '删除失败，请重试', icon: 'none' })
         }
       }
     })

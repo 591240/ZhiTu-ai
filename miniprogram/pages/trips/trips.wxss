@@ -180,10 +180,14 @@
 .tc-budget { font-size: 30rpx; font-weight: bold; color: var(--orange); }
 .tc-budget .cur { font-size: 22rpx; margin-right: 2rpx; }
 .tc-del {
+  position: relative;
+  z-index: 2;
   font-size: 24rpx;
   color: var(--danger);
   background: var(--danger-light);
-  padding: 8rpx 22rpx;
+  padding: 10rpx 26rpx;
   border-radius: var(--r-full);
+  min-width: 72rpx;
+  text-align: center;
 }
-.tc-del:active { opacity: 0.8; }
+.tc-del:active { opacity: 0.8; transform: scale(0.95); }
