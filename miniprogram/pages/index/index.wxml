@@ -32,10 +32,10 @@
   <view class="section">
     <view class="sec-title">开始规划</view>
     <view class="grid">
-      <view class="grid-item core" bindtap="goForm" hover-class="gi-press" hover-stay-time="120">
-        <view class="gi-ico form"></view>
-        <view class="gi-name">AI 表单规划</view>
-        <view class="gi-desc">填表生成行程</view>
+      <view class="grid-item core" bindtap="goChat" hover-class="gi-press" hover-stay-time="120">
+        <view class="gi-ico chat"></view>
+        <view class="gi-name">AI 问一问</view>
+        <view class="gi-desc">AI 随便问答</view>
       </view>
       <view class="grid-item core" bindtap="goQuick" hover-class="gi-press" hover-stay-time="120">
         <view class="gi-ico quick"></view>

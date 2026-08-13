@@ -36,7 +36,7 @@ const env = {
     car:    { appId: 'wxaf35009675aa0b2a', name: '滴滴出行' }, // 打车（高可信）
     hotel:  { appId: 'wx0e6ed4f51db9d078', name: '携程旅行' }, // 酒店
     food:   { appId: 'wxde8ac0a21135c07d', name: '美团' },     // 美食（AppID 待核实）
-    flight: { appId: 'wx0e6ed4f51db9d078', name: '携程旅行' }, // 机票高铁
+    flight: { appId: 'wx336c1c31c3c8a81a', name: '同程旅行' }, // 机票高铁（同程艺龙酒店机票火车）
     ticket: { appId: 'wx0e6ed4f51db9d078', name: '携程旅行' }, // 景区门票
     movie:  { appId: 'wxde8ac0a21135c07d', name: '美团' },     // 电影票（猫眼在美团内）
     takeout:{ appId: 'wxde8ac0a21135c07d', name: '美团' }      // 外卖（AppID 待核实）

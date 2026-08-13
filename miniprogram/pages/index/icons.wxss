@@ -74,6 +74,13 @@
   background-position: center, center;
 }
 
+.gi-ico.chat {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCcgZmlsbD0nbm9uZScgc3Ryb2tlPScjZmZmZmZmJyBzdHJva2Utd2lkdGg9JzEuNicgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJz48cGF0aCBkPSdNMjEgMTEuNWE4LjM4IDguMzggMCAwIDEtLjkgMy44IDguNSA4LjUgMCAwIDEtNy42IDQuNyA4LjM4IDguMzggMCAwIDEtMy44LS45TDMgMjFsMS45LTUuN0E4LjM4IDguMzggMCAwIDEgNCAxMS41YTguNSA4LjUgMCAwIDEgNC43LTcuNiA4LjM4IDguMzggMCAwIDEgMy44LS45aC41YTguNDggOC40OCAwIDAgMSA4IDh2LjV6Jy8+PGNpcmNsZSBjeD0nOScgY3k9JzEyJyByPScxJy8+PGNpcmNsZSBjeD0nMTUnIGN5PScxMicgcj0nMScvPjwvc3ZnPg=="), linear-gradient(135deg, #F472B6, #EC4899);
+  background-size: 38rpx 38rpx, cover;
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, center;
+}
+
 .gi-ico.form {
   background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCcgZmlsbD0nbm9uZScgc3Ryb2tlPScjZmZmZmZmJyBzdHJva2Utd2lkdGg9JzEuNicgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJz48cGF0aCBkPSdNMTQgMkg2YTIgMiAwIDAgMC0yIDJ2MTZhMiAyIDAgMCAwIDIgMmgxMmEyIDIgMCAwIDAgMi0yVjh6Jy8+PHBhdGggZD0nTTE0IDJ2Nmg2Jy8+PHBhdGggZD0nTTggMTNoOCcvPjxwYXRoIGQ9J004IDE3aDgnLz48cGF0aCBkPSdNOCA5aDInLz48L3N2Zz4="), linear-gradient(135deg, #60A5FA, #3B82F6);
   background-size: 38rpx 38rpx, cover;

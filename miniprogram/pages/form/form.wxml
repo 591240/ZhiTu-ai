@@ -15,7 +15,7 @@ module.exports = { inArray: inArray }
   <view class="form card">
     <view class="field">
       <view class="label">出发城市</view>
-      <input class="picker-val" placeholder="如：上海（用于生成往返交通方案）" value="{{departureCity}}" bindinput="onDeparture" />
+      <input class="picker-val city-input" placeholder-class="ph" placeholder="如：上海" value="{{departureCity}}" bindinput="onDeparture" />
     </view>
 
     <view class="field">
@@ -65,9 +65,9 @@ module.exports = { inArray: inArray }
     <view class="field">
       <view class="label">预算范围（元/人）</view>
       <view class="seg budget-row">
-        <input class="budget-input" type="digit" placeholder="最低" value="{{budgetMin}}" bindinput="onBudgetMin" />
-        <text class="budget-sep">—</text>
-        <input class="budget-input" type="digit" placeholder="最高" value="{{budgetMax}}" bindinput="onBudgetMax" />
+        <input class="budget-input" type="digit" placeholder-class="ph" placeholder="最低" value="{{budgetMin}}" bindinput="onBudgetMin" />
+        <view class="budget-sep">—</view>
+        <input class="budget-input" type="digit" placeholder-class="ph" placeholder="最高" value="{{budgetMax}}" bindinput="onBudgetMax" />
       </view>
     </view>
 

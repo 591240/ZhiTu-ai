@@ -12,7 +12,12 @@
   padding: 20rpx 24rpx;
   font-size: 28rpx;
   color: var(--text-1);
+  min-height: 88rpx;
+  line-height: 48rpx;
+  box-sizing: border-box;
 }
+.city-input { width: 100%; }
+.ph { color: var(--text-3); }
 
 .seg { display: flex; gap: 16rpx; }
 .seg.wrap { flex-wrap: wrap; }
@@ -82,7 +87,7 @@
 
 .gen-btn { margin-top: 32rpx; }
 
-.budget-row { align-items: center; }
+.budget-row { align-items: stretch; gap: 16rpx; }
 .budget-input {
   flex: 1;
   background: var(--bg);
@@ -91,9 +96,15 @@
   font-size: 28rpx;
   color: var(--text-1);
   text-align: center;
+  min-height: 88rpx;
+  line-height: 48rpx;
+  box-sizing: border-box;
 }
 .budget-sep {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 28rpx;
   color: var(--text-3);
-  padding: 0 8rpx;
+  min-width: 32rpx;
 }

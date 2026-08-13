@@ -71,14 +71,11 @@ Page({
   goQuick() { wx.navigateTo({ url: '/pages/quick/quick' }) },
   goOcr() { wx.navigateTo({ url: '/pages/ocr/ocr' }) },
   goManual() { wx.navigateTo({ url: '/pages/manual/manual' }) },
+  goChat() { wx.navigateTo({ url: '/pages/chat/chat' }) },
   goTemplate(e) { wx.navigateTo({ url: '/pages/template/template?id=' + e.currentTarget.dataset.id }) },
 
   onService(e) {
     const key = e.currentTarget.dataset.key
-    if (key === 'flight') {
-      wx.navigateTo({ url: '/pages/ticket/ticket?to=' + encodeURIComponent(this.data.city) })
-      return
-    }
     const link = env.SERVICE_LINKS[key]
     const name = (link && link.name) || e.currentTarget.dataset.name
     if (!link || !link.appId) {
