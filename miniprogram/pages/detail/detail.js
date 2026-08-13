@@ -25,6 +25,7 @@ Page({
     dayIndex: 0,
     transportIndex: 0,
     currentDay: null,
+    timeline: [],
     loading: true,
     editing: false,
     originTrip: null,
@@ -65,7 +66,34 @@ Page({
     const { trip, dayIndex } = this.data
     const list = trip && trip.content && trip.content.itinerary
     const currentDay = list && list[dayIndex] ? list[dayIndex] : null
-    this.setData({ currentDay })
+    const timeline = currentDay ? this.buildTimeline(currentDay) : []
+    this.setData({ currentDay, timeline })
+  },
+
+  // 把当天景点 + 餐饮按开始时间排序，并在相邻节点间插入交通，组成时间轴
+  buildTimeline(day) {
+    const nodes = []
+    ;(day.spots || []).forEach((s, i) => {
+      nodes.push({ kind: 'spot', time: s.start_time || '09:00', name: s.name, data: s, _i: i })
+    })
+    ;(day.meals || []).forEach((m, i) => {
+      const def = m.type === 'breakfast' ? '08:00' : m.type === 'lunch' ? '12:30' : '19:00'
+      nodes.push({ kind: 'meal', time: m.start_time || def, name: m.name, data: m, _i: i })
+    })
+    nodes.sort((a, b) => a.time.localeCompare(b.time))
+    const timeline = []
+    let prev = '酒店'
+    nodes.forEach((n) => {
+      if (prev !== n.name) {
+        timeline.push({ type: 'transport', from: prev, to: n.name, mode: '地铁', duration_min: 30, cost: 5 })
+        prev = n.name
+      }
+      timeline.push(Object.assign({ type: n.kind }, n))
+    })
+    if (nodes.length) {
+      timeline.push({ type: 'transport', from: prev, to: '酒店', mode: '地铁', duration_min: 30, cost: 5 })
+    }
+    return timeline
   },
 
   setDay(e) {

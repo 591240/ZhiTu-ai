@@ -136,6 +136,20 @@
 }
 .act-btn { flex: 1; }
 
+/* —— 时间轴（展示态） —— */
+.timeline { margin-top: 8rpx; }
+.tl-node, .tl-trans { display: flex; align-items: stretch; }
+.tl-time { width: 86rpx; flex-shrink: 0; text-align: right; font-size: 24rpx; font-weight: 600; color: var(--primary); padding-top: 22rpx; }
+.tl-axis { width: 48rpx; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; position: relative; }
+.tl-axis::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 2rpx; background: var(--line); transform: translateX(-50%); }
+.tl-dot { width: 18rpx; height: 18rpx; border-radius: 50%; background: var(--gradient-start); border: 4rpx solid #fff; box-shadow: 0 2rpx 8rpx rgba(59,130,246,0.4); margin-top: 26rpx; z-index: 1; }
+.tl-dot.sm { width: 12rpx; height: 12rpx; background: var(--text-3); box-shadow: none; margin-top: 30rpx; }
+.tl-card { flex: 1; margin: 12rpx 0 16rpx; min-width: 0; }
+.tl-trans { margin: 4rpx 0; }
+.tl-trans-card { flex: 1; margin: 14rpx 0; background: var(--bg); border-radius: 12rpx; padding: 14rpx 18rpx; font-size: 22rpx; color: var(--text-3); }
+/* 时间轴内的景点卡去掉自带外边距，复用 .spot 样式 */
+.timeline .spot { margin-bottom: 0; }
+
 /* —— 编辑态 —— */
 .tip-input {
   background: var(--bg); border-radius: 12rpx; padding: 16rpx 20rpx;
