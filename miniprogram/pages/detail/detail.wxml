@@ -146,7 +146,7 @@ module.exports = { slotLabel: slotLabel, mealLabel: mealLabel, idx: idx };
     <view class="block-title">📍 景点安排
       <text class="add-mini" data-di="{{dayIndex}}" bindtap="addSpot">+ 添加</text>
     </view>
-    <view wx:for="{{currentDay.spots}}" wx:key="name" class="spot card">
+    <view wx:for="{{currentDay.spots}}" wx:key="name" class="spot card edit-card">
         <view class="ed-row">
           <input class="ed-name" placeholder="景点名" value="{{item.name}}" data-di="{{dayIndex}}" data-si="{{index}}" data-field="name" bindinput="editSpotField" />
           <picker class="ed-picker" range="{{SLOT_LABELS}}" value="{{m.idx(SLOTS, item.time_slot)}}" data-di="{{dayIndex}}" data-si="{{index}}" bindchange="onSpotSlot">
@@ -165,7 +165,7 @@ module.exports = { slotLabel: slotLabel, mealLabel: mealLabel, idx: idx };
     <view class="block-title">🍽 餐饮推荐
       <text class="add-mini" data-di="{{dayIndex}}" bindtap="addMeal">+ 添加</text>
     </view>
-    <view wx:for="{{currentDay.meals}}" wx:key="name" class="meal card">
+    <view wx:for="{{currentDay.meals}}" wx:key="name" class="meal card edit-card">
         <view class="ed-row">
           <input class="ed-name" placeholder="餐厅名" value="{{item.name}}" data-di="{{dayIndex}}" data-mi="{{index}}" data-field="name" bindinput="editMealField" />
           <picker class="ed-picker" range="{{MEAL_LABELS}}" value="{{m.idx(MEAL_TYPES, item.type)}}" data-di="{{dayIndex}}" data-mi="{{index}}" bindchange="onMealType">

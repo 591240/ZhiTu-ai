@@ -151,16 +151,89 @@
 .timeline .spot { margin-bottom: 0; }
 
 /* —— 编辑态 —— */
-.tip-input {
-  background: var(--bg); border-radius: 12rpx; padding: 16rpx 20rpx;
-  font-size: 24rpx; margin-bottom: 12rpx; border: 1rpx solid var(--border);
+.edit-card { padding: 24rpx; }
+
+.tip-input,
+.ed-name,
+.ed-input,
+.ed-num,
+.ed-picker {
+  box-sizing: border-box;
+  background: var(--bg);
+  border-radius: 12rpx;
+  border: 1rpx solid var(--border);
+  min-height: 76rpx;
 }
-.ed-row { display: flex; align-items: center; gap: 12rpx; margin-bottom: 12rpx; }
-.ed-name { flex: 1; background: var(--bg); border-radius: 12rpx; padding: 16rpx 18rpx; font-size: 27rpx; border: 1rpx solid var(--border); }
-.ed-input { background: var(--bg); border-radius: 12rpx; padding: 16rpx 18rpx; font-size: 27rpx; border: 1rpx solid var(--border); margin-bottom: 12rpx; }
-.ed-input.flex1 { flex: 1; }
-.ed-num { width: 200rpx; background: var(--bg); border-radius: 12rpx; padding: 16rpx 18rpx; font-size: 27rpx; border: 1rpx solid var(--border); }
-.ed-picker { background: var(--bg); border-radius: 12rpx; padding: 16rpx 18rpx; font-size: 27rpx; border: 1rpx solid var(--border); }
-.ed-picker-v { color: var(--primary); }
-.ed-del { width: 56rpx; height: 56rpx; line-height: 56rpx; text-align: center; color: #fff; background: var(--danger); border-radius: 50%; font-size: 28rpx; }
+
+.tip-input {
+  width: 100%;
+  padding: 16rpx 20rpx;
+  font-size: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.ed-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.ed-row:last-child { margin-bottom: 0; }
+
+.ed-name {
+  flex: 1;
+  min-width: 0;
+  padding: 16rpx 18rpx;
+  font-size: 27rpx;
+}
+
+.ed-picker {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20rpx;
+}
+
+.ed-picker-v {
+  color: var(--primary);
+  font-size: 26rpx;
+  line-height: 1;
+}
+
+.ed-del {
+  flex-shrink: 0;
+  align-self: center;
+  width: 56rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  text-align: center;
+  color: #fff;
+  background: var(--danger);
+  border-radius: 50%;
+  font-size: 28rpx;
+}
+
 .ed-del:active { opacity: 0.8; }
+
+.ed-input,
+.ed-num {
+  padding: 16rpx 18rpx;
+  font-size: 27rpx;
+}
+
+.ed-input {
+  width: 100%;
+  margin-bottom: 16rpx;
+}
+
+.ed-input.flex1 {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.ed-num {
+  width: 220rpx;
+  flex-shrink: 0;
+}
