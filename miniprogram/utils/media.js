@@ -1,6 +1,11 @@
 // utils/media.js —— 景点封面图与第三方平台跳转
 // 封面图：按景点名取真实照片（loremflickr，免 key，稳定 hash 防抖）。
-// 平台跳转：抖音/小红书/视频号 搜索该景点攻略（微信内无法直接拉起，复制链接+引导打开）。
+// 平台跳转：
+//   · 抖音/小红书：复制搜索词，用户打开对应 App 后粘贴搜索
+//   · 微信视频号：配置 finderUserName 后直接拉起视频号主页
+
+// 视频号主页 ID（sph_xxx 或 finderUserName），配置后点击「微信视频号」可直接跳转
+const CHANNELS_FINDER_USER_NAME = ''
 
 // 简单字符串 hash，用于锁定同一景点每次取到同一张图
 function hashStr(s) {
@@ -57,20 +62,21 @@ function cityEmoji(city) {
   return CITY_EMOJI[(city || '').trim()] || '📍'
 }
 
-// 各平台"搜索该景点"的链接
+// 各平台"搜索该景点"的关键词（更自然，用户复制后到 App 内粘贴搜索）
+function platformSearchKeyword(platform, name) {
+  const n = (name || '该景点').trim()
+  if (platform === 'douyin') return `${n}攻略`
+  if (platform === 'xiaohongshu') return `${n}攻略`
+  if (platform === 'channels') return `${n}视频号`
+  return ''
+}
+
+// 兼容旧导出：仍返回网页搜索链接，但 openPlatform 内部不再使用
 function platformSearchUrl(platform, name) {
-  const q = encodeURIComponent(name)
-  if (platform === 'douyin') {
-    // 抖音网页搜索（复制后在 App/浏览器打开）
-    return `https://www.douyin.com/search/${q}`
-  }
-  if (platform === 'xiaohongshu') {
-    return `https://www.xiaohongshu.com/search_result?keyword=${q}`
-  }
-  if (platform === 'channels') {
-    // 微信视频号：公众号/视频号搜索页（同生态内最顺畅）
-    return `https://weixin.qq.com/?search=${q}`
-  }
+  const q = encodeURIComponent(name || '')
+  if (platform === 'douyin') return `https://www.douyin.com/search/${q}`
+  if (platform === 'xiaohongshu') return `https://www.xiaohongshu.com/search_result?keyword=${q}`
+  if (platform === 'channels') return `https://weixin.qq.com/?search=${q}`
   return ''
 }
 
@@ -81,15 +87,52 @@ function openPlatform(name) {
     success: (res) => {
       const map = ['douyin', 'xiaohongshu', 'channels']
       const platform = map[res.tapIndex]
-      const url = platformSearchUrl(platform, n)
-      if (!url) return
       const label = platform === 'douyin' ? '抖音' : platform === 'xiaohongshu' ? '小红书' : '微信视频号'
+
+      // 微信视频号：配置 finderUserName 后直接拉起主页
+      if (platform === 'channels') {
+        if (!CHANNELS_FINDER_USER_NAME) {
+          wx.showModal({
+            title: '视频号未配置',
+            content: '请在 utils/media.js 顶部设置 CHANNELS_FINDER_USER_NAME 为你的视频号 ID（如 sph_xxx），即可直接拉起视频号主页。',
+            showCancel: false,
+            confirmText: '知道了'
+          })
+          return
+        }
+        if (!wx.openChannelsUserProfile) {
+          wx.showModal({
+            title: '版本不支持',
+            content: '当前微信版本不支持直接打开视频号。',
+            showCancel: false,
+            confirmText: '知道了'
+          })
+          return
+        }
+        wx.openChannelsUserProfile({
+          finderUserName: CHANNELS_FINDER_USER_NAME,
+          success: () => {},
+          fail: (err) => {
+            console.error('openChannelsUserProfile fail', err)
+            wx.showModal({
+              title: '跳转失败',
+              content: '无法直接打开视频号，请检查视频号 ID 是否正确。',
+              showCancel: false,
+              confirmText: '知道了'
+            })
+          }
+        })
+        return
+      }
+
+      // 抖音/小红书：复制搜索词
+      const keyword = platformSearchKeyword(platform, n)
       wx.setClipboardData({
-        data: url,
+        data: keyword,
         success: () => {
           wx.showModal({
-            title: `已复制${label}搜索链接`,
-            content: `请在${label}App 内粘贴打开，查看「${n}」的图文/视频攻略。`,
+            title: `已复制${label}搜索词`,
+            content: `请打开${label} → 粘贴搜索「${keyword}」，查看「${n}」的图文/视频攻略。`,
             showCancel: false,
             confirmText: '知道了'
           })
