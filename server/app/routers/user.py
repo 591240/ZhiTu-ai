@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy import select, func
 
-from app.schemas import ok, fail, UserProfileReq, FeedbackReq
+from app.schemas import ok, fail, UserProfileReq, FeedbackReq, RechargeReq
 from app.deps import get_current_user
 from app.database import SessionLocal
 from app.models import Trip, User, Feedback
@@ -17,6 +17,7 @@ def _user_dict(user: User):
         "phone": user.phone or "",
         "city": user.city,
         "is_vip": user.is_vip,
+        "points": user.points,
     }
 
 
@@ -97,3 +98,34 @@ async def stats(user=Depends(get_current_user)):
             )
         ).scalar() or 0
     return ok({"tripCount": trip_count, "cityCount": city_count})
+
+
+@router.get("/points")
+async def get_points(user=Depends(get_current_user)):
+    """查询当前用户积分余额。"""
+    async with SessionLocal() as s:
+        u = (await s.execute(select(User).where(User.id == user["user_id"]))).scalar_one_or_none()
+        if not u:
+            return fail("用户不存在", code=404)
+        return ok({"points": u.points})
+
+
+@router.post("/recharge")
+async def recharge(req: RechargeReq, user=Depends(get_current_user)):
+    """人工充值申请：记录金额和联系方式，由管理员线下确认后加积分。"""
+    if req.amount <= 0:
+        return fail("充值金额必须大于 0")
+    async with SessionLocal() as s:
+        u = (await s.execute(select(User).where(User.id == user["user_id"]))).scalar_one_or_none()
+        if not u:
+            return fail("用户不存在", code=404)
+        # 这里只记录申请，实际加积分由管理员后台/手动完成
+        # 简单起见，先把申请写入 feedback 表作为待办通知
+        fb = Feedback(
+            user_id=u.id,
+            content=f"[充值申请] 金额 ¥{req.amount}，联系方式：{req.contact}，备注：{req.note}",
+            contact=req.contact,
+        )
+        s.add(fb)
+        await s.commit()
+    return ok({"message": "充值申请已提交，请扫码支付后联系客服加积分"})

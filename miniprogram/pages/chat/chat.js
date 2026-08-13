@@ -64,7 +64,24 @@ Page({
             msgs[aiIndex] = { role: 'ai', text: (msgs[aiIndex].text || '') + chunk }
             that.setData({ messages: msgs, lastId: 'm' + aiIndex })
           },
-          () => { that.setData({ sending: false }) }
+          (err) => {
+            if (err && err.code === 4001) {
+              const msgs = that.data.messages.slice()
+              msgs[aiIndex] = { role: 'ai', text: '积分不足，请充值后再提问。' }
+              that.setData({ messages: msgs, sending: false })
+              wx.showModal({
+                title: '积分不足',
+                content: '本次提问需要 2 积分，您的积分已用完，请前往充值。',
+                confirmText: '去充值',
+                cancelText: '取消',
+                success: (res) => {
+                  if (res.confirm) wx.navigateTo({ url: '/pages/member/member' })
+                }
+              })
+            } else {
+              that.setData({ sending: false })
+            }
+          }
         )
       }
     } catch (e) {

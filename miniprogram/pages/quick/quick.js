@@ -60,7 +60,19 @@ Page({
       wx.redirectTo({ url: '/pages/detail/detail?id=preview' })
     } catch (e) {
       wx.hideLoading()
-      wx.showToast({ title: '生成失败，请重试', icon: 'none' })
+      if (e && e.code === 4001) {
+        wx.showModal({
+          title: '积分不足',
+          content: '本次生成需要 10 积分，您的积分已用完，请前往充值。',
+          confirmText: '去充值',
+          cancelText: '取消',
+          success: (res) => {
+            if (res.confirm) wx.navigateTo({ url: '/pages/member/member' })
+          }
+        })
+      } else {
+        wx.showToast({ title: '生成失败，请重试', icon: 'none' })
+      }
     } finally {
       this.setData({ generating: false })
     }

@@ -8,7 +8,8 @@ const mockUser = {
   city: '杭州',
   isVip: false,
   is_vip: false,
-  vipExpireAt: null
+  vipExpireAt: null,
+  points: 100
 }
 
 // 城市库（含快捷服务跳转的第三方小程序 appid 占位）
@@ -277,6 +278,12 @@ function handleMock(url, method, data) {
   if (url.includes('/user/stats')) {
     return { code: 0, data: { tripCount: MOCK_TRIPS.length, cityCount: 6 }, message: 'ok' }
   }
+  if (url.includes('/user/points')) {
+    return { code: 0, data: { points: mockUser.points }, message: 'ok' }
+  }
+  if (url.includes('/user/recharge')) {
+    return { code: 0, data: { message: '充值申请已提交，请扫码支付后联系客服加积分' }, message: 'ok' }
+  }
   if (url.includes('/trip/list')) {
     const status = data.status
     let list = MOCK_TRIPS
@@ -305,6 +312,10 @@ function handleMock(url, method, data) {
     return { code: 0, data: {}, message: 'ok' }
   }
   if (url.includes('/plan/form') || url.includes('/plan/quick')) {
+    if (mockUser.points < 10) {
+      return { code: 4001, data: null, message: '积分不足，请充值后再生成行程' }
+    }
+    mockUser.points -= 10
     const trip = genTrip(data)
     return { code: 0, data: { trip: { id: 'gen' + Date.now(), ...trip } }, message: 'ok' }
   }
@@ -329,6 +340,10 @@ function handleMock(url, method, data) {
     return { code: 0, data: { content: t.content }, message: 'ok' }
   }
   if (url.includes('/chat/qa')) {
+    if (mockUser.points < 2) {
+      return { code: 4001, data: null, message: '积分不足，请充值后再提问' }
+    }
+    mockUser.points -= 2
     return { code: 0, data: { answer: fakeQA(data.question) }, message: 'ok' }
   }
   if (url.includes('/chat/luggage')) {

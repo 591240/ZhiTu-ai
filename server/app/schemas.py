@@ -82,6 +82,12 @@ class ChatQAReq(BaseModel):
     question: str
 
 
+class RechargeReq(BaseModel):
+    amount: float                 # 充值金额
+    contact: str = ""             # 微信号/手机号，用于人工确认
+    note: str = ""                # 备注
+
+
 class LuggageReq(BaseModel):
     city: str = ""
     days: int = 2

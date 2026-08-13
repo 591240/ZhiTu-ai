@@ -106,7 +106,21 @@ function streamRequest(url, data, onChunk, onDone) {
     },
     enableChunked: true,
     responseType: 'text',
-    success() { finish() }
+    success(res) {
+      // 非流式错误（如积分不足 4001）会在 success 里返回 JSON
+      if (res.data && typeof res.data === 'string') {
+        try {
+          const obj = JSON.parse(res.data)
+          if (obj.code && obj.code !== 0) {
+            const err = new Error(obj.message || '请求失败')
+            err.code = obj.code
+            if (!finished) { finished = true; onDone && onDone(err) }
+            return
+          }
+        } catch (e) { /* 不是 JSON，继续走流式 */ }
+      }
+      finish()
+    }
   })
   task.onChunkReceived((res) => {
     const text = new TextDecoder('utf-8').decode(res.data)

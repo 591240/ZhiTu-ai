@@ -1,29 +1,56 @@
 <view class="page">
-  <view class="vip-card {{isVip?'on':''}}">
-    <view class="vip-top">
-      <view class="vip-name">知途 AI 旅行{{isVip?'会员':'· 免费版'}}</view>
-      <view class="vip-badge">{{isVip ? 'VIP' : 'FREE'}}</view>
+  <!-- 积分余额卡片 -->
+  <view class="points-card">
+    <view class="points-top">
+      <view class="points-name">我的积分</view>
+      <view class="points-badge">积分制</view>
     </view>
-    <view class="vip-desc">{{isVip ? '有效期至 ' + expireText : '开通会员，解锁无限次 AI 行程规划'}}</view>
+    <view class="points-num">{{points}}</view>
+    <view class="points-desc">每次 AI 生成行程消耗 {{costPerPlan}} 积分，问答消耗 {{costPerChat}} 积分</view>
   </view>
 
-  <view class="sec-title">选择套餐</view>
+  <!-- 充值套餐 -->
+  <view class="sec-title">选择充值套餐</view>
   <view class="plans">
-    <view class="plan {{selectedType===item.type?'sel':''}}" wx:for="{{plans}}" wx:key="type" bindtap="selectPlan" data-t="{{item.type}}">
+    <view class="plan {{selectedAmount===item.amount?'sel':''}}" wx:for="{{plans}}" wx:key="amount" bindtap="selectPlan" data-amount="{{item.amount}}">
       <view wx:if="{{item.tag}}" class="plan-tag">{{item.tag}}</view>
-      <view class="plan-name">{{item.name}}</view>
-      <view class="plan-price"><text class="cur">¥</text>{{item.price}}<text class="per">/{{item.period}}</text></view>
-      <view wx:if="{{item.original}}" class="plan-origin">原价 ¥{{item.original}}</view>
+      <view class="plan-points">{{item.points}}积分</view>
+      <view class="plan-price"><text class="cur">¥</text>{{item.amount}}</view>
+      <view class="plan-note">{{item.note}}</view>
     </view>
   </view>
 
-  <view class="sec-title">会员专享</view>
-  <view class="benefits card">
-    <view class="benefit" wx:for="{{plans[selectedType==='year'?1:0].benefits}}" wx:key="*this">
-      <text class="tick">✓</text><text>{{item}}</text>
+  <!-- 收款码 -->
+  <view class="sec-title">扫码支付</view>
+  <view class="qrcode-card card">
+    <view class="qrcode-tip">请使用微信/支付宝扫码支付</view>
+    <view class="qrcode-placeholder">
+      <view class="qrcode-border">
+        <view class="qrcode-text">收款码</view>
+        <view class="qrcode-sub">替换 images/pay-qrcode.png</view>
+      </view>
+    </view>
+    <view class="qrcode-amount">应付金额：<text class="amount">¥{{selectedAmount}}</text></view>
+    <view class="qrcode-note">支付成功后，请填写下方信息，客服将在 24 小时内为您充值</view>
+  </view>
+
+  <!-- 充值信息 -->
+  <view class="sec-title">充值确认</view>
+  <view class="form card">
+    <view class="field">
+      <view class="label">充值金额</view>
+      <input class="input" type="digit" placeholder="请输入实际支付金额" value="{{amount}}" bindinput="onAmount" />
+    </view>
+    <view class="field">
+      <view class="label">联系方式</view>
+      <input class="input" placeholder="请输入微信号或手机号" value="{{contact}}" bindinput="onContact" />
+    </view>
+    <view class="field">
+      <view class="label">备注（选填）</view>
+      <input class="input" placeholder="如：支付时间/订单尾号" value="{{note}}" bindinput="onNote" />
     </view>
   </view>
 
-  <button class="primary-btn" bindtap="onSubscribe">{{isVip ? '已开通会员' : '立即开通'}}</button>
-  <view class="tip">* 演示环境为模拟开通，真实环境将拉起微信支付</view>
+  <button class="primary-btn" bindtap="onSubmit" loading="{{submitting}}">提交充值申请</button>
+  <view class="tip">* 充值申请提交后，请添加客服微信并提供支付截图，客服确认后为您加积分</view>
 </view>

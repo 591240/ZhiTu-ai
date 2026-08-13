@@ -25,6 +25,11 @@
       <view class="stat-num">{{stats.cityCount}}</view>
       <view class="stat-label">解锁城市</view>
     </view>
+    <view class="divider"></view>
+    <view class="stat points-stat" bindtap="goMember">
+      <view class="stat-num">{{user.points || 0}}</view>
+      <view class="stat-label">我的积分</view>
+    </view>
   </view>
 
   <!-- 功能菜单 -->
@@ -37,7 +42,7 @@
     </button>
     <view class="menu-item" bindtap="goCollection"><text class="mi-ico">🔖</text><text class="mi-name">我的收藏</text><text class="mi-arrow">›</text></view>
     <view class="menu-item" bindtap="goPublished"><text class="mi-ico">📤</text><text class="mi-name">我的发布</text><text class="mi-arrow">›</text></view>
-    <view class="menu-item vip-item" bindtap="goMember"><text class="mi-ico">👑</text><text class="mi-name">会员中心</text><text class="mi-arrow">›</text></view>
+    <view class="menu-item vip-item" bindtap="goMember"><text class="mi-ico">💰</text><text class="mi-name">积分充值</text><text class="mi-arrow">›</text></view>
     <view class="menu-item" bindtap="goInvite"><text class="mi-ico">🤝</text><text class="mi-name">邀请有礼</text><text class="mi-arrow">›</text></view>
     <view class="menu-item" bindtap="onShare"><text class="mi-ico">📨</text><text class="mi-name">分享邀请</text><text class="mi-arrow">›</text></view>
     <view class="menu-item" bindtap="onService"><text class="mi-ico">🎧</text><text class="mi-name">客服</text><text class="mi-arrow">›</text></view>

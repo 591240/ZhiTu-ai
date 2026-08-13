@@ -27,6 +27,11 @@ class Settings(BaseSettings):
 
     daily_plan_limit: int = 3
 
+    # 积分制（登录送积分，AI 生成扣积分，用完人工充值）
+    points_signup: int = 100       # 注册/首次登录赠送积分
+    points_per_plan: int = 10      # 每次 AI 生成行程消耗积分
+    points_per_chat: int = 2       # 每次 AI 问答消耗积分
+
     # 视觉多模态模型（识图/识别视频用，当前行程生成的 DeepSeek 为纯文本不可用）
     # 支持 OpenAI 兼容协议：通义千问 Qwen-VL、GPT-4o、Gemini 等。
     # 获取示例：阿里云百炼 https://dashscope.console.aliyun.com/ → 开通 qwen-vl 系列

@@ -1,38 +1,44 @@
-/* member.wxss —— 会员中心页 WF-10（统一新色彩规范） */
+/* member.wxss —— 积分充值页 */
 .page { padding: 28rpx 28rpx 60rpx; min-height: 100vh; background: var(--bg); }
 
-.vip-card {
-  border-radius: 20rpx;
+.points-card {
+  border-radius: var(--r-lg);
   padding: 40rpx 36rpx;
   color: #fff;
-  background: linear-gradient(135deg, #9CA3AF, #6B7280);
-  box-shadow: 0 4rpx 16rpx rgba(107, 114, 128, 0.2);
-  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #F59E0B, #F97316);
+  box-shadow: 0 12rpx 32rpx rgba(249, 115, 22, 0.28);
 }
-.vip-card.on {
-  background: linear-gradient(135deg, #60A5FA, #3B82F6);
-  box-shadow: 0 4rpx 16rpx rgba(59, 130, 246, 0.3);
+.points-top { display: flex; justify-content: space-between; align-items: center; }
+.points-name { font-size: 30rpx; font-weight: 600; opacity: 0.95; }
+.points-badge {
+  font-size: 22rpx;
+  background: rgba(255,255,255,0.22);
+  padding: 6rpx 18rpx;
+  border-radius: var(--r-full);
 }
-.vip-top { display: flex; justify-content: space-between; align-items: center; }
-.vip-name { font-size: 38rpx; font-weight: 700; }
-.vip-badge { font-size: 24rpx; background: rgba(255,255,255,0.25); padding: 8rpx 20rpx; border-radius: 24rpx; }
-.vip-desc { font-size: 26rpx; margin-top: 18rpx; opacity: 0.92; }
+.points-num {
+  font-size: 72rpx;
+  font-weight: 800;
+  margin-top: 18rpx;
+  letter-spacing: 2rpx;
+}
+.points-desc { font-size: 24rpx; margin-top: 16rpx; opacity: 0.88; }
 
-.sec-title { font-size: 28rpx; font-weight: 600; color: var(--text-1); margin: 36rpx 8rpx 20rpx; }
+.sec-title { font-size: 30rpx; font-weight: 700; color: var(--text-1); margin: 36rpx 8rpx 20rpx; }
 
 .plans { display: flex; gap: 20rpx; }
 .plan {
   flex: 1;
   position: relative;
   background: var(--card);
-  border-radius: 20rpx;
-  padding: 30rpx 20rpx;
+  border-radius: var(--r-lg);
+  padding: 32rpx 20rpx;
   text-align: center;
   border: 3rpx solid transparent;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-md);
   transition: all 0.2s ease;
 }
-.plan.sel { border-color: var(--primary); background: var(--primary-light); }
+.plan.sel { border-color: var(--orange); background: #FFF7ED; }
 .plan:active { transform: scale(0.98); }
 .plan-tag {
   position: absolute;
@@ -42,34 +48,70 @@
   color: #fff;
   font-size: 20rpx;
   padding: 4rpx 14rpx;
-  border-radius: 24rpx;
+  border-radius: var(--r-full);
 }
-.plan-name { font-size: 26rpx; color: var(--text-2); }
-.plan-price { font-size: 44rpx; font-weight: 700; color: var(--text-1); margin: 12rpx 0; }
+.plan-points { font-size: 28rpx; color: var(--text-2); }
+.plan-price { font-size: 44rpx; font-weight: 800; color: var(--text-1); margin: 14rpx 0; }
 .plan-price .cur { font-size: 26rpx; }
-.plan-price .per { font-size: 22rpx; color: var(--text-3); font-weight: 400; }
-.plan-origin { font-size: 22rpx; color: var(--text-4); text-decoration: line-through; }
+.plan-note { font-size: 22rpx; color: var(--text-3); }
 
 .card {
   background: var(--card);
-  border-radius: 20rpx;
+  border-radius: var(--r-lg);
   padding: 28rpx;
-  box-shadow: 0 2rpx 12rpx rgba(59, 130, 246, 0.08);
+  box-shadow: var(--shadow-md);
 }
-.benefits { display: flex; flex-direction: column; gap: 20rpx; }
-.benefit { display: flex; align-items: center; font-size: 28rpx; color: var(--text-1); }
-.tick { color: var(--primary); font-weight: 700; margin-right: 16rpx; }
+
+.qrcode-card { text-align: center; }
+.qrcode-tip { font-size: 26rpx; color: var(--text-2); margin-bottom: 20rpx; }
+.qrcode-placeholder {
+  width: 420rpx;
+  height: 420rpx;
+  border-radius: var(--r-md);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+.qrcode-border {
+  width: 360rpx;
+  height: 360rpx;
+  border: 4rpx dashed var(--text-4);
+  border-radius: var(--r-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.qrcode-text { font-size: 36rpx; color: var(--text-3); font-weight: 600; }
+.qrcode-sub { font-size: 22rpx; color: var(--text-4); margin-top: 12rpx; }
+.qrcode-amount { font-size: 28rpx; color: var(--text-1); margin-top: 20rpx; }
+.qrcode-amount .amount { color: var(--orange); font-weight: 700; font-size: 34rpx; }
+.qrcode-note { font-size: 24rpx; color: var(--text-3); margin-top: 14rpx; line-height: 1.6; }
+
+.field { padding: 20rpx 0; border-bottom: 2rpx solid var(--line); }
+.field:last-child { border-bottom: none; }
+.label { font-size: 26rpx; font-weight: 600; color: var(--text-1); margin-bottom: 14rpx; }
+.input {
+  background: var(--bg);
+  border-radius: var(--r-md);
+  padding: 22rpx 26rpx;
+  font-size: 28rpx;
+  color: var(--text-1);
+}
 
 .primary-btn {
   margin-top: 40rpx;
-  background: linear-gradient(135deg, #60A5FA, #3B82F6);
+  background: linear-gradient(135deg, #F59E0B, #F97316);
   color: #fff;
   font-size: 32rpx;
-  font-weight: 600;
-  border-radius: 48rpx;
+  font-weight: 700;
+  border-radius: var(--r-full);
   padding: 26rpx 0;
   border: none;
+  box-shadow: 0 12rpx 32rpx rgba(249, 115, 22, 0.28);
   transition: transform 0.15s ease-out;
 }
 .primary-btn:active { transform: scale(0.98); }
-.tip { text-align: center; font-size: 22rpx; color: var(--text-3); margin-top: 18rpx; }
+.tip { text-align: center; font-size: 22rpx; color: var(--text-3); margin-top: 20rpx; line-height: 1.6; }

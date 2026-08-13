@@ -4,51 +4,79 @@ const { track } = require('../../utils/track')
 
 Page({
   data: {
-    isVip: false,
-    vipExpireAt: null,
-    expireText: '',
-    plans: [],
-    selectedType: 'year'
+    points: 0,
+    costPerPlan: 10,
+    costPerChat: 2,
+    plans: [
+      { amount: 10, points: 100, note: '体验装' },
+      { amount: 30, points: 350, note: '划算', tag: '推荐' },
+      { amount: 50, points: 600, note: '超值' }
+    ],
+    selectedAmount: 30,
+    amount: '',
+    contact: '',
+    note: '',
+    submitting: false
   },
 
-  async onLoad() {
-    // VIP 状态直接读本地登录态，无需再请求
+  onLoad() {
     const u = storage.getUser() || {}
-    this.setData({
-      isVip: storage.getIsVip(),
-      vipExpireAt: u.vipExpireAt || null,
-      expireText: u.vipExpireAt ? this.fmt(u.vipExpireAt) : ''
-    })
+    this.setData({ points: u.points || 0 })
+    this.loadPoints()
+  },
+
+  async loadPoints() {
     try {
-      const r = await request({ url: '/api/membership/plans' })
-      this.setData({ plans: r.data.plans || [] })
+      const r = await request({ url: '/api/user/points' })
+      if (r.code === 0 && r.data) {
+        this.setData({ points: r.data.points })
+        const user = Object.assign({}, storage.getUser() || {}, { points: r.data.points })
+        storage.setUser(user)
+      }
     } catch (e) {}
   },
 
-  fmt(ts) {
-    const d = new Date(ts)
-    const p = n => (n < 10 ? '0' + n : '' + n)
-    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate())
+  selectPlan(e) {
+    const amount = parseFloat(e.currentTarget.dataset.amount)
+    this.setData({ selectedAmount: amount, amount: String(amount) })
   },
 
-  selectPlan(e) { this.setData({ selectedType: e.currentTarget.dataset.t }) },
+  onAmount(e) { this.setData({ amount: e.detail.value }) },
+  onContact(e) { this.setData({ contact: e.detail.value }) },
+  onNote(e) { this.setData({ note: e.detail.value }) },
 
-  async onSubscribe() {
-    if (this.data.isVip) return
-    wx.showLoading({ title: '开通中' })
+  async onSubmit() {
+    const amount = parseFloat(this.data.amount)
+    if (!amount || amount <= 0) {
+      wx.showToast({ title: '请输入充值金额', icon: 'none' })
+      return
+    }
+    if (!this.data.contact.trim()) {
+      wx.showToast({ title: '请填写联系方式', icon: 'none' })
+      return
+    }
+    this.setData({ submitting: true })
     try {
-      const r = await request({
-        url: '/api/membership/order',
+      await request({
+        url: '/api/user/recharge',
         method: 'POST',
-        data: { plan_type: this.data.selectedType, invite_code: storage.getBindInvite() }
+        data: {
+          amount,
+          contact: this.data.contact.trim(),
+          note: this.data.note.trim()
+        }
       })
-      track('member_subscribe', { plan_type: this.data.selectedType })
-      this.setData({ isVip: true, vipExpireAt: r.data.vipExpireAt, expireText: this.fmt(r.data.vipExpireAt) })
-      wx.hideLoading()
-      wx.showToast({ title: '开通成功（演示）', icon: 'success' })
+      track('points_recharge_apply', { amount })
+      wx.showModal({
+        title: '申请已提交',
+        content: '请添加客服微信并发送支付截图，客服确认后将为您充值积分。',
+        showCancel: false,
+        confirmText: '知道了'
+      })
     } catch (e) {
-      wx.hideLoading()
-      wx.showToast({ title: '开通失败', icon: 'none' })
+      wx.showToast({ title: '提交失败，请重试', icon: 'none' })
+    } finally {
+      this.setData({ submitting: false })
     }
   }
 })
