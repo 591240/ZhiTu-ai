@@ -2837,7 +2837,7 @@ SCHEMA_HINT = """你是专业旅游行程规划师。严格只输出如下 JSON 
         "season_tip":"当前为旺季/淡季，热门景点人多，建议错峰",
         "crowd_tip":"建议上午9点前到达避开人流高峰",
         "spots":[
-          {"name":"景点名","address":"地址","time_slot":"morning/afternoon/evening","duration_min":120,"ticket_price":0,"best_price":0,"ticket_channel":"景区官方/携程/美团/抖音团购（AI预估最划算购票渠道）","need_booking":False,"official_account":"公众号名称|gh_xxx（若能查到原始ID则填原始ID，否则只填名称）","category":"自然风光/人文历史/美食/网红打卡/休闲度假","description":"一句话简介","photo_spots":[{"position":"观景台东侧","best_time":"日出/日落/上午/下午/夜晚","tip":"低角度拍湖面反光更有层次","avoid_crowd":"开园前30分钟抵达","day_night":"日/夜","suitable_for":"摄影爱好者/家庭/情侣"}]}
+          {"name":"景点名","address":"地址","time_slot":"morning/afternoon/evening","duration_min":120,"ticket_price":0,"best_price":0,"ticket_channel":"景区官方/携程/美团/抖音团购（AI预估最划算购票渠道）","need_booking":False,"official_account":"公众号名称|gh_xxx（若能查到原始ID则填原始ID，否则只填名称）","category":"自然风光/人文历史/美食/网红打卡/休闲度假","description":"一句话简介","photo_spots":[{"position":"观景台东侧","best_time":"日出/日落/上午/下午/夜晚","tip":"详细拍照攻略：说清楚具体机位、推荐构图（三分法/对称/框架/引导线）、最佳光线方向与时段、建议焦段或手机拍摄要点、人物站位与姿态、最终出片氛围，50-80字","avoid_crowd":"开园前30分钟抵达","day_night":"日/夜","suitable_for":"摄影爱好者/家庭/情侣"}]}
         ],
         "meals":[{"name":"餐厅名","type":"lunch/dinner/breakfast","avg_price":80,"deal_channel":"美团/大众点评/抖音团购（AI预估最划算团购渠道）","specialty":"招牌菜","address":"地址"}],
         "transport":[{"from":"酒店","to":"景点","mode":"地铁/公交/步行/打车","duration_min":30,"cost":5}],
@@ -2854,7 +2854,7 @@ SCHEMA_HINT = """你是专业旅游行程规划师。严格只输出如下 JSON 
   }
 }
 价格与渠道规则：门票/餐饮请基于常识给出 AI 预估最优价（景点用 ticket_price/best_price，餐饮用 avg_price），并为每个收费景点与每餐推荐一个最划算的购买/团购渠道——景点填 ticket_channel、餐饮填 deal_channel，取值从 {景区官方, 携程, 美团, 飞猪, 同程, 抖音团购, 大众点评} 中选最划算的一个；前端将据此展示「AI 推荐 ¥X · 去XX购买」并一键跳转比价/购买。价格仅为 AI 预估，实际以下单页为准。
-要求：transport_plans 必须恰好给出 3 套方案，分别命名为「省时方案」「性价比方案」「舒适方案」，覆盖往返大交通；每个景点至少给出 1 个 photo_spots 打卡机位；weather_tip/season_tip/crowd_tip 每日均需填写。
+要求：transport_plans 必须恰好给出 3 套方案，分别命名为「省时方案」「性价比方案」「舒适方案」，覆盖往返大交通；每个景点至少给出 1 个 photo_spots 打卡机位，热门/标志性景点给出 2-3 个不同机位；photo_spots 的 tip 必须详细具体，避免空泛；weather_tip/season_tip/crowd_tip 每日均需填写。
 重要约束：itinerary 里的每个 spot 必须是真实可游览的景点或体验（景区、街区、博物馆、自然风光、市集、演出等），严禁把火车站/高铁站/机场/地铁站/汽车站/码头/仅用于住宿的酒店等交通站点或住宿设施当作景点写入 spots；往返与市内交通一律放进 transport 字段（由系统按时间轴自动串接），不要把「前往车站」「入住酒店」列为景点。每天建议安排 2-3 个景点 + 1-2 餐，并为每个 spot 标注 start_time（HH:MM，如 09:00）与精确时长 duration_min，便于前端渲染当日时间轴。
 行前准备规则（务必遵守）：若目的地为港澳台或出境（如香港、澳门、国外城市），必须在 content.preparations 中列出该目的地行前必办事项，至少覆盖：①证件（护照/签证、港澳通行证及签注）；②电话卡或国际漫游；③货币与移动支付的跨境使用；④转换插头/电压；⑤海关与防疫注意事项。每项含 icon（emoji）、title、detail 三个字段，detail 为可操作的具体提醒。若目的地为国内大陆城市，preparations 返回空数组 []。"""
 

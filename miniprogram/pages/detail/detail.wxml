@@ -123,11 +123,18 @@ module.exports = { slotLabel: slotLabel, mealLabel: mealLabel, idx: idx };
                     <text class="sp-act" bindtap="onSpotMedia" data-name="{{item.data.name}}">看视频/攻略 ›</text>
                   </view>
                   <view wx:if="{{item.data.photo_spots.length}}" class="photo-card">
-                    <view class="pc-title">📸 打卡点推荐（{{item.data.photo_spots.length}}）</view>
+                    <view class="pc-title">📸 拍照攻略</view>
                     <view wx:for="{{item.data.photo_spots}}" wx:for-item="ps" wx:key="position" class="pc-item">
-                      <view class="pc-pos">{{ps.position}} <text class="pc-time">· {{ps.best_time}}</text></view>
+                      <view class="pc-head">
+                        <text class="pc-pos">{{ps.position}}</text>
+                        <text class="pc-tag">{{ps.best_time}}</text>
+                      </view>
                       <view class="pc-tip">{{ps.tip}}</view>
-                      <view class="pc-foot">避峰：{{ps.avoid_crowd}} · {{ps.day_night}} · 适合{{ps.suitable_for}}</view>
+                      <view class="pc-foot">
+                        <text wx:if="{{ps.avoid_crowd}}" class="pc-pill">避峰：{{ps.avoid_crowd}}</text>
+                        <text wx:if="{{ps.day_night}}" class="pc-pill">{{ps.day_night}}景</text>
+                        <text wx:if="{{ps.suitable_for}}" class="pc-pill">适合{{ps.suitable_for}}</text>
+                      </view>
                     </view>
                   </view>
                 </view>
