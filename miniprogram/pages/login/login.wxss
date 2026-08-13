@@ -1,6 +1,6 @@
 .login-bg {
   min-height: 100vh;
-  background: linear-gradient(180deg, #E8F2FD, #F5F6FA);
+  background: linear-gradient(180deg, var(--primary-lighter), var(--bg));
   display: flex;
   flex-direction: column;
 }
@@ -102,10 +102,11 @@
 }
 .privacy-agree {
   margin-top: 36rpx;
-  background: var(--primary);
+  background: var(--grad-sky);
   color: #fff;
   font-size: 30rpx;
   border-radius: 44rpx;
+  box-shadow: var(--shadow-blue);
 }
 .privacy-refuse {
   margin-top: 24rpx;

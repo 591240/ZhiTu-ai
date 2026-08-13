@@ -1,14 +1,19 @@
 <view class="page">
-  <view class="nav-title">系统设置</view>
+  <view class="page-header anim-up">
+    <view class="ph-badge">通用</view>
+    <view class="ph-title">系统设置</view>
+    <view class="ph-sub">管理你的账号与偏好</view>
+    <view class="ph-decor"></view>
+  </view>
 
-  <view class="group">
+  <view class="group anim-up d1">
     <view class="item" bindtap="goMember" wx:if="{{monetization}}"><text>会员中心</text><text class="arrow">›</text></view>
     <view class="item" bindtap="goCollection"><text>我的收藏</text><text class="arrow">›</text></view>
     <view class="item" bindtap="goPublished"><text>我的发布</text><text class="arrow">›</text></view>
     <view class="item" bindtap="goChat"><text>随便问助手</text><text class="arrow">›</text></view>
   </view>
 
-  <view class="group">
+  <view class="group anim-up d2">
     <view class="item" bindtap="goAgreement" data-type="privacy"><text>隐私政策</text><text class="arrow">›</text></view>
     <view class="item" bindtap="goAgreement" data-type="user"><text>用户协议</text><text class="arrow">›</text></view>
     <view class="item" bindtap="goFeedback"><text>意见反馈</text><text class="arrow">›</text></view>
@@ -16,7 +21,7 @@
     <view class="item" bindtap="onClear"><text>清空本地数据</text><text class="arrow">›</text></view>
   </view>
 
-  <view class="danger-group">
+  <view class="danger-group anim-up d3">
     <view class="danger-item" bindtap="onDeactivate"><text>注销账号</text><text class="arrow">›</text></view>
   </view>
 

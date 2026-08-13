@@ -1,23 +1,24 @@
 <view class="page">
-  <view class="hero">
-    <view class="hero-emoji">💬</view>
-    <view class="hero-title">一句话，行程就规划好了</view>
-    <view class="hero-sub">用大白话描述你的旅行，AI 帮你生成完整路线</view>
+  <view class="page-header anim-up">
+    <view class="ph-badge">AI 一句话规划</view>
+    <view class="ph-title">说出你的旅行</view>
+    <view class="ph-sub">用大白话描述，AI 帮你生成完整路线</view>
+    <view class="ph-decor"></view>
   </view>
 
-  <view class="card input-card">
+  <view class="card input-card anim-up d1">
     <textarea class="input" placeholder="例如：周末带爸妈去杭州玩2天，想轻松点，多看看自然风景" value="{{text}}" bindinput="onInput" maxlength="200" auto-height />
     <view class="count">{{text.length}}/200</view>
   </view>
 
-  <view class="examples">
+  <view class="examples anim-up d2">
     <view class="sec-title">试试这些</view>
     <view class="chips">
-      <view class="chip" wx:for="{{examples}}" wx:key="*this" bindtap="onExample" data-text="{{item}}">{{item}}</view>
+      <view class="chip-pill" wx:for="{{examples}}" wx:key="*this" bindtap="onExample" data-text="{{item}}">{{item}}</view>
     </view>
   </view>
 
-  <view class="parse" wx:if="{{parsed}}">
+  <view class="parse anim-up d3" wx:if="{{parsed}}">
     <view class="parse-label">已识别</view>
     <view class="parse-items">
       <view class="parse-item">📍 {{parsed.city}}</view>
@@ -27,5 +28,5 @@
     </view>
   </view>
 
-  <button class="primary-btn" loading="{{generating}}" bindtap="onGenerate" disabled="{{!text || generating}}">✨ 生成我的行程</button>
+  <button class="btn-primary primary-btn anim-up d4" loading="{{generating}}" bindtap="onGenerate" disabled="{{!text || generating}}">✨ 生成我的行程</button>
 </view>

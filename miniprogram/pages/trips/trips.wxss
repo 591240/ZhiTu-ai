@@ -1,7 +1,5 @@
-/* trips.wxss —— 我的行程列表页 WF-07（统一新视觉：渐变封面条 + 圆角卡片） */
+/* trips.wxss —— 我的行程列表页 WF-07（统一高级感设计系统） */
 .page { padding: 0 28rpx; background: var(--bg); }
-
-.nav-title { font-size: 40rpx; font-weight: bold; padding: 28rpx 0 8rpx; color: var(--text-1); }
 
 .tabs {
   display: flex;
@@ -20,7 +18,7 @@
   width: 48rpx;
   height: 6rpx;
   border-radius: 3rpx;
-  background: var(--primary);
+  background: var(--grad-sky);
 }
 
 .list { margin-top: 22rpx; }
@@ -29,10 +27,11 @@
 .loading-state { margin-top: 22rpx; }
 .skeleton-card {
   background: var(--card);
-  border-radius: 24rpx;
+  border-radius: var(--r-lg);
   margin-bottom: 24rpx;
   overflow: hidden;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-md);
+  border: 1rpx solid rgba(255, 255, 255, 0.85);
 }
 .sk-cover {
   height: 200rpx;
@@ -67,12 +66,12 @@
   width: 180rpx;
   height: 180rpx;
   border-radius: 50%;
-  background: linear-gradient(135deg, #EAF1FF, #F3F7FF);
+  background: linear-gradient(135deg, var(--primary-lighter), var(--primary-light));
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(43, 108, 255, 0.10);
+  box-shadow: var(--shadow-blue);
 }
 .suitcase {
   width: 88rpx;
@@ -90,7 +89,7 @@
   transform: translateX(-50%);
   width: 34rpx;
   height: 18rpx;
-  border: 6rpx solid #D1DDFD;
+  border: 6rpx solid var(--primary-light);
   border-bottom: none;
   border-radius: 12rpx 12rpx 0 0;
 }
@@ -101,7 +100,7 @@
   transform: translateX(-50%);
   width: 12rpx;
   height: 100%;
-  background: #D1DDFD;
+  background: var(--primary-light);
 }
 .suitcase-tag {
   position: absolute;
@@ -109,7 +108,7 @@
   top: 18rpx;
   width: 22rpx;
   height: 14rpx;
-  background: #FF9F43;
+  background: var(--orange);
   border-radius: 4rpx;
   transform: rotate(-12deg);
 }
@@ -118,21 +117,22 @@
 .empty-btn {
   margin-top: 40rpx;
   padding: 22rpx 56rpx;
-  border-radius: 40rpx;
-  background: var(--primary);
+  border-radius: var(--r-full);
+  background: var(--grad-sky);
   color: #fff;
   font-size: 28rpx;
   font-weight: 600;
-  box-shadow: 0 8rpx 24rpx rgba(43, 108, 255, 0.28);
+  box-shadow: var(--shadow-blue);
 }
 .empty-btn:active { opacity: 0.9; transform: scale(0.98); }
 
 .trip-card {
   background: var(--card);
-  border-radius: 24rpx;
+  border-radius: var(--r-lg);
   margin-bottom: 24rpx;
   overflow: hidden;
-  box-shadow: 0 8rpx 24rpx rgba(59, 130, 246, 0.10);
+  box-shadow: var(--shadow-md);
+  border: 1rpx solid rgba(255, 255, 255, 0.85);
   transition: transform 0.15s ease-out;
 }
 .trip-card:active { transform: scale(0.985); }
@@ -141,7 +141,7 @@
 .tc-cover {
   position: relative;
   height: 200rpx;
-  background: linear-gradient(135deg, #60A5FA, #3B82F6);
+  background: var(--grad-sky);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -184,6 +184,6 @@
   color: var(--danger);
   background: var(--danger-light);
   padding: 8rpx 22rpx;
-  border-radius: 999rpx;
+  border-radius: var(--r-full);
 }
 .tc-del:active { opacity: 0.8; }

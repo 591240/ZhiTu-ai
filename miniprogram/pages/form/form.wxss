@@ -1,75 +1,51 @@
-/* form.wxss —— AI 表单规划页 WF-02（统一新色彩规范） */
+/* form.wxss —— AI 表单规划页 WF-02（统一高级感设计系统） */
 .page { padding: 0 32rpx; }
-.nav-title { font-size: 40rpx; font-weight: bold; padding: 24rpx 0 20rpx; color: var(--text-1); }
-.form { margin-top: 8rpx; }
-.field { padding: 20rpx 0; border-bottom: 2rpx solid var(--line); }
+
+.form { margin-top: 0; animation: fadeIn 0.4s ease-out both; }
+.field { padding: 22rpx 0; border-bottom: 2rpx solid var(--line); }
 .field:last-child { border-bottom: none; }
-.label { font-size: 28rpx; font-weight: bold; color: var(--text-1); margin-bottom: 16rpx; }
 
 .picker-val {
-  background: var(--bg);
-  border-radius: 12rpx;
-  padding: 20rpx 24rpx;
+  background: var(--card-soft);
+  border-radius: var(--r-md);
+  padding: 22rpx 26rpx;
   font-size: 28rpx;
   color: var(--text-1);
   min-height: 88rpx;
-  line-height: 48rpx;
+  line-height: 46rpx;
   box-sizing: border-box;
+  border: 1rpx solid var(--border);
+  transition: border-color 0.2s ease;
 }
+.picker-val:active { border-color: var(--primary); }
 .city-input { width: 100%; }
+
 .ph { color: var(--text-3); }
 
 .seg { display: flex; gap: 16rpx; }
 .seg.wrap { flex-wrap: wrap; }
-.seg-item {
-  flex: 1;
-  text-align: center;
-  padding: 18rpx 0;
-  border-radius: 12rpx;
-  background: var(--bg);
-  font-size: 26rpx;
-  color: var(--text-2);
-  transition: all 0.2s ease;
-}
-.seg-item:active { transform: scale(0.96); }
-.seg-item.on {
-  background: var(--primary);
-  color: #fff;
-  font-weight: bold;
-}
-.chip {
-  padding: 14rpx 28rpx;
-  border-radius: 16rpx;
-  background: var(--bg);
-  font-size: 26rpx;
-  color: var(--text-2);
-  transition: all 0.2s ease;
-}
-.chip:active { transform: scale(0.96); }
-.chip.on {
-  background: var(--primary-light);
-  color: var(--primary);
-  font-weight: bold;
-  border: 2rpx solid var(--primary);
-}
 
 .remark {
   width: 100%;
-  background: var(--bg);
-  border-radius: 12rpx;
-  padding: 20rpx;
+  background: var(--card-soft);
+  border-radius: var(--r-md);
+  padding: 22rpx;
   font-size: 26rpx;
-  height: 140rpx;
+  height: 160rpx;
+  line-height: 1.6;
   border: 1rpx solid var(--border);
+  transition: border-color 0.2s ease;
 }
+.remark:focus { border-color: var(--primary); }
 
 .stepper {
   display: inline-flex;
   align-items: center;
   gap: 24rpx;
-  background: var(--bg);
-  border-radius: 12rpx;
+  background: var(--card-soft);
+  border-radius: var(--r-md);
   padding: 8rpx 24rpx;
+  border: 1rpx solid var(--border);
 }
 .step-btn {
   width: 56rpx; height: 56rpx;
@@ -81,25 +57,28 @@
   font-size: 36rpx;
   font-weight: bold;
   border: 2rpx solid var(--primary-light);
+  box-shadow: var(--shadow-sm);
 }
-.step-btn:active { transform: scale(0.92); }
+.step-btn:active { transform: scale(0.92); background: var(--primary-lighter); }
 .step-num { font-size: 32rpx; font-weight: bold; color: var(--text-1); min-width: 40rpx; text-align: center; }
 
-.gen-btn { margin-top: 32rpx; }
+.gen-btn { margin-top: 36rpx; }
 
 .budget-row { align-items: stretch; gap: 16rpx; }
 .budget-input {
   flex: 1;
-  background: var(--bg);
-  border-radius: 12rpx;
-  padding: 20rpx 24rpx;
+  background: var(--card-soft);
+  border-radius: var(--r-md);
+  padding: 22rpx 26rpx;
   font-size: 28rpx;
   color: var(--text-1);
   text-align: center;
   min-height: 88rpx;
-  line-height: 48rpx;
+  line-height: 46rpx;
   box-sizing: border-box;
+  border: 1rpx solid var(--border);
 }
+.budget-input:focus { border-color: var(--primary); }
 .budget-sep {
   display: flex;
   align-items: center;

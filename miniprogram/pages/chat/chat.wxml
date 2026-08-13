@@ -8,6 +8,12 @@
     </view>
   </view>
 
+  <!-- 普通模式：页头 + Tab 切换 -->
+  <view wx:if="{{mode!=='adjust'}}" class="chat-header">
+    <view class="ch-h-title">AI 问一问</view>
+    <view class="ch-h-sub">你的专属行程助手</view>
+  </view>
+
   <!-- 普通模式才显示 Tab 切换 -->
   <view wx:if="{{mode!=='adjust'}}" class="tabs">
     <view class="tab {{activeTab===0?'on':''}}" bindtap="onTab" data-i="0">

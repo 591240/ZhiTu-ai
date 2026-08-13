@@ -6,7 +6,7 @@
   position: relative;
   margin: 0 -28rpx 24rpx;
   height: 340rpx;
-  background: linear-gradient(135deg, #60A5FA, #3B82F6);
+  background: var(--grad-sky);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,14 +66,14 @@
 .ghost:active { opacity: 0.85; }
 .primary {
   flex: 1;
-  background: linear-gradient(135deg, #60A5FA, #3B82F6);
+  background: var(--grad-sky);
   color: #fff;
   font-size: 30rpx;
   font-weight: 600;
   border-radius: 48rpx;
   padding: 24rpx 0;
   border: none;
-  box-shadow: 0 8rpx 20rpx rgba(59, 130, 246, 0.25);
+  box-shadow: var(--shadow-blue);
   transition: transform 0.15s ease-out;
 }
 .primary:active { transform: scale(0.98); }

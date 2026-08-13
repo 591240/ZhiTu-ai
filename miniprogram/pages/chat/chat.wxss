@@ -1,13 +1,22 @@
-/* chat.wxss —— 随便问对话页 WF-08（统一新色彩规范） */
+/* chat.wxss —— 随便问对话页 WF-08（统一高级感设计系统） */
 .page { display: flex; flex-direction: column; height: 100vh; background: var(--bg); }
+
+/* 页头 */
+.chat-header {
+  padding: 32rpx 32rpx 20rpx;
+  animation: fadeUp 0.5s ease-out both;
+}
+.ch-h-title { font-size: 40rpx; font-weight: 800; color: var(--text-1); letter-spacing: -0.5rpx; }
+.ch-h-sub { font-size: 24rpx; color: var(--text-3); margin-top: 8rpx; }
 
 /* 顶部 Tab：胶囊分段控制器 */
 .tabs {
   display: flex;
-  margin: 20rpx 32rpx 10rpx;
+  margin: 8rpx 32rpx 12rpx;
   padding: 6rpx;
-  background: #F0F2F6;
+  background: var(--card-soft);
   border-radius: 18rpx;
+  box-shadow: inset 0 1rpx 3rpx rgba(0, 0, 0, 0.04);
 }
 .tab {
   flex: 1;
@@ -22,10 +31,10 @@
   transition: all 0.2s ease;
 }
 .tab.on {
-  background: #fff;
-  color: var(--primary);
+  background: var(--grad-sky);
+  color: #fff;
   font-weight: 600;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-blue);
 }
 
 .tab-ico {
@@ -35,7 +44,7 @@
   background: var(--text-3);
   position: relative;
 }
-.tab.on .tab-ico { background: var(--primary); }
+.tab.on .tab-ico { background: #fff; }
 
 /* 随便问图标：小气泡 */
 .chat-ico { border-radius: 6rpx; }
@@ -99,8 +108,8 @@
   width: 140rpx;
   height: 140rpx;
   border-radius: 40rpx;
-  background: linear-gradient(135deg, #EAF1FF, #F3F7FF);
-  box-shadow: 0 8rpx 24rpx rgba(43, 108, 255, 0.12);
+  background: linear-gradient(135deg, var(--primary-lighter), var(--primary-light));
+  box-shadow: 0 8rpx 24rpx rgba(59, 130, 246, 0.14);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,7 +122,7 @@
   transform: translateX(-50%);
   width: 8rpx;
   height: 22rpx;
-  background: #D1DDFD;
+  background: var(--primary-light);
   border-radius: 4rpx;
 }
 .robot-antenna::after {
@@ -125,7 +134,7 @@
   width: 18rpx;
   height: 18rpx;
   border-radius: 50%;
-  background: #FF9F43;
+  background: var(--orange);
 }
 .robot-face {
   width: 88rpx;
@@ -153,7 +162,7 @@
   width: 26rpx;
   height: 8rpx;
   border-radius: 4rpx;
-  background: #D1DDFD;
+  background: var(--primary-light);
 }
 
 .eh-card {
@@ -161,8 +170,9 @@
   text-align: center;
   padding: 28rpx 48rpx;
   border-radius: 24rpx;
-  background: #fff;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+  background: var(--card);
+  box-shadow: var(--shadow-md);
+  border: 1rpx solid rgba(255, 255, 255, 0.85);
 }
 .eh-title {
   font-size: 32rpx;
@@ -187,10 +197,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #EAF1FF, #F3F7FF);
+  background: linear-gradient(135deg, var(--primary-lighter), var(--primary-light));
 }
 .ai-avatar {
-  box-shadow: 0 2rpx 8rpx rgba(43, 108, 255, 0.1);
+  box-shadow: 0 2rpx 8rpx rgba(59, 130, 246, 0.12);
 }
 .mini-robot {
   width: 36rpx;
@@ -211,7 +221,7 @@
   transform: translateX(-50%);
   width: 4rpx;
   height: 6rpx;
-  background: #D1DDFD;
+  background: var(--primary-light);
 }
 .mini-eye {
   width: 6rpx;
@@ -234,10 +244,10 @@
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 .msg-row.user .bubble {
-  background: linear-gradient(135deg, var(--primary), #4B85FF);
+  background: var(--grad-sky);
   color: #fff;
   border-top-right-radius: 8rpx;
-  box-shadow: 0 4rpx 16rpx rgba(43, 108, 255, 0.22);
+  box-shadow: var(--shadow-blue);
 }
 
 /* 快捷问题 */
@@ -263,16 +273,17 @@
   display: flex;
   align-items: flex-end;
   padding: 18rpx 24rpx calc(18rpx + env(safe-area-inset-bottom));
-  background: #fff;
+  background: var(--card);
   border-top: 1rpx solid var(--border);
 }
 .input-wrap {
   flex: 1;
-  background: #F5F6FA;
+  background: var(--card-soft);
   border-radius: 40rpx;
   padding: 10rpx 12rpx 10rpx 28rpx;
   display: flex;
   align-items: center;
+  border: 1rpx solid var(--border);
 }
 .bar-input {
   flex: 1;
@@ -287,7 +298,7 @@
   height: 72rpx;
   margin-left: 18rpx;
   border-radius: 50%;
-  background: #D1DDFD;
+  background: var(--primary-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -355,7 +366,8 @@
   border-radius: 20rpx;
   padding: 24rpx;
   margin-bottom: 22rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-md);
+  border: 1rpx solid rgba(255, 255, 255, 0.85);
 }
 .lug-group-title { font-size: 28rpx; font-weight: 700; color: var(--text-1); margin-bottom: 12rpx; }
 .lug-item {
@@ -376,10 +388,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
 }
 .check.on {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--grad-sky);
+  border-color: transparent;
 }
 .check-tick {
   width: 10rpx;
@@ -411,7 +424,8 @@
   border-radius: 20rpx;
   padding: 24rpx;
   margin-bottom: 26rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-md);
+  border: 1rpx solid rgba(255, 255, 255, 0.85);
 }
 .food-item {
   display: flex;

@@ -1,10 +1,18 @@
-/* profile.wxss —— 个人中心页 WF-09（统一新色彩规范） */
+/* profile.wxss —— 个人中心页 WF-09（统一高级感设计系统） */
 .page { padding: 0 32rpx; }
 
-.user-card {
+/* 个人信息横幅 */
+.profile-hero {
+  position: relative;
   display: flex;
   align-items: center;
-  padding: 40rpx 0 24rpx;
+  padding: 44rpx 32rpx;
+  margin-bottom: 28rpx;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--grad-sky);
+  color: #fff;
+  box-shadow: var(--shadow-blue);
 }
 .avatar-btn {
   width: 112rpx;
@@ -12,74 +20,86 @@
   border-radius: 50%;
   padding: 0;
   margin: 0;
-  background: transparent;
-  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  border: 4rpx solid rgba(255, 255, 255, 0.5);
   line-height: normal;
   overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.15);
 }
 .avatar-btn::after { border: none; }
 .avatar-img {
-  width: 112rpx;
-  height: 112rpx;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  background: #E5E7EB;
 }
 .avatar-fallback {
-  width: 112rpx;
-  height: 112rpx;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  background: linear-gradient(135deg, #60A5FA, #3B82F6);
+  background: rgba(255, 255, 255, 0.25);
   color: #fff;
   font-size: 48rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.u-info { margin-left: 24rpx; flex: 1; }
-.u-name { font-size: 36rpx; font-weight: bold; color: var(--text-1); display: flex; align-items: center; }
+.u-info { margin-left: 24rpx; flex: 1; min-width: 0; }
+.u-name {
+  font-size: 38rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
 .nickname-input {
-  min-width: 200rpx;
+  min-width: 160rpx;
   max-width: 360rpx;
-  font-size: 36rpx;
-  font-weight: bold;
-  color: var(--text-1);
+  font-size: 38rpx;
+  font-weight: 800;
+  color: #fff;
   height: 56rpx;
   line-height: 56rpx;
 }
-.vip-badge {
-  font-size: 20rpx;
-  color: #fff;
-  background: linear-gradient(135deg, #D4A951, #B8923D);
-  padding: 2rpx 12rpx;
-  border-radius: 20rpx;
-  margin-left: 14rpx;
-  font-weight: bold;
-}
-.u-city { font-size: 24rpx; color: var(--text-3); margin-top: 10rpx; }
+.nickname-input::-webkit-input-placeholder { color: rgba(255, 255, 255, 0.7); }
+.u-city { font-size: 24rpx; color: rgba(255, 255, 255, 0.9); margin-top: 10rpx; }
 
+/* 数据统计 */
 .stats {
   display: flex;
   align-items: center;
-  margin-top: 16rpx;
-  padding: 32rpx 0;
+  margin-top: 0;
+  padding: 36rpx 0;
 }
 .stat { flex: 1; text-align: center; }
-.stat-num { font-size: 44rpx; font-weight: bold; color: var(--primary); }
+.stat-num { font-size: 46rpx; font-weight: 800; color: var(--primary); }
 .stat-label { font-size: 24rpx; color: var(--text-3); margin-top: 8rpx; }
-.divider { width: 2rpx; height: 60rpx; background: var(--line); }
+.divider { width: 2rpx; height: 60rpx; background: var(--divider); }
 
+/* 功能菜单 */
 .menu { margin-top: 24rpx; padding: 8rpx 24rpx; }
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 28rpx 0;
+  padding: 30rpx 0;
   border-bottom: 2rpx solid var(--line);
+  transition: background 0.15s ease-out;
 }
+.menu-item:active { background: var(--card-soft); border-radius: var(--r-md); }
 .menu-item:last-child { border-bottom: none; }
-.mi-ico { font-size: 36rpx; margin-right: 20rpx; }
-.mi-name { flex: 1; font-size: 30rpx; color: var(--text-1); }
+.mi-ico {
+  font-size: 36rpx;
+  margin-right: 20rpx;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 16rpx;
+  background: var(--primary-lighter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mi-name { flex: 1; font-size: 30rpx; color: var(--text-1); font-weight: 500; }
 .mi-arrow { color: var(--text-4); font-size: 36rpx; }
-.vip-item .mi-name { color: var(--gold-start); font-weight: bold; }
 
 .version {
   text-align: center;
@@ -87,20 +107,3 @@
   font-size: 22rpx;
   margin-top: 48rpx;
 }
-
-/* 手机号菜单项：用 button 触发 getPhoneNumber，去默认样式伪装成菜单项 */
-.phone-item {
-  width: 100%;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  line-height: normal;
-  padding: 28rpx 0;
-  margin: 0;
-  text-align: left;
-  font-size: 30rpx;
-  color: var(--text-1);
-  box-sizing: border-box;
-}
-.phone-item::after { border: none; }
-.mi-val { color: var(--text-3); font-size: 28rpx; margin-right: 12rpx; }

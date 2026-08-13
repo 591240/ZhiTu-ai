@@ -1,4 +1,11 @@
 <view class="page">
+  <view class="page-header anim-up">
+    <view class="ph-badge">模板广场</view>
+    <view class="ph-title">我的发布</view>
+    <view class="ph-sub">分享你的私藏路线</view>
+    <view class="ph-decor"></view>
+  </view>
+
   <view wx:if="{{loading}}" class="loading">加载中…</view>
   <view wx:elif="{{list.length===0}}" class="empty">你还没有发布模板</view>
   <view class="tpl-list">

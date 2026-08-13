@@ -176,3 +176,153 @@ view, text, scroll-view, button, input, textarea, image { box-sizing: border-box
   transition: border-color 0.2s ease;
 }
 .input-primary:focus { border-color: var(--primary); }
+
+/* === 页头（子页面统一高级感） === */
+.page-header {
+  position: relative;
+  border-radius: var(--r-lg);
+  padding: 40rpx 36rpx 44rpx;
+  margin-bottom: 28rpx;
+  overflow: hidden;
+  background: var(--grad-sky);
+  color: #fff;
+  box-shadow: var(--shadow-blue);
+}
+.page-header.dusk { background: var(--grad-dusk); box-shadow: 0 12rpx 40rpx rgba(48, 207, 208, 0.28); }
+.page-header.ocean { background: var(--grad-ocean); box-shadow: 0 12rpx 40rpx rgba(79, 172, 254, 0.3); }
+.page-header.sunset { background: var(--grad-sunset); box-shadow: 0 12rpx 40rpx rgba(250, 112, 154, 0.3); }
+.ph-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #E0E7FF;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1rpx solid rgba(255, 255, 255, 0.28);
+  padding: 10rpx 20rpx;
+  border-radius: var(--r-full);
+  backdrop-filter: blur(4px);
+  margin-bottom: 18rpx;
+}
+.ph-badge::before {
+  content: '';
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #7CF0C8;
+  margin-right: 10rpx;
+  box-shadow: 0 0 12rpx #7CF0C8;
+}
+.ph-title {
+  font-size: 44rpx;
+  font-weight: 800;
+  letter-spacing: 0.5rpx;
+}
+.ph-sub {
+  font-size: 26rpx;
+  opacity: 0.9;
+  margin-top: 12rpx;
+}
+.ph-decor {
+  position: absolute;
+  right: -60rpx;
+  bottom: -70rpx;
+  width: 320rpx;
+  height: 320rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+
+/* === 玻璃卡（高级感统一卡片） === */
+.glass {
+  background: var(--card);
+  border-radius: var(--r-lg);
+  padding: 32rpx;
+  box-shadow: var(--shadow-md);
+  border: 1rpx solid rgba(255, 255, 255, 0.85);
+}
+
+/* === 分段控件（统一胶囊） === */
+.seg-pill {
+  display: flex;
+  gap: 12rpx;
+}
+.seg-pill .seg-item {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 0;
+  border-radius: var(--r-md);
+  background: var(--card-soft);
+  font-size: 26rpx;
+  color: var(--text-2);
+  border: 1rpx solid var(--border);
+  transition: all 0.2s ease;
+}
+.seg-pill .seg-item:active { transform: scale(0.96); }
+.seg-pill .seg-item.on {
+  background: var(--grad-sky);
+  color: #fff;
+  font-weight: 600;
+  border-color: transparent;
+  box-shadow: var(--shadow-blue);
+}
+
+/* === 统一分段 chip === */
+.chip-pill {
+  padding: 14rpx 28rpx;
+  border-radius: var(--r-full);
+  background: var(--card-soft);
+  font-size: 26rpx;
+  color: var(--text-2);
+  border: 1rpx solid var(--border);
+  transition: all 0.2s ease;
+}
+.chip-pill:active { transform: scale(0.96); }
+.chip-pill.on {
+  background: var(--primary-lighter);
+  color: var(--primary);
+  font-weight: 600;
+  border-color: var(--primary);
+}
+
+/* === 字段标签（带色点） === */
+.f-label {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--text-1);
+  margin-bottom: 16rpx;
+}
+.f-label::before {
+  content: '';
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: var(--primary);
+  margin-right: 14rpx;
+  box-shadow: 0 0 8rpx rgba(59, 130, 246, 0.5);
+}
+
+/* === 入场动画 === */
+.anim-up { animation: fadeUp 0.5s ease-out both; }
+.anim-up.d1 { animation-delay: 0.06s; }
+.anim-up.d2 { animation-delay: 0.12s; }
+.anim-up.d3 { animation-delay: 0.18s; }
+.anim-up.d4 { animation-delay: 0.24s; }
+.anim-up.d5 { animation-delay: 0.30s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.78); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-up, .hero, .grid, .service-grid, .tpl-scroll { animation: none !important; }
+}
