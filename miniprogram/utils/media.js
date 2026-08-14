@@ -1,11 +1,6 @@
 // utils/media.js —— 景点封面图与第三方平台跳转
 // 封面图：按景点名取真实照片（loremflickr，免 key，稳定 hash 防抖）。
-// 平台跳转：
-//   · 抖音/小红书：复制搜索词，用户打开对应 App 后粘贴搜索
-//   · 微信视频号：配置 finderUserName 后直接拉起视频号主页
-
-// 视频号主页 ID（sph_xxx 或 finderUserName），配置后点击「微信视频号」可直接跳转
-const CHANNELS_FINDER_USER_NAME = ''
+// 平台跳转：抖音/小红书 复制搜索词，用户打开对应 App 后粘贴搜索
 
 // 简单字符串 hash，用于锁定同一景点每次取到同一张图
 function hashStr(s) {
@@ -67,7 +62,6 @@ function platformSearchKeyword(platform, name) {
   const n = (name || '该景点').trim()
   if (platform === 'douyin') return `${n}攻略`
   if (platform === 'xiaohongshu') return `${n}攻略`
-  if (platform === 'channels') return `${n}视频号`
   return ''
 }
 
@@ -83,47 +77,11 @@ function platformSearchUrl(platform, name) {
 function openPlatform(name) {
   const n = (name || '该景点').trim()
   wx.showActionSheet({
-    itemList: ['抖音', '小红书', '微信视频号'],
+    itemList: ['抖音', '小红书'],
     success: (res) => {
-      const map = ['douyin', 'xiaohongshu', 'channels']
+      const map = ['douyin', 'xiaohongshu']
       const platform = map[res.tapIndex]
-      const label = platform === 'douyin' ? '抖音' : platform === 'xiaohongshu' ? '小红书' : '微信视频号'
-
-      // 微信视频号：配置 finderUserName 后直接拉起主页
-      if (platform === 'channels') {
-        if (!CHANNELS_FINDER_USER_NAME) {
-          wx.showModal({
-            title: '视频号未配置',
-            content: '请在 utils/media.js 顶部设置 CHANNELS_FINDER_USER_NAME 为你的视频号 ID（如 sph_xxx），即可直接拉起视频号主页。',
-            showCancel: false,
-            confirmText: '知道了'
-          })
-          return
-        }
-        if (!wx.openChannelsUserProfile) {
-          wx.showModal({
-            title: '版本不支持',
-            content: '当前微信版本不支持直接打开视频号。',
-            showCancel: false,
-            confirmText: '知道了'
-          })
-          return
-        }
-        wx.openChannelsUserProfile({
-          finderUserName: CHANNELS_FINDER_USER_NAME,
-          success: () => {},
-          fail: (err) => {
-            console.error('openChannelsUserProfile fail', err)
-            wx.showModal({
-              title: '跳转失败',
-              content: '无法直接打开视频号，请检查视频号 ID 是否正确。',
-              showCancel: false,
-              confirmText: '知道了'
-            })
-          }
-        })
-        return
-      }
+      const label = platform === 'douyin' ? '抖音' : '小红书'
 
       // 抖音/小红书：复制搜索词
       const keyword = platformSearchKeyword(platform, n)
