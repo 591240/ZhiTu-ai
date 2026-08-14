@@ -165,7 +165,7 @@ function ticketChannels(spot) {
     { key: 'dianping', name: '大众点评', note: '看评价 · 买票团购', search: `https://www.dianping.com/search?q=${encodeURIComponent(name + ' 门票')}`, appId: 'wx734c1ad7b3562129', keyword: name + ' 门票' },
     { key: 'fliggy', name: '飞猪', note: '阿里会员价', search: `https://www.fliggy.com/search?q=${encodeURIComponent(name + ' 门票')}`, keyword: name + ' 门票' },
     { key: 'tongcheng', name: '同程旅行', note: '周边游常用', search: `https://www.ly.com/search?q=${encodeURIComponent(name + ' 门票')}`, keyword: name + ' 门票' },
-    { key: 'douyin', name: '抖音团购', note: '节假日常更便宜', search: `https://www.douyin.com/search/${encodeURIComponent(name + ' 团购')}`, keyword: name + ' 团购' }
+    { key: 'douyin', name: '抖音团购', note: '节假日常更便宜', search: `https://www.douyin.com/search/${encodeURIComponent(name + ' 团购')}`, keyword: name + ' 门票' }
   ]
   ota.forEach((c) => channels.push(Object.assign({ recommend: false, kind: 'search' }, c)))
   return channels
@@ -193,13 +193,14 @@ function chooseTicketChannel(ch) {
     openMiniProgramSearch(ch.appId, ch.name, ch.keyword || '')
     return
   }
-  // 不支持小程序的 OTA（飞猪/同程/抖音/小红书）复制搜索链接
+  // 不支持小程序的 OTA（飞猪/同程/抖音/小红书）复制搜索词，用户到 App 内粘贴搜索
+  const kw = ch.keyword || (ch.search || '')
   wx.setClipboardData({
-    data: ch.search,
+    data: kw,
     success: () => {
       wx.showModal({
-        title: `已复制${ch.name}搜索链接`,
-        content: `请在${ch.name}App 或浏览器粘贴打开，对比「${ch.name}」上的票价后再下单。`,
+        title: `已复制${ch.name}搜索词`,
+        content: `请打开${ch.name} → 粘贴搜索「${kw}」，对比票价后再下单。`,
         showCancel: false,
         confirmText: '知道了'
       })
