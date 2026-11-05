@@ -12,6 +12,8 @@ import os
 import shutil
 import tempfile
 
+from fastapi.concurrency import run_in_threadpool
+
 from app.ai.vision_client import vision_client
 from app.config import settings
 from app.services import plan_service
@@ -58,8 +60,10 @@ class OcrService:
                 logger.warning("视觉模型行程解析异常，回退示例：%s", data)
             except Exception:
                 logger.exception("行程识别异常，回退示例")
-        # 示例数据
-        trip = plan_service.gen_trip({"city": "杭州", "days": 2, "route_type": "popular"})
+        # 示例数据（gen_trip 会打外部接口，必须离开事件循环）
+        trip = await run_in_threadpool(
+            plan_service.gen_trip, {"city": "杭州", "days": 2, "route_type": "popular"}
+        )
         return {
             "mode": "itinerary",
             "media_type": media_type,
@@ -104,31 +108,31 @@ class OcrService:
                 {"name": "三潭印月", "category": "网红打卡", "reason": "需乘船登岛，一元纸币背面取景地", "duration_min": 120, "ticket_price": 55},
                 {"name": "河坊街", "category": "美食", "reason": "南宋御街，小吃与老字号云集", "duration_min": 100, "ticket_price": 0},
             ],
-            "trip": {"id": "ocr", **plan_service.gen_trip({"city": "杭州", "days": 2, "route_type": "popular"})},
+            "trip": {"id": "ocr", **await run_in_threadpool(
+                plan_service.gen_trip, {"city": "杭州", "days": 2, "route_type": "popular"}
+            )},
         }
 
     # ---------- 工具 ----------
     async def _build_trip(self, city: str, days: int) -> dict:
         """用现有 AI 行程服务基于识别出的城市生成一份行程。"""
         try:
-            from types import SimpleNamespace
+            from app.schemas import PlanFormReq
 
-            fake_req = SimpleNamespace(
-                dict=lambda: {
-                    "city": city,
-                    "days": days,
-                    "crowd_type": "朋友",
-                    "budget_level": "舒适",
-                    "preferences": [],
-                    "transport_mode": "地铁",
-                    "route_type": "popular",
-                    "remark": "由图片/视频识别自动生成",
-                }
+            req = PlanFormReq(
+                city=city,
+                days=days,
+                crowd_type="朋友",
+                transport_mode="地铁",
+                route_type="popular",
+                remark="由图片/视频识别自动生成",
             )
-            return await plan_service.PlanService().generate_from_form(fake_req)
+            return await plan_service.PlanService().generate_from_form(req)
         except Exception:
             logger.exception("基于识别结果生成行程失败，退回示例")
-            return plan_service.gen_trip({"city": city, "days": days, "route_type": "popular"})
+            return await run_in_threadpool(
+                plan_service.gen_trip, {"city": city, "days": days, "route_type": "popular"}
+            )
 
     def _extract_frames(self, video_bytes: bytes) -> list[bytes]:
         """从视频抽帧（best-effort）。无 ffmpeg 时返回空列表，由调用方回退示例。"""

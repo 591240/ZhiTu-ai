@@ -18,32 +18,41 @@
     "pages/manual/manual",
     "pages/ocr/ocr",
     "pages/ticket/ticket",
-    "pages/navig/navig"
+    "pages/navig/navig",
+    "pages/member/member",
+    "pages/bind-phone/bind-phone",
+    "pages/invite/invite"
   ],
   "window": {
     "navigationBarBackgroundColor": "#FFFFFF",
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "知途 AI 旅行",
-    "backgroundColor": "#F5F6FA",
+    "backgroundColor": "#F2F2F7",
     "backgroundTextStyle": "light"
   },
   "tabBar": {
     "color": "#999999",
-    "selectedColor": "#3B82F6",
+    "selectedColor": "#4A90D9",
     "backgroundColor": "#FFFFFF",
     "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "images/tabbar/home.png",
+        "selectedIconPath": "images/tabbar/home-selected.png"
       },
       {
         "pagePath": "pages/trips/trips",
-        "text": "我的行程"
+        "text": "我的行程",
+        "iconPath": "images/tabbar/trips.png",
+        "selectedIconPath": "images/tabbar/trips-selected.png"
       },
       {
         "pagePath": "pages/profile/profile",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "images/tabbar/profile.png",
+        "selectedIconPath": "images/tabbar/profile-selected.png"
       }
     ]
   },
@@ -58,11 +67,9 @@
     }
   },
   "navigateToMiniProgramAppIdList": [
-    "wx761430a892e5b19f",
+    "wxca942bbff22e0e51",
     "wxaf35009675aa0b2a",
     "wx0e6ed4f51db9d078",
-    "wxde8ac0a21135c07d",
-    "wxb84362f15c06b3f2",
-    "wx734c1ad7b3562129"
+    "wxde8ac0a21135c07d"
   ]
 }

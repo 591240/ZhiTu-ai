@@ -43,9 +43,12 @@ Page({
     try {
       const r = await request({ url: '/api/user/me' })
       if (r.code === 0 && r.data) {
-        storage.setUser(r.data)
-        app.globalData.userInfo = r.data
-        this.setData({ user: r.data, isVip: r.data.is_vip })
+        const user = auth.normalizeUser(r.data)
+        storage.setUser(user)
+        storage.setIsVip(user.isVip)
+        app.globalData.userInfo = user
+        app.globalData.isVip = user.isVip
+        this.setData({ user, isVip: user.isVip })
       }
     } catch (e) {}
   },
@@ -54,12 +57,13 @@ Page({
     try {
       const r = await request({ url: '/api/user/profile', method: 'POST', data: payload })
       if (r.code === 0 && r.data) {
-        storage.setUser(r.data)
-        app.globalData.userInfo = r.data
-        this.setData({ user: r.data })
+        const user = auth.normalizeUser(r.data)
+        storage.setUser(user)
+        app.globalData.userInfo = user
+        this.setData({ user })
       }
     } catch (e) {
-      wx.showToast({ title: '更新失败', icon: 'none' })
+      // request 层已提示具体原因（如内容安全拦截）
     }
   },
 
@@ -122,7 +126,13 @@ Page({
   goCollection() { wx.navigateTo({ url: '/pages/collection/collection' }) },
   goPublished() { wx.navigateTo({ url: '/pages/published/published' }) },
   goSettings() { wx.navigateTo({ url: '/pages/settings/settings' }) },
-  goInvite() { wx.showToast({ title: '邀请功能暂未开放', icon: 'none' }) },
+  goInvite() {
+    if (!monetizationEnabled) {
+      wx.showToast({ title: '邀请返佣暂未开放', icon: 'none' })
+      return
+    }
+    wx.navigateTo({ url: '/pages/invite/invite' })
+  },
   onShare() { wx.showToast({ title: '分享功能开发中', icon: 'none' }) },
   onService() { wx.showToast({ title: '客服功能开发中', icon: 'none' }) }
 })

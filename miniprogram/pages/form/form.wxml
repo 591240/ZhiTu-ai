@@ -82,6 +82,11 @@ module.exports = { inArray: inArray }
     </view>
 
     <view class="field">
+      <view class="f-label">必看风景 / 必去地点</view>
+      <textarea class="remark" placeholder="例如：西湖、灵隐寺、法喜寺；或“想看日出/日落”" value="{{mustSee}}" bindinput="onMustSee" maxlength="200"></textarea>
+    </view>
+
+    <view class="field">
       <view class="f-label">市内交通方式</view>
       <view class="seg wrap">
         <view wx:for="{{TRANSPORT}}" wx:key="*this" class="chip-pill {{transportIndex === index ? 'on' : ''}}" data-i="{{index}}" bindtap="setTransport">{{item}}</view>

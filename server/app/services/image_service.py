@@ -4,6 +4,7 @@
 
 import hashlib
 import logging
+import time
 from urllib.parse import quote
 
 import requests
@@ -12,38 +13,57 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
-# 本地内存缓存：避免同一进程内重复请求高德接口
-# value 为 dict {"image": str|None, "location": "lng,lat"|None}
-_spot_cache: dict[str, dict | None] = {}
+# 本地内存缓存：避免同一进程内重复请求高德接口。
+# 带 TTL 是因为「查不到」也会被缓存——没有 TTL 时一次网络抖动就会让该景点
+# 永久无图无坐标，直到重启进程。
+CACHE_TTL = 6 * 3600
+CACHE_MAX = 2000
+# value: (写入时间戳, dict|None)
+_spot_cache: dict[str, tuple[float, dict | None]] = {}
 
 
 def _cache_key(name: str, city: str = "") -> str:
     return hashlib.md5(f"{city}|{name}".encode("utf-8")).hexdigest()
 
 
+def _cache_get(key: str):
+    hit = _spot_cache.get(key)
+    if not hit:
+        return False, None
+    if time.time() - hit[0] > CACHE_TTL:
+        _spot_cache.pop(key, None)
+        return False, None
+    return True, hit[1]
+
+
+def _cache_put(key: str, value):
+    if len(_spot_cache) >= CACHE_MAX:
+        # 简单清理：按写入时间丢掉最旧的一半，避免无界增长
+        oldest = sorted(_spot_cache.items(), key=lambda kv: kv[1][0])[: CACHE_MAX // 2]
+        for k, _ in oldest:
+            _spot_cache.pop(k, None)
+    _spot_cache[key] = (time.time(), value)
+
+
 def _pick_image(pois: list) -> str | None:
-    """从 POI 列表里挑一张可用的真实图片 URL（统一返回 https，适配小程序真机）。"""
+    """从 POI 列表里挑一张真实图片 URL（统一返回 https，适配小程序真机）。
+
+    这里刻意不再对每张候选图发 HEAD 探测：一次 POI 查询最多 N 张图，
+    每张 3s 超时，在规划链路里是纯阻塞放大（而且这个函数跑在线程池里，
+    占的是宝贵的 worker 线程）。图片加载失败前端有 binderror 兜底。
+    """
     if not pois:
         return None
     photos = pois[0].get("photos") or []
-    candidates = []
+    autonavi, others = [], []
     for photo in photos:
         img_url = photo.get("url")
         if not img_url or not str(img_url).startswith("http"):
             continue
         # 微信真机默认禁止 http 图片，统一升级为 https
         img_url = str(img_url).replace("http://", "https://", 1)
-        if "store.is.autonavi.com" in img_url:
-            candidates.insert(0, img_url)
-        else:
-            candidates.append(img_url)
-    for img_url in candidates:
-        try:
-            head = requests.head(img_url, timeout=8, headers={"User-Agent": "Mozilla/5.0"})
-            if head.status_code == 200:
-                return img_url
-        except Exception:
-            continue
+        (autonavi if "store.is.autonavi.com" in img_url else others).append(img_url)
+    candidates = autonavi + others
     return candidates[0] if candidates else None
 
 
@@ -72,8 +92,9 @@ def get_spot_info(name: str, city: str = "") -> dict | None:
     if not settings.gaode_web_key:
         return None
     key = _cache_key(name, city)
-    if key in _spot_cache:
-        return _spot_cache[key]
+    hit, cached = _cache_get(key)
+    if hit:
+        return cached
 
     try:
         url = (
@@ -84,26 +105,26 @@ def get_spot_info(name: str, city: str = "") -> dict | None:
             f"&offset=1"
             f"&extensions=all"
         )
-        r = requests.get(url, timeout=12)
+        r = requests.get(url, timeout=5)
         r.raise_for_status()
         data = r.json()
         if str(data.get("status")) != "1":
             logger.warning("高德 POI 搜索失败: %s", data.get("info"))
-            _spot_cache[key] = None
+            _cache_put(key, None)
             return None
         pois = data.get("pois") or []
         if not pois:
-            _spot_cache[key] = None
+            _cache_put(key, None)
             return None
         result = {
             "image": _pick_image(pois),
             "location": _parse_location(pois[0]),
         }
-        _spot_cache[key] = result
+        _cache_put(key, result)
         return result
     except Exception:
         logger.exception("获取景点信息失败: %s / %s", city, name)
-        _spot_cache[key] = None
+        _cache_put(key, None)
         return None
 
 

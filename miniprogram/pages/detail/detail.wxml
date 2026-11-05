@@ -6,7 +6,13 @@ module.exports = { slotLabel: slotLabel, mealLabel: mealLabel, idx: idx };
 </wxs>
 
 <view class="page" wx:if="{{trip}}">
+  <!-- 全屏城市背景图（方案C：大图背景 + 半透明卡片） -->
+  <image class="bg-fixed" src="{{headImage}}" mode="aspectFill" binderror="onHeadError" />
+  <view class="bg-overlay"></view>
+
   <view class="d-head">
+    <image class="d-head-bg" src="{{headImage}}" mode="aspectFill" binderror="onHeadError" />
+    <view class="d-head-mask"></view>
     <view class="d-title">{{trip.title}}</view>
     <view class="d-sub">{{trip.city}} · {{trip.days}}天 · <route-tag type="{{trip.route_type}}" /></view>
     <view wx:if="{{!editing}}" class="edit-entry" bindtap="enterEdit">✏️ 编辑</view>
@@ -73,7 +79,7 @@ module.exports = { slotLabel: slotLabel, mealLabel: mealLabel, idx: idx };
         <text class="mini-link" bindtap="goNavigate">导航 ›</text>
       </view>
       <view class="timeline">
-        <block wx:for="{{timeline}}" wx:key="type" wx:for-index="ti">
+        <block wx:for="{{timeline}}" wx:key="tid" wx:for-index="ti">
           <view wx:if="{{item.type === 'transport'}}" class="tl-trans">
             <view class="tl-time"></view>
             <view class="tl-axis"><view class="tl-dot sm"></view></view>
@@ -113,28 +119,52 @@ module.exports = { slotLabel: slotLabel, mealLabel: mealLabel, idx: idx };
                   <view class="sp-desc">{{item.data.description}}</view>
                   <view class="sp-foot">
                     <text class="sp-meta">⏱ {{item.data.duration_min}}分钟</text>
+                    <text class="sp-act media" bindtap="onSpotMedia" data-name="{{item.data.name}}">视频/攻略 ›</text>
                   </view>
-                  <view class="sp-acts">
-                    <text wx:if="{{item.data.ticket_price > 0}}" class="sp-act buy {{item.data.ticket_channel ? 'rec' : ''}}" data-di="{{dayIndex}}" data-si="{{item._i}}" bindtap="onSpotTicket">
-                      <block wx:if="{{item.data.ticket_channel}}">AI推荐 ¥{{item.data.best_price || item.data.ticket_price}} · 去{{item.data.ticket_channel}}购买 ›</block>
-                      <block wx:else>购票/查低价 ›</block>
-                    </text>
-                    <text wx:if="{{item.data.need_booking}}" class="sp-act book" data-di="{{dayIndex}}" data-si="{{item._i}}" bindtap="onSpotBooking">预约/购票 ›</text>
-                    <text class="sp-act" bindtap="onSpotMedia" data-name="{{item.data.name}}">看视频/攻略 ›</text>
+
+                  <!-- 拍照攻略 + 美食攻略 双栏 -->
+                  <view wx:if="{{item.data.firstPhotoSpot || item.data.firstNearMeal}}" class="guide-card">
+                    <view wx:if="{{item.data.firstPhotoSpot}}" class="guide-col guide-photo">
+                      <view class="gc-title">📸 拍照攻略</view>
+                      <view class="gc-item">
+                        <view class="gc-head">
+                          <text class="gc-pos">{{item.data.firstPhotoSpot.position}}</text>
+                          <text class="gc-tag">{{item.data.firstPhotoSpot.best_time}}</text>
+                        </view>
+                        <view class="gc-body">{{item.data.firstPhotoSpot.tip}}</view>
+                        <view wx:if="{{item.data.firstPhotoSpot.avoid_crowd || item.data.firstPhotoSpot.day_night || item.data.firstPhotoSpot.suitable_for}}" class="gc-foot">
+                          <text wx:if="{{item.data.firstPhotoSpot.avoid_crowd}}" class="gc-pill">避峰：{{item.data.firstPhotoSpot.avoid_crowd}}</text>
+                          <text wx:if="{{item.data.firstPhotoSpot.day_night}}" class="gc-pill">{{item.data.firstPhotoSpot.day_night}}景</text>
+                          <text wx:if="{{item.data.firstPhotoSpot.suitable_for}}" class="gc-pill">适合{{item.data.firstPhotoSpot.suitable_for}}</text>
+                        </view>
+                      </view>
+                    </view>
+                    <view wx:if="{{item.data.firstNearMeal}}" class="guide-col guide-food">
+                      <view class="gc-title">🍽 美食攻略</view>
+                      <view class="gc-item">
+                        <view class="gc-head">
+                          <text class="gc-pos">{{item.data.firstNearMeal.name}}</text>
+                          <text class="gc-tag">{{item.data.firstNearMeal.type === 'breakfast' ? '早餐' : (item.data.firstNearMeal.type === 'dinner' ? '晚餐' : '午餐')}}</text>
+                        </view>
+                        <view class="gc-body">特色：{{item.data.firstNearMeal.specialty || '当地热门餐厅'}} · 人均 ¥{{item.data.firstNearMeal.avg_price}}</view>
+                        <view wx:if="{{item.data.firstNearMeal.deal_channel}}" class="gc-foot">
+                          <text class="gc-pill">推荐{{item.data.firstNearMeal.deal_channel}}团购</text>
+                        </view>
+                      </view>
+                    </view>
                   </view>
-                  <view wx:if="{{item.data.photo_spots.length}}" class="photo-card">
-                    <view class="pc-title">📸 拍照攻略</view>
-                    <view wx:for="{{item.data.photo_spots}}" wx:for-item="ps" wx:key="position" class="pc-item">
-                      <view class="pc-head">
-                        <text class="pc-pos">{{ps.position}}</text>
-                        <text class="pc-tag">{{ps.best_time}}</text>
-                      </view>
-                      <view class="pc-tip">{{ps.tip}}</view>
-                      <view class="pc-foot">
-                        <text wx:if="{{ps.avoid_crowd}}" class="pc-pill">避峰：{{ps.avoid_crowd}}</text>
-                        <text wx:if="{{ps.day_night}}" class="pc-pill">{{ps.day_night}}景</text>
-                        <text wx:if="{{ps.suitable_for}}" class="pc-pill">适合{{ps.suitable_for}}</text>
-                      </view>
+
+                  <!-- 公众号预约 + 门票购买 大按钮 -->
+                  <view class="spot-bottom-actions">
+                    <view wx:if="{{item.data.need_booking}}" class="sba-btn book" data-di="{{dayIndex}}" data-si="{{item._i}}" bindtap="onSpotBooking">
+                      <text class="sba-ico">📅</text>
+                      <text class="sba-text">公众号预约</text>
+                      <text class="sba-note">{{item.data.booking_name || '官方预约'}}</text>
+                    </view>
+                    <view wx:if="{{item.data.ticket_price > 0}}" class="sba-btn buy {{item.data.ticket_channel ? 'rec' : ''}}" data-di="{{dayIndex}}" data-si="{{item._i}}" bindtap="onSpotTicket">
+                      <text class="sba-ico">🎫</text>
+                      <text class="sba-text">门票购买</text>
+                      <text class="sba-note">{{item.data.ticket_channel ? ('AI推荐 ' + (item.data.best_price || item.data.ticket_price) + '元 · ' + item.data.ticket_channel) : ('约 ¥' + (item.data.best_price || item.data.ticket_price))}}</text>
                     </view>
                   </view>
                 </view>

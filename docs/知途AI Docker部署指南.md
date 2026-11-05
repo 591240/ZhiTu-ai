@@ -11,18 +11,18 @@
 | --- | --- | --- | --- |
 | `mysql` | mysql:8.0 | 业务数据库 `zhisuibanyou` | 仅 `127.0.0.1:3307`（SSH 隧道用） |
 | `redis` | redis:7-alpine | 缓存 / 限流 / 扩展能力 | 仅 Compose 内网 |
+| `milvus` | 自构建（`milvus/Dockerfile`，python:3.11-slim + milvus-lite） | RAG 向量库：存 1024 维向量与 city/name/kind/text/meta 标量字段，对外是标准 Milvus gRPC 协议 | 仅 Compose 内网 `19530` |
 | `backend` | 自构建（python:3.11-slim） | FastAPI 接口、AI 规划、OCR、问答 | 仅内网 `8000` |
-| `frontend` | 自构建（nginx:alpine） | Vue3 运营/自检面板 + 反代 `/api` | 公网 `8081` |
+| `gateway` | 自构建（`gateway/Dockerfile`，Nginx） | 反向代理 `/api/*`、`/static/*` → backend；`/nginx-health` 探活；`/api/chat/`、`/api/plan/` 单独配 SSE 不缓冲 | 仅 `127.0.0.1:8081` |
 
-> **多项目共存说明**：当前服务器 `114.132.239.20` 已部署「高保真项目」并占用 `80`、`3306` 等常规端口，因此本方案将知途AI的 frontend 映射到 `8081`，MySQL 映射到 `3307`，避免端口冲突。后续若要为知途AI配置独立域名，可在服务器外层 Nginx（或腾讯 CLB）做反向代理到 `127.0.0.1:8081`。
+> **多项目共存说明**：当前服务器 `114.132.239.20` 已部署「高保真项目」并占用 `80`、`3306` 等常规端口，因此本方案将 gateway 映射到 `127.0.0.1:8081`、MySQL 映射到 `3307`，避免端口冲突。知途AI 的公网入口由**宿主机 Nginx**（80/443 + 已备案域名 + TLS）反代到 `127.0.0.1:8081`，容器本身不直接对公网。
 
-> **关于「前端」说明**：本项目的真实用户端是**微信小程序**（由微信平台托管，不进容器）。此处 `frontend` 是一个轻量 Vue3 面板，用于展示后端与依赖健康状态、提供 `/docs` 接口文档入口，并通过 Nginx 把 `/api/*` 反代到 `backend:8000`。这样既满足「Vue3 前端 Dockerfile（基于 dist）+ Nginx 站点配置」的交付要求，又完整跑通全栈。
+> **关于「没有 Web 前端」**：本项目的唯一用户端是**微信小程序**（由微信平台托管，不进容器），仓库里没有 `frontend/` 目录，也不该有——早期文档里写的「Vue3 运营面板」并不存在，实际服务是 `gateway`（纯 Nginx 反代）。任何人来问"能不能在浏览器打开看看"，答案是不能：小程序没有 H5 端。
 
 网络隔离：
-- `backend_net`：`mysql` / `redis` / `backend` 互通，不暴露公网。
-- `frontend_net`：`frontend` / `backend` 互通，`frontend` 向公网开放 80。
+- `backend_net`：`mysql` / `redis` / `milvus` / `backend` / `gateway` 互通，均不暴露公网。
 
-持久化卷：`mysql_data`（数据库文件）、`redis_data`（AOF 数据）。
+持久化卷：`mysql_data`（数据库文件）、`redis_data`（AOF 数据）、`milvus_data`（向量集合，删了不丢业务数据，但要用 `build_kb.py` 重建）。
 
 ---
 
@@ -30,13 +30,18 @@
 
 | 服务 | mem_limit | mem_reservation | cpus | 说明 |
 | --- | --- | --- | --- | --- |
-| mysql | 800 m | 600 m | 1.0 | `innodb-buffer-pool-size=256M` 压内存 |
+| mysql | 704 m | 600 m | 1.0 | `innodb-buffer-pool-size=256M` 压内存；原 800m，为 milvus 让出封顶余量 |
 | redis | 256 m | 160 m | 0.5 | `--maxmemory 200mb` 硬性淘汰 |
-| backend | 512 m | 256 m | 1.0 | `UVICORN_WORKERS=1` 单进程 |
-| frontend | 128 m | 64 m | 0.5 | Nginx 静态 + 反代，极轻 |
-| **合计上限** | **~1.7 GB** | **~1.08 GB** | **3.0** | 预留余量给 OS 与峰值 |
+| milvus | 320 m | 192 m | 1.0 | 实测 RSS：空载 123 m、100 次检索后 147 m（393 条 / 1024 维） |
+| backend | 512 m | 256 m | 1.0 | `UVICORN_WORKERS=1` 单进程；import 基线约 190 m（app.main 103 m + pymilvus 89 m） |
+| gateway | 128 m | 64 m | 0.5 | Nginx 反代，极轻 |
+| **合计上限** | **~1.92 GB** | **~1.27 GB** | **4.0** | 按实测 RSS 估实际占用约 1.1 GB（含 OS/dockerd 约 350 m），仍在 2 G 内 |
 
-- CPU 配额总和 3.0 > 2 核：靠 `cpus` 软限制避免单服务独占，非硬性隔离。
+- mem_limit 是封顶不是占用。封顶合计刻意压在物理内存附近，是为了避免两个容器同时冲高时被 OOM killer 随机选中；上线后请用 `docker stats` 复核一轮。
+- CPU 配额总和 4.0 > 2 核：靠 `cpus` 软限制避免单服务独占，非硬性隔离。
+- milvus 镜像实测约 **769 MB**（faiss-cpu + pyarrow + grpcio 都打在里面，后端镜像不含这些）。40 GB SSD 无压力，但首次 `build --pull` 的下量要有预期。
+- milvus 服务只 `expose` 19530、不发布宿主机端口，所以不会和同机其他项目的 Milvus 抢端口（这台开发机上就已经有一个 `sf-milvus` 在跑）。
+- ⚠️ milvus-lite 是**单进程引擎**，实测 8 路并发检索 p50 会从 28 ms 涨到 350 ms（读写都会排队）。当前小程序体量下不是瓶颈，但并发上去之后这里先出问题，届时换官方 Milvus（需 4 GB 机器）。
 - **强烈建议**在服务器上创建 1 GB swap，防止首次构建或峰值 OOM：
   ```bash
   sudo fallocate -l 1G /swapfile
@@ -103,21 +108,22 @@ docker ps
 ├── docker-compose.yml
 ├── .env                      # 由 .env.example 复制并填写（chmod 600）
 ├── .env.example
-├── server/
+├── server/                   # 后端（compose 的 build context: ./server）
 │   ├── Dockerfile
 │   ├── .dockerignore
-│   ├── requirements.txt
-│   ├── app/
+│   ├── requirements.txt      # 含 pymilvus（只是客户端，不含服务端依赖）
+│   ├── requirements-dev.txt  # 含 milvus-lite，只本地/CI 用，不进镜像
+│   ├── app/  kb/  scripts/  tests/
 │   └── ...
-└── frontend/
-    ├── Dockerfile
-    ├── nginx.conf
-    ├── .dockerignore
-    ├── package.json
-    ├── vite.config.js
-    ├── index.html
-    └── src/
+├── gateway/                  # Nginx 反代（build context: ./gateway）
+│   ├── Dockerfile
+│   └── nginx.conf
+└── milvus/                   # 向量库镜像（build context: ./milvus）
+    └── Dockerfile            # 只有 Dockerfile，pip 装 milvus-lite + pymilvus
 ```
+
+> 三个构建目录都要传上去，缺 `milvus/` 会让 `docker compose build` 直接失败。
+> 仓库里没有 `frontend/`——它在 e27af7f 就删了，唯一用户端是微信小程序，不进容器。
 
 ### 5.2 上传方式（任选其一）
 
@@ -132,8 +138,8 @@ cd /opt/zhitu-ai
 ```bash
 # 在本机项目根目录打包（排除本地无关文件）
 tar --exclude='server/venv' --exclude='server/.venv' --exclude='server/__pycache__' \
-    --exclude='miniprogram' --exclude='.git' --exclude='outputs' --exclude='UI导出' \
-    -czf zhitu-ai.tar.gz docker-compose.yml .env.example server frontend
+    --exclude='miniprogram' --exclude='.git' --exclude='outputs' --exclude='ppt-defence' \
+    -czf zhitu-ai.tar.gz docker-compose.yml .env.example server gateway milvus
 # 上传到服务器
 scp zhitu-ai.tar.gz ubuntu@114.132.239.20:/opt/
 ssh ubuntu@114.132.239.20
@@ -160,6 +166,9 @@ nano .env          # 按实际情况修改（仓库已附真实可用值，通�
 - `LLM_*` / `VISION_*` / `WX_*` / `SMS_*` / `GAODE_WEB_KEY`：业务密钥（仓库 `.env` 已填真实值）。
 - `DATABASE_URL` / `REDIS_URL`：已写成容器内地址（`mysql` / `redis` 主机名），与 `docker-compose.yml` 的 `environment` 双重保险。
 - `TICKET_MCP_URL`：留空，走离线估算；如需真实车次，见第 13 节。
+- `KB_MILVUS_URI`：向量库地址。**compose 已经把它注入成 `http://milvus:19530` 并优先于 `.env`**，所以根 `.env` 里不用写也写不进去；本地开发才需要在 `server/.env` 填 `kb/corpus/milvus.db`。
+  ⚠️ 别在 `.env` 里放裸的 `MILVUS_URI`——那是 pymilvus 自己 import 时读取的变量，填非 http 形式会让后端启动即崩在依赖导入上。
+- `KB_MILVUS_COLLECTION`（默认 `kb_docs`）/ `KB_MILVUS_TOKEN`（milvus-lite 留空，官方 Milvus 开了鉴权才填）。
 
 ---
 
@@ -199,16 +208,30 @@ docker compose build --pull
 # 3) 启动全部服务
 docker compose up -d
 
-# 4) 查看状态
+# 4) ★ 重建 RAG 知识索引（必做，否则问答与行程景点会退回关键词模式）
+docker compose exec backend python scripts/build_kb.py
+
+# 5) 确认索引已生效（接口 /api/kb/status 需要 Bearer token，容器内直调更省事）
+docker compose exec backend python -c "from kb.retriever import retriever as r; print(r.status())"
+
+# 6) 查看状态
 docker compose ps
 ```
+
+> **为什么第 4 步不能省**：向量集合存在 `milvus_data` 卷里、不进镜像，`server/.dockerignore` 还排除了本地内嵌库 `kb/corpus/milvus.db*` 和旧 flat 产物（`index.vec` / `index.meta.json` / `embed_cache.json`）。跳过重建不会报错——`retriever.client()` 连上 Milvus 但集合是空的，检索静默降级成关键词模式，`r.status()` 显示 `indexed: false` / `engine: keyword`，看起来"上线成功"但 RAG 没生效。第 5 步要看到 `indexed: true` 且 `engine: milvus` 才算数。
+>
+> **build_kb 写的是远端集合**：`build_kb.py` 在 backend 容器里跑，通过 compose 注入的 `KB_MILVUS_URI=http://milvus:19530` 把向量推给 milvus 容器（milvus-lite 对数据目录加锁，不能让两个进程同时开同一个文件）。所以这一步必须在 `docker compose up -d` 且 milvus 健康之后执行，`--rm` 的一次性容器里跑也一样能连。
+>
+> ⚠️ **配置项叫 `KB_MILVUS_URI` 而不是 `MILVUS_URI`**：后者被 pymilvus 在自己的 `settings.py` 里 `load_dotenv()` 读走，import 时就解析且只接受 `http[s]://` 形式；在 `.env` 里填本地文件路径会让 `from pymilvus import ...` 直接抛 `ConnectionConfigException`，而我们客户端把这个异常吞成关键词退路——表现就是"配置了却不生效"，极难查。
 
 查看实时日志：
 ```bash
 docker compose logs -f --tail=200
 ```
 
-> 若服务器内存紧张导致前端构建失败（`JavaScript heap out of memory`），确认第 2 节 swap 已生效，再 `docker compose build --no-cache frontend`。
+> 若服务器内存紧张导致构建失败，先确认第 2 节 swap 已生效，再逐个构建而不是 `docker compose build --pull` 一把梭：
+> `docker compose build milvus && docker compose build backend && docker compose build gateway`。
+> milvus 镜像首次构建要装 faiss-cpu + pyarrow + grpcio，磁盘下载约 200 MB，但 pip 阶段内存峰值低，真正的风险是三个自研镜像并发构建。
 
 ---
 
@@ -219,25 +242,29 @@ docker compose logs -f --tail=200
 docker compose ps
 docker inspect --format '{{.Name}} {{.State.Status}} {{if .State.Health}}{{.State.Health.Status}}{{end}}' $(docker compose ps -q)
 ```
-预期四个服务均为 `running` 且 `healthy`。
+预期五个服务（mysql / redis / milvus / backend / gateway）均为 `running` 且 `healthy`。
 
 分项验证：
 ```bash
-# 后端健康检查（新增 /api/health）
-curl -fsS http://127.0.0.1/api/health        # 返回 {"status":"ok"}
-curl -fsS http://127.0.0.1/api/docs >/dev/null   # Swagger 文档可访问
+# 后端健康检查（backend 不对宿主机发布端口，只能进容器打）
+docker compose exec backend python -c "import urllib.request as u;print(u.urlopen('http://127.0.0.1:8000/api/health').read().decode())"
 
-# 前端面板
-curl -I http://127.0.0.1/
-curl -fsS http://127.0.0.1/nginx-health      # 返回 ok
+# 网关：回环 8081（不是 80，80 被高保真项目占着）
+curl -fsS http://127.0.0.1:8081/nginx-health   # 返回 ok
+curl -fsS http://127.0.0.1:8081/api/health     # 经网关反代到 backend
+
+# ★ RAG 索引是否已建（跳过第 8 节第 4 步时这里是 false）
+docker compose exec backend python -c "from kb.retriever import retriever as r;print(r.status())"
 
 # MySQL / Redis
 docker compose exec mysql mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD"
 docker compose exec redis redis-cli -a "$REDIS_PASSWORD" ping   # PONG
 
-# 业务库表
+# 业务库表（应为 8 张；旧库可能残留已废弃的 cities / service_links / chat_history）
 docker compose exec mysql sh -lc 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" zhisuibanyou -e "SHOW TABLES;"'
 ```
+
+> `/docs`、`/redoc`、`/openapi.json` 在 `app/main.py` 里被显式设为 `None`（上线安全加固，避免接口结构被公开扫描）。**任何"Swagger 可访问"的检查步骤都是错的**，接口清单看 `docs/6-API接口文档.md` 第十节。
 
 资源占用巡检：
 ```bash
@@ -248,19 +275,20 @@ df -h /
 
 ---
 
-## 10. 公网 IP 访问测试
+## 10. 接口连通性测试
 
-> 因服务器 `80` 端口已被「高保真项目」占用，知途AI的 frontend 对外使用 `8081` 端口，测试地址需带 `:8081`。
+> 服务器 `80` 端口已被「高保真项目」占用，本项目网关只绑 `127.0.0.1:8081`，公网访问由宿主机 Nginx 反代过来。**小程序是唯一用户端，没有网页**：`gateway/nginx.conf` 的 `location /` 直接 `return 404`。所以浏览器打开根路径看到 404 是预期行为，不是部署失败。
 
-1. 浏览器打开 `http://114.132.239.20:8081/`，应看到「知途 AI 旅行 · 服务状态」面板。
-2. 点击「重新检测」，后端 API 状态应显示「正常」。
-3. 打开 `http://114.132.239.20:8081/docs`，确认 Swagger 接口文档可加载。
-4. 命令行接口自检：
+1. 网关探活：`curl -fsS http://127.0.0.1:8081/nginx-health` → `ok`。
+2. 反代连通：`curl -fsS http://127.0.0.1:8081/api/health` → `{"status":"ok"}`。
+3. 接口自检：
    ```bash
-   curl -fsS http://114.132.239.20:8081/api/health
-   curl -fsS http://114.132.239.20:8081/api/openapi.json >/dev/null
+   curl -fsS http://127.0.0.1:8081/api/health
+   curl -fsS http://127.0.0.1:8081/api/service/list        # 免鉴权，返回渠道白名单
+   curl -i http://127.0.0.1:8081/                          # 404 才是对的（无网页端）
    ```
-5. **微信小程序联调**：将小程序 `config/env.js` 的 `BASE_URL` 改为 `http://114.132.239.20:8081/api`，`USE_MOCK=false`，即可在开发者工具中走真实后端（注意第 13 节的 HTTPS/合法域名要求）。
+4. 需要 token 的接口（`/api/kb/status`、`/api/user/me` 等）用登录返回的 Bearer 验证，不带 token 应返 401/未授权，**这本身就是鉴权生效的证据**。
+5. **微信小程序联调**：将小程序 `config/env.js` 的 `BASE_URL` 改为 `https://<已备案域名>/api`（开发者工具本地联调可用 `http://127.0.0.1:8081` 并关掉 urlCheck），即可走真实后端（HTTPS 与合法域名要求见第 13 节）。注意 `BASE_URL` 末尾不带 `/api`。
 
 ---
 
@@ -291,30 +319,18 @@ docker compose up -d --build
 
 ---
 
-## 12. 数据初始化（城市 / 服务种子）
+## 12. 数据初始化
 
-后端 `lifespan` 会自动 `create_all` 建表，并注入**模板广场**种子（`template_service.seed()`）。但**城市表（cities）/ 服务表（service_links）** 在代码中无自动种子逻辑（原开发库由 `db_init.py` 导入，而该脚本使用同步引擎，与本镜像的异步 `DATABASE_URL` 不兼容，容器内勿直接运行）。
+后端 `lifespan` 启动时自动 `create_all` 建表（**8 张**：users / trips / templates / collections / orders / events / feedbacks / distribution_records），并在 `templates` 为空时注入 4 条示例模板。**首次部署不需要任何手工初始化。**
 
-首次部署后请二选一补齐基础数据：
+> 2026-10-22 变更：原先设计的 `cities` / `service_links` / `chat_history` 三张表已删除。它们建了但应用代码从不读取——城市列表在前端 `utils/cities.js`（2026-10-23 起从已删除的 `utils/mock.js` 迁出），服务直达渠道硬编码在 `routers/service.py` 的 `SERVICES`，问答是流式返回不落库。本节的「mysqldump 导种子 / 手工 INSERT 城市」步骤因此作废。
+>
+> 旧库里这三张空表可能仍残留（`create_all` 不会 DROP）。确认无外部依赖后可自行清理，**本指南不在共享演示库上代为执行**：
+> ```sql
+> DROP TABLE IF EXISTS chat_history, service_links, cities;
+> ```
 
-**方式 A：从现有开发库导出导入（数据最完整，推荐）**
-```bash
-# 在「已有数据的开发机」导出
-mysqldump -uroot -p zhisuibanyou cities service_links > seed.sql
-# 传到服务器并导入新容器
-scp seed.sql ubuntu@114.132.239.20:/opt/
-ssh ubuntu@114.132.239.20
-docker compose exec -T mysql sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" zhisuibanyou' < /opt/seed.sql
-```
-
-**方式 B：手动插入最小可用数据**（示例，按需扩展）
-```bash
-docker compose exec -T mysql sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" zhisuibanyou' <<'SQL'
-INSERT INTO cities (name, province, hot) VALUES
-  ('杭州','浙江',1),('成都','四川',1),('西安','陕西',1),('苏州','江苏',1),
-  ('重庆','重庆',1),('厦门','福建',1),('长沙','湖南',1),('南京','江苏',1);
-SQL
-```
+`server/db_init.py` 是给开发机用的同步建表脚本（走 `mysql+pymysql`，依赖 `PyMySQL` 与 `python-dotenv`，两者都未写进 `requirements.txt`），容器内不要执行——镜像里的异步 `DATABASE_URL` 与它不兼容，且它的能力已被启动时的 `create_all` 覆盖。
 
 ---
 

@@ -1,0 +1,6 @@
+# 只用于本地/CI 测试，不进生产镜像：pip install -r requirements-dev.txt
+pytest>=8.0
+# 检索层测试要起一个真的向量引擎（tmp_index 夹具把 MILVUS_URI 指到 tmp_path 下的库），
+# 而不是 mock 掉存储——不然验不到「向量写进去、取回来还算得对分」。
+# 生产后端只连远端 Milvus，用不到服务端，所以它留在 dev 依赖里，不进 requirements.txt。
+milvus-lite>=3.0

@@ -6,7 +6,8 @@
 | 版本     | V1.0                |
 | 编制时间 | 2026 年 08 月 06 日 |
 | 后端框架 | Python FastAPI      |
-| 基础路径 | https://api.zhisuibanyou.com/api |
+| 基础路径 | `https://api.zhisuibanyou.com/api`（**规划中的域名，当前未解析**；本地联调为 `http://127.0.0.1:8000/api`） |
+| 文档性质 | 第 1～9 节为**设计态**（2026-08-06 编写，路径风格为 RESTful）；**第 10 节是实现态真值**，由路由代码扫描得到。实现的命名统一为 `/api/模块/动作`，两者路径不可互换 —— 引用接口请以第 10 节为准。 |
 
 ---
 
@@ -140,7 +141,7 @@
             "role": "free",
             "vip_expire_time": null,
             "daily_plan_count": 3,
-            "created_at": "2026-08-06T18:00:00+08:00"
+            "created_at": 1761000000000
         }
     }
 }
@@ -547,11 +548,12 @@ Content-Type: multipart/form-data
 
 **请求参数：**
 
-| 参数   | 类型   | 必填 | 默认值    | 说明                        |
-| :----- | :----- | :--- | :-------- | :-------------------------- |
-| status | string | 否  | active    | 状态筛选: active/archived   |
-| page   | int    | 否  | 1         | 页码                        |
-| page_size | int | 否  | 20        | 每页条数                    |
+| 参数   | 类型   | 必填 | 默认值 | 说明                                                  |
+| :----- | :----- | :--- | :----- | :---------------------------------------------------- |
+| status | string | 否   | 无     | `active`=只看使用中；`all`=不过滤；不传同 `all`        |
+
+> ⚠️ 旧实现把 `status=all` 当字面值去比 `trips.status`，导致前端的「全部行程」tab 恒为空。
+> 2026-10-23 已修：`all` 与不传都表示不过滤。
 
 **响应示例：**
 
@@ -570,8 +572,8 @@ Content-Type: multipart/form-data
                 "crowd_type": "family",
                 "budget_level": "comfort",
                 "status": "active",
-                "created_at": "2026-08-06T18:00:00+08:00",
-                "updated_at": "2026-08-06T18:05:00+08:00"
+                "created_at": 1761000000000,
+                "updated_at": 1761000000000
             }
         ],
         "total": 12,
@@ -607,8 +609,8 @@ Content-Type: multipart/form-data
         "transport_mode": "public",
         "plan_source": "form",
         "status": "active",
-        "created_at": "2026-08-06T18:00:00+08:00",
-        "updated_at": "2026-08-06T18:05:00+08:00",
+        "created_at": 1761000000000,
+        "updated_at": 1761000000000,
         "itinerary": [
             {
                 "day_number": 1,
@@ -655,7 +657,7 @@ Content-Type: multipart/form-data
     "message": "success",
     "data": {
         "trip_id": 104,
-        "created_at": "2026-08-06T18:10:00+08:00"
+        "created_at": 1761000000000
     }
 }
 ```
@@ -684,7 +686,7 @@ Content-Type: multipart/form-data
     "message": "success",
     "data": {
         "trip_id": 101,
-        "updated_at": "2026-08-06T18:15:00+08:00"
+        "updated_at": 1761000000000
     }
 }
 ```
@@ -818,7 +820,7 @@ Content-Type: multipart/form-data
         },
         "itinerary": [ ... ],
         "total_budget": 500.00,
-        "created_at": "2026-07-01T10:00:00+08:00"
+        "created_at": 1761000000000
     }
 }
 ```
@@ -909,49 +911,38 @@ data: {"code": 0, "type": "end", "message": "完成"}
 
 **POST** `/chat/luggage`
 
-AI 根据出行信息生成行李清单。
+按目的地 / 天数 / 季节生成行李清单。规则化生成（不打大模型，零成本、零延迟），
+按 `season` 与城市类型真实分支：夏季出防晒、冬季出羽绒服、≥3 天加换洗数量、
+港澳台自动换成证件/签注/转换插头。
 
 **请求参数：**
 
-| 参数       | 类型   | 必填 | 说明               |
-| :--------- | :----- | :--- | :----------------- |
-| city_id    | int    | 是  | 目的地城市 ID       |
-| days       | int    | 是  | 天数               |
-| crowd_type | string | 否  | 人群类型            |
-| season     | string | 否  | 季节: spring/summer/autumn/winter |
+| 参数   | 类型   | 必填 | 默认值 | 说明                                          |
+| :----- | :----- | :--- | :----- | :-------------------------------------------- |
+| city   | string | 否   | ""     | 目的地城市名（含"香港/澳门/台湾"时走跨境分支） |
+| days   | int    | 否   | 2      | 出行天数（1~15，影响换洗数量与电子设备）       |
+| season | string | 否   | 自动   | 季节：夏/冬/春/秋；留空按当前月份推算          |
 
 **响应示例：**
 
 ```json
 {
     "code": 0,
-    "message": "success",
+    "message": "ok",
     "data": {
-        "checklist": {
-            "clothing": [
-                {"name": "短袖T恤", "quantity": "3件", "checked": false},
-                {"name": "长裤", "quantity": "2条", "checked": false},
-                {"name": "外套", "quantity": "1件", "checked": false}
-            ],
-            "toiletries": [
-                {"name": "牙刷牙膏", "quantity": "1套", "checked": false},
-                {"name": "毛巾", "quantity": "1条", "checked": false}
-            ],
-            "electronics": [
-                {"name": "手机充电器", "quantity": "1个", "checked": false},
-                {"name": "充电宝", "quantity": "1个", "checked": false}
-            ],
-            "medicine": [
-                {"name": "感冒药", "quantity": "1盒", "checked": false},
-                {"name": "创可贴", "quantity": "若干", "checked": false}
-            ],
-            "other": [
-                {"name": "雨伞", "quantity": "1把", "checked": false},
-                {"name": "水杯", "quantity": "1个", "checked": false}
-            ]
-        }
+        "list": [
+            {"group": "证件", "items": ["身份证", "手机（健康码/乘车码）"]},
+            {"group": "衣物", "items": ["薄外套", "长袖上衣", "长裤", "舒适运动鞋"]},
+            {"group": "洗漱", "items": ["牙刷牙膏", "护肤品", "润唇膏/保湿霜"]},
+            {"group": "电子", "items": ["充电宝", "数据线", "耳机"]},
+            {"group": "药品", "items": ["创可贴", "肠胃药"]}
+        ]
     }
 }
+```
+
+> 分组固定为 证件/衣物/洗漱/电子/药品 五组；`city` 含"香港"时证件组会变成
+> `["港澳通行证及有效签注", "身份证", "少量港币/澳门元现金", "英标转换插头"]`。
 ```
 
 ---
@@ -1086,68 +1077,70 @@ AI 根据目的地生成美食推荐和避雷清单。
 
 **GET** `/collection/list`
 
-获取用户收藏的行程/模板列表。
+获取用户收藏的**模板**列表。返回的是完整模板字段（不是收藏记录 id），
+前端可直接拿去开 `/template/detail`。
 
-**请求参数：**
-
-| 参数        | 类型   | 必填 | 默认值    | 说明                    |
-| :---------- | :----- | :--- | :-------- | :---------------------- |
-| target_type | string | 否  | -         | trip/template           |
-| page        | int    | 否  | 1         | 页码                    |
-| page_size   | int    | 否  | 20        | 每页条数                |
+**请求参数：** 无
 
 **响应示例：**
 
 ```json
 {
     "code": 0,
-    "message": "success",
+    "message": "ok",
     "data": {
         "list": [
             {
                 "id": 1,
-                "target_id": 1,
-                "target_type": "template",
-                "title": "杭州周末两天游",
+                "collection_id": 3,
+                "title": "杭州2日经典西湖游",
                 "city": "杭州",
                 "days": 2,
-                "cover_image": "https://cdn.example.com/cover/1.jpg",
-                "collected_at": "2026-08-05T10:00:00+08:00"
+                "cover": "🏞️",
+                "route_type": "popular",
+                "uses": 100,
+                "spots_count": 6
             }
-        ],
-        "total": 5,
-        "page": 1,
-        "page_size": 20,
-        "total_pages": 1
+        ]
     }
 }
 ```
 
+> `id` 是**模板 id**（用于打开详情）；`collection_id` 是收藏记录 id，仅用于排查。
+> 同一用户对同一模板只会有一条收藏记录（数据库唯一索引兜底并发重复点击）。
+
 ---
 
-### 8.2 添加/取消收藏
+### 8.2 添加收藏
 
-**POST** `/collection/toggle`
+**POST** `/collection/add`
+
+> 原文档写的 `/collection/toggle` 与实际实现不符——实际只有 add，没有取消接口，
+> 也没有 `target_type` 维度（收藏对象固定为模板）。
 
 **请求参数：**
 
 | 参数        | 类型   | 必填 | 说明                |
 | :---------- | :----- | :--- | :------------------ |
-| target_id   | int    | 是  | 目标 ID             |
-| target_type | string | 是  | trip/template       |
-| collect     | bool   | 是  | true=收藏, false=取消 |
+| 参数        | 类型   | 必填 | 说明                |
+| :---------- | :----- | :--- | :------------------ |
+| template_id | int    | 是  | 模板 id             |
 
 **响应示例：**
 
 ```json
 {
     "code": 0,
-    "message": "收藏成功",
+    "message": "ok",
     "data": {
-        "collected": true
+        "collected": true,
+        "duplicated": false
     }
 }
 ```
+
+> `duplicated: true` 表示该模板之前已收藏（幂等，不会插入第二条）。
+> 模板不存在返回 `code: 404`；缺 `template_id` 返回 HTTP 422。
 
 ---
 
@@ -1265,8 +1258,8 @@ AI 根据目的地生成美食推荐和避雷清单。
                 "amount": 129.00,
                 "pay_status": "paid",
                 "transaction_id": "420000XXXXX",
-                "paid_at": "2026-08-06T18:01:00+08:00",
-                "created_at": "2026-08-06T18:00:00+08:00"
+                "paid_at": 1761000000000,
+                "created_at": 1761000000000
             }
         ],
         "total": 1,
@@ -1279,36 +1272,77 @@ AI 根据目的地生成美食推荐和避雷清单。
 
 ---
 
-## 十、接口汇总表
+## 十、接口汇总表（实现态真值，共 45 个业务接口）
 
-| 模块   | 方法 | 路径                              | 说明            | 认证 |
-| :----- | :--- | :-------------------------------- | :-------------- | :--- |
-| 认证   | POST | /api/auth/login                   | 微信登录        | 否   |
-| 认证   | GET  | /api/user/info                    | 获取用户信息    | 是   |
-| 认证   | PUT  | /api/user/info                    | 更新用户信息    | 是   |
-| 认证   | GET  | /api/user/quota                   | 检查生成次数    | 是   |
-| 规划   | POST | /api/plan/form                    | 表单规划行程    | 是   |
-| 规划   | POST | /api/plan/quick                   | 一句话快规划    | 是   |
-| 规划   | POST | /api/plan/ocr                     | 截图识行程      | 是(会员) |
-| 规划   | POST | /api/plan/adjust                  | 对话微调行程    | 是   |
-| 行程   | GET  | /api/trip/list                    | 行程列表        | 是   |
-| 行程   | GET  | /api/trip/{trip_id}               | 行程详情        | 是   |
-| 行程   | POST | /api/trip                         | 保存行程        | 是   |
-| 行程   | PUT  | /api/trip/{trip_id}               | 更新行程        | 是   |
-| 行程   | DELETE | /api/trip/{trip_id}             | 删除行程        | 是   |
-| 行程   | POST | /api/trip/{trip_id}/publish       | 发布为模板      | 是   |
-| 模板   | GET  | /api/template/list                | 模板列表        | 否   |
-| 模板   | GET  | /api/template/{template_id}      | 模板详情        | 否   |
-| 模板   | POST | /api/template/{template_id}/use   | 使用模板        | 是   |
-| 模板   | POST | /api/template/{template_id}/collect | 收藏模板      | 是   |
-| 对话   | POST | /api/chat/qa                      | 旅游问答(流式)  | 是   |
-| 对话   | POST | /api/chat/luggage                 | 行李清单        | 是   |
-| 对话   | POST | /api/chat/food                    | 美食红黑榜      | 是   |
-| 城市   | GET  | /api/city/list                    | 城市列表        | 否   |
-| 服务   | GET  | /api/service/link                 | 服务跳转链接    | 是   |
-| 收藏   | GET  | /api/collection/list              | 收藏列表        | 是   |
-| 收藏   | POST | /api/collection/toggle            | 收藏/取消收藏   | 是   |
-| 会员   | GET  | /api/membership/status            | 会员状态        | 是   |
-| 订单   | POST | /api/order/create                 | 创建订单        | 是   |
-| 订单   | POST | /api/pay/callback                 | 支付回调        | 否   |
-| 订单   | GET  | /api/order/list                   | 订单列表        | 是   |
+> 本表由 `server/app/routers/*.py` 的路由声明扫描生成，与代码一致。「认证」列为该接口是否挂了 `Depends(get_current_user)`。返回统一 `{code, msg, data}`。另有 `GET /` 与 `GET /api/health` 两个探活接口直接声明在 `app/main.py`，不计入这 45 个。
+
+| 模块 | 方法 | 路径 | 说明 | 认证 |
+| :--- | :--- | :--- | :--- | :--- |
+| 认证 | POST | /api/auth/login | 微信 code 换 token（无 AppID 时返回 mock） | 否 |
+| 认证 | POST | /api/auth/bind-phone | 已登录用户绑定手机号 | 是 |
+| 认证 | POST | /api/auth/phone-login | 手机号 + 验证码登录 | 否 |
+| 规划 | POST | /api/plan/form | 表单规划生成行程（受每日限流 + 积分） | 是 |
+| 规划 | POST | /api/plan/quick | 一句话快规划 | 是 |
+| 规划 | POST | /api/plan/chat-adjust | 对话微调行程 | 是 |
+| 行程 | GET | /api/trip/list | 我的行程列表（status: active/all） | 是 |
+| 行程 | GET | /api/trip/detail | 行程详情 | 是 |
+| 行程 | POST | /api/trip/save | 保存行程（整体 JSON 存 `trips.content`） | 是 |
+| 行程 | POST | /api/trip/delete | 删除行程 | 是 |
+| 模板 | GET | /api/template/hot | 精选模板列表 | 是 |
+| 模板 | GET | /api/template/detail | 模板详情 | 是 |
+| 模板 | POST | /api/template/use | 模板加载为行程 | 是 |
+| 模板 | POST | /api/template/publish | 行程发布为模板 | 是 |
+| 模板 | GET | /api/template/published | 我发布的模板 | 是 |
+| 对话 | POST | /api/chat/qa | 流式问答（SSE）：先检索，检索为空直接拒答 | 是 |
+| 对话 | POST | /api/chat/luggage | 行李清单 | 是 |
+| 对话 | POST | /api/chat/food | 美食红黑榜 | 是 |
+| 对话 | GET | /api/chat/rag_stats | RAG 可观测性：提问数、有依据率、拒答率、索引状态 | 是 |
+| 知识检索 | GET | /api/kb/status | 索引是否已建、文档数与城市覆盖 | 是 |
+| 知识检索 | GET | /api/kb/search | 只读检索调试接口 | 是 |
+| 地图 | GET | /api/map/reverse-geocode | 经纬度 → 城市名（gcj-02，与 `wx.getLocation` 同系） | 是 |
+| 地图 | GET | /api/map/geocode | 地名/车站 → 经纬度（腾讯优先，逐级降级） | 是 |
+| 地图 | GET | /api/map/geocode-batch | 批量地理编码（景点距离计算用），顺序与输入一致 | 是 |
+| 识图 | POST | /api/ocr/recognize | 截图识行程 / 识别视频 | 是 |
+| 票务 | GET | /api/ticket/search | 12306 余票车次，失败降级估算 | 是 |
+| 票务渠道 | GET | /api/ota/channels | 购票/团购/订房渠道列表（含搜索深链），离线可用 | 是 |
+| 票务渠道 | GET | /api/ota/price | 实时价格（预留，当前恒返 `available=False`） | 是 |
+| 服务 | GET | /api/service/list | 第三方小程序跳转白名单 | 否 |
+| 收藏 | GET | /api/collection/list | 收藏列表 | 是 |
+| 收藏 | POST | /api/collection/add | 收藏模板（新增接口，无 toggle） | 是 |
+| 会员 | GET | /api/membership/plans | 会员套餐 | 是 |
+| 会员 | POST | /api/membership/order | 创建支付订单（演示态，无微信回调） | 是 |
+| 用户 | GET | /api/user/me | 当前用户完整信息（含会员态字段） | 是 |
+| 用户 | POST | /api/user/profile | 更新头像/昵称 | 是 |
+| 用户 | POST | /api/user/avatar | 上传头像并返回永久 URL | 是 |
+| 用户 | POST | /api/user/feedback | 提交意见反馈 | 是 |
+| 用户 | POST | /api/user/deactivate | 注销账号（软删除，`is_active=False`） | 是 |
+| 用户 | GET | /api/user/stats | 行程数、去过的城市数 | 是 |
+| 用户 | GET | /api/user/points | 积分余额 | 是 |
+| 用户 | POST | /api/user/recharge | 人工充值申请（管理员线下确认后加积分） | 是 |
+| 短信 | POST | /api/sms/send | 发送短信验证码 | 否 |
+| 分销 | POST | /api/distribution/bind | 绑定邀请关系 | 是 |
+| 分销 | GET | /api/distribution/my | 我的分销记录与佣金 | 是 |
+| 埋点 | POST | /api/track | 批量上报埋点事件，失败不阻塞主流程 | 是 |
+
+### 10.1 设计态与实现态的差异
+
+前 9 节按 RESTful 风格设计，实际落地统一改成 `/api/模块/动作`，因此下列设计态路径**在代码中不存在**（括号内是实现态的对应物）：
+
+- `GET/PUT /api/user/info` → `/api/user/me`、`/api/user/profile`
+- `GET /api/user/quota` → 限流计数走 Redis，未单独暴露查询接口（会员态见 `/api/user/me`）
+- **每日限流与积分的错误码**（2026-10-23 起真实生效，此前 `quota_service` 是死代码）：
+  - `code: 4002` — 今日免费生成次数已用完（`DAILY_PLAN_LIMIT`，默认 3 次/天，会员不限）
+  - `code: 4001` — 积分不足（仅 `MONETIZATION_ENABLED=true` 时扣费）
+  - 两个接口：`POST /api/plan/form`、`POST /api/plan/quick`；`POST /api/plan/chat-adjust` 只扣积分不占每日配额
+  - 配额先扣、积分后扣，积分不足时配额会回滚，不会白占用户当日额度
+- `POST /api/plan/ocr` → `/api/ocr/recognize`
+- `POST /api/plan/adjust` → `/api/plan/chat-adjust`
+- `GET/PUT/DELETE /api/trip/{id}`、`POST /api/trip`、`POST /api/trip/{id}/publish` → `/api/trip/detail`、`/api/trip/save`、`/api/trip/delete`、`/api/template/publish`
+- `GET /api/template/list`、`/api/template/{id}`、`/api/template/{id}/use`、`/api/template/{id}/collect` → `/api/template/hot`、`/api/template/detail`、`/api/template/use`、`/api/collection/add`
+- `GET /api/city/list` → 无对应接口：城市列表由前端 `utils/cities.js` 内置（`cities` 表已于 2026-10-22 从代码删除）
+- `GET /api/service/link` → `/api/service/list`（渠道硬编码在路由的 `SERVICES` 常量；`service_links` 表同样已删除）
+- `POST /api/collection/toggle` → `/api/collection/add`（只加不减，取消收藏未实现）
+- `GET /api/membership/status` → `/api/user/me`（会员态是 `users.is_vip` 字段，未建 membership 表）
+- `POST /api/order/create`、`GET /api/order/list`、`POST /api/pay/callback` → `/api/membership/order`；支付回调未实现（无企业主体，支付为演示态）
+
+实现态新增、前 9 节未覆盖的模块：`kb`（知识检索）、`map`（地理编码）、`ota`（购票渠道）、`ticket`（12306）、`track`（埋点）、`distribution`（分销）、`sms`（短信）、`collection`、`user` 的积分/注销/统计。

@@ -3,9 +3,16 @@
 # 运行环境：Docker 27.5.1 / Compose v2 / Ubuntu Server 24.04 LTS
 #
 # 架构：
-#   frontend(Nginx:80) ──反代 /api──> backend(FastAPI:8000，仅内网)
-#   backend ──> mysql(3306，仅 127.0.0.1) / redis(6379，仅内网)
-# 说明：用户端是微信小程序（微信平台托管，不进容器）；frontend 是运营/自检面板。
+#   微信小程序 ──HTTPS(已备案域名，宿主机 Nginx 终止 TLS)──> gateway(Nginx:80，仅绑 127.0.0.1)
+#       gateway ──反代 /api 与 /static──> backend(FastAPI:8000，仅内网)
+#       backend ──> mysql(3306，仅 127.0.0.1) / redis(6379，仅内网) / milvus(19530，仅内网)
+# 说明：用户端是微信小程序（微信平台托管，不进容器），没有网页端；
+#       gateway 只做反向代理，不含任何前端产物。
+#       早期版本里的 frontend(Vue3 自检面板) 已随 e27af7f 删除，勿再引用。
+
+# 显式项目名：默认会取目录名「知途AI」，中文被剥掉后只剩 `ai`，
+# 卷名 ai_mysql_data 有和其他 AI 项目静默共用数据库的风险。
+name: zhitu-ai
 
 services:
   mysql:
@@ -35,7 +42,12 @@ services:
       timeout: 5s
       retries: 12
       start_period: 30s
-    mem_limit: 800m
+    # 800m → 704m：加上 milvus 的 320m 后，mem_limit 合计 1920m。
+    # mem_limit 是封顶不是占用（按实测 RSS 估：mysql≈550 + redis≈30 + backend≈220
+    # + gateway≈20 + milvus≈150 ≈ 970m，加上系统与 dockerd 约 350m，仍在 2G 内），
+    # 但封顶合计若超过物理内存，两个容器同时冲高时会被 OOM killer 随机选中——宁可压低。
+    # 256M 的 innodb buffer pool 用不到 704m，这里只影响最坏情况的天花板。
+    mem_limit: 704m
     mem_reservation: 600m
     cpus: 1.0
     networks:
@@ -69,6 +81,50 @@ services:
     networks:
       - backend_net
 
+  milvus:
+    # 向量库。用自建镜像而不是官方 milvusdb/milvus：Standalone 要额外带 etcd + MinIO，
+    # 整机 3 GB 起，这台 2 GB 机器放不下。换回官方的步骤见本服务末尾注释。
+    build:
+      context: ./milvus
+      dockerfile: Dockerfile
+    image: zt_milvus:latest
+    container_name: zt_milvus
+    restart: unless-stopped
+    # --data-dir 落在命名卷上；建索引（build_kb.py）写的也是这个卷里的集合。
+    command:
+      - python
+      - -m
+      - milvus_lite
+      - server
+      - --data-dir
+      - /var/lib/milvus
+      - --host
+      - 0.0.0.0
+      - --port
+      - "19530"
+    volumes:
+      - milvus_data:/var/lib/milvus
+    # 不映射公网端口，只给内网 backend 连
+    expose:
+      - "19530"
+    healthcheck:
+      # 真发一次 gRPC 调用，而不是只测端口：端口开了不代表引擎已经就绪。
+      test: ["CMD", "python", "-c",
+             "from pymilvus import MilvusClient; MilvusClient('http://127.0.0.1:19530', timeout=8).list_collections()"]
+      interval: 30s
+      timeout: 15s
+      retries: 10
+      start_period: 20s
+    # 实测：空载 123 MB，100 次检索后 147 MB（393 条 / 1024 维）。
+    mem_limit: 320m
+    mem_reservation: 192m
+    cpus: 1.0
+    networks:
+      - backend_net
+    # 要换官方 Milvus Standalone：image: milvusdb/milvus:v2.4.x，
+    # command 改为 ["milvus", "run", "standalone"]，另加 etcd + minio 两个服务；
+    # KB_MILVUS_URI 仍是 http://milvus:19530，backend 代码不用动。前提是服务器先升到 4 GB。
+
   backend:
     build:
       context: ./server
@@ -81,13 +137,19 @@ services:
     environment:
       DATABASE_URL: mysql+aiomysql://root:${MYSQL_ROOT_PASSWORD}@mysql:3306/${MYSQL_DATABASE}
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      # 向量库走 Compose 内部服务名；.env 里若填了本地 .db 路径会被这里覆盖掉。
+      KB_MILVUS_URI: http://milvus:19530
       # 12306 MCP 在容器内 127.0.0.1 不可达；留空走离线估算，避免无效连接
       TICKET_MCP_URL: ""
       UVICORN_WORKERS: "1"
+      # 容器化部署一律按生产环境跑：关闭 CORS 的局域网放行
+      APP_ENV: production
     depends_on:
       mysql:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      milvus:
         condition: service_healthy
     # 不映射公网端口，仅对内网暴露
     expose:
@@ -98,27 +160,32 @@ services:
       timeout: 5s
       retries: 12
       start_period: 20s
+    # 装了 pymilvus 之后基线抬高：实测 import app.main 103 MB，
+    # 再 import pymilvus 净增约 89 MB（grpc/pandas/pyarrow/numpy），启动即约 190 MB。
     mem_limit: 512m
     mem_reservation: 256m
     cpus: 1.0
     networks:
       - backend_net
-      - frontend_net
 
-  frontend:
+  gateway:
     build:
-      context: ./frontend
+      context: ./gateway
       dockerfile: Dockerfile
-    image: zt_frontend:latest
-    container_name: zt_frontend
+    image: zt_gateway:latest
+    container_name: zt_gateway
     restart: unless-stopped
     depends_on:
-      - backend
-    # 端口从 .env 的 FRONTEND_PORT 读取，默认 8081，避免与服务器上已部署项目（高保真）的 80 端口冲突。
+      backend:
+        condition: service_healthy
+    # 只绑回环：公网入口交给宿主机 Nginx（80/443 + 已备案域名 + TLS），本容器不直接对公网。
+    # 服务器上 80 端口已被「高保真项目」占用，故这里保持内网端口，由外层 Nginx 反代过来。
     ports:
-      - "${FRONTEND_PORT:-8081}:80"
+      - "127.0.0.1:${GATEWAY_PORT:-8081}:80"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost/nginx-health"]
+      # 必须写 127.0.0.1：alpine 的 busybox wget 会把 localhost 解析成 IPv6 ::1，
+      # 而 nginx 只 listen 80(IPv4)，于是容器内连接被拒、健康检查永远失败。
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/nginx-health"]
       interval: 15s
       timeout: 5s
       retries: 12
@@ -126,14 +193,15 @@ services:
     mem_reservation: 64m
     cpus: 0.5
     networks:
-      - frontend_net
+      - backend_net
 
 networks:
   backend_net:
-    driver: bridge
-  frontend_net:
     driver: bridge
 
 volumes:
   mysql_data:
   redis_data:
+  # 向量集合数据。删掉它不会丢业务数据，但 /api/kb/status 会变 indexed:false，
+  # 需要重跑 docker compose exec backend python scripts/build_kb.py 重建。
+  milvus_data:

@@ -1,8 +1,28 @@
 const app = getApp()
 const { request } = require('../../utils/request')
 
-const RPX = wx.getWindowInfo().windowWidth / 750
+// getWindowInfo 需要基础库 2.20.1+；不加兜底的话低版本下这一行在模块加载时就抛错，
+// 整个手动规划页直接白屏（login/index 都有兜底，唯独这里漏了）。
+const RPX = (wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()).windowWidth / 750
 const ITEM_HEIGHT_RPX = 108 // 行高（含 margin）
+
+// 用户填的是自由文本时间（"09:00"），但 time_slot 的契约是
+// morning/afternoon/evening——以前直接把原始时间写进 time_slot，
+// 详情页的时段标签、餐饮匹配、时间轴排序全都会乱。
+function inferSlot(time) {
+  const m = /^(\d{1,2})[:：](\d{2})$/.exec(String(time || '').trim())
+  if (!m) return 'morning'
+  const h = Number(m[1])
+  if (h < 12) return 'morning'
+  if (h < 18) return 'afternoon'
+  return 'evening'
+}
+
+function normalizeTime(time) {
+  const m = /^(\d{1,2})[:：](\d{2})$/.exec(String(time || '').trim())
+  if (!m) return ''
+  return `${String(Number(m[1])).padStart(2, '0')}:${m[2]}`
+}
 
 Page({
   data: {
@@ -120,8 +140,15 @@ Page({
     const itinerary = daysArr.map((spots, i) => ({
       day_number: i + 1,
       date_label: labels[i] ? '第' + labels[i] + '天' : '第' + (i + 1) + '天',
-      spots: spots.map(s => ({
-        name: s.name, time_slot: s.time || '', duration_min: 0, ticket_price: 0, category: '', description: s.note || ''
+      spots: spots.filter(s => (s.name || '').trim()).map(s => ({
+        name: s.name.trim(),
+        start_time: normalizeTime(s.time),
+        time_slot: inferSlot(s.time),
+        duration_min: 120,
+        ticket_price: 0,
+        category: '',
+        description: s.note || '',
+        photo_spots: []
       })),
       meals: [], transport: [], budget: 0, tips: ''
     }))

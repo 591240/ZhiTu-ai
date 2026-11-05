@@ -14,3 +14,17 @@ tests_offline.py
 mock_12306_mcp.py
 migrate_*.py
 *.md
+
+# RAG 索引与 embedding 缓存：可再生产物，绝不能被烤进镜像。
+# 否则语料改了但没重建索引时，会静默带着旧索引上线，而 /api/kb/status 仍显示 indexed:true。
+# 正确流程：镜像不含索引 → 部署后执行 python scripts/build_kb.py。
+kb/corpus/index.meta.json
+kb/corpus/index.vec
+kb/corpus/embed_cache.json
+# 内嵌 milvus-lite 的数据。注意两个坑：
+#   1) 顶部那条 `*.db` 锚定在构建上下文根部，匹配不到 kb/corpus/ 下的同名条目；
+#   2) milvus-lite 3.x 存的是一个**目录**（含 LOCK/collections/databases），不是单文件。
+kb/corpus/milvus.db*/
+**/milvus.db*/
+kb/corpus/milvus_data*/
+kb/milvus_data*/

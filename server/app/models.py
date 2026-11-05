@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import String, Integer, Float, JSON, DateTime, Boolean, Text, ForeignKey
+from sqlalchemy import String, Integer, Float, JSON, DateTime, Boolean, Text, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -91,6 +91,8 @@ class Template(Base):
 
 class Collection(Base):
     __tablename__ = "collections"
+    # 同一用户对同一模板只能收藏一次（并发重复点击由唯一索引兜底）
+    __table_args__ = (UniqueConstraint("user_id", "template_id", name="uq_collection_user_template"),)
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     template_id: Mapped[int] = mapped_column(ForeignKey("templates.id"), index=True)
@@ -105,31 +107,4 @@ class Order(Base):
     plan_type: Mapped[str] = mapped_column(String(16))
     amount: Mapped[float] = mapped_column(Float)
     status: Mapped[str] = mapped_column(String(16), default="pending")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
-
-
-class City(Base):
-    __tablename__ = "cities"
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(32), index=True)
-    province: Mapped[str] = mapped_column(String(32), default="")
-    pinyin: Mapped[str] = mapped_column(String(32), default="")
-    is_hot: Mapped[bool] = mapped_column(Boolean, default=False)
-
-
-class ServiceLink(Base):
-    __tablename__ = "service_links"
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(32))
-    app_id: Mapped[str] = mapped_column(String(64), default="")
-    path: Mapped[str] = mapped_column(String(128), default="")
-    icon: Mapped[str] = mapped_column(String(32), default="")
-
-
-class ChatHistory(Base):
-    __tablename__ = "chat_history"
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
-    role: Mapped[str] = mapped_column(String(16))
-    content: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)

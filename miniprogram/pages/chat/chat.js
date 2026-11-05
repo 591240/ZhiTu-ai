@@ -55,7 +55,7 @@ Page({
 
     try {
       if (this.data.mode === 'adjust') {
-        await this._adjustSend(q, messages)
+        await this._adjustSend(q, aiIndex)
       } else {
         const that = this
         streamRequest('/api/chat/qa', { question: q },
@@ -71,39 +71,48 @@ Page({
               that.setData({ messages: msgs, sending: false })
               wx.showModal({
                 title: '积分不足',
-                content: '本次提问需要 2 积分，您的积分已用完，请前往充值。',
+                content: err.message || '本次提问需要 2 积分，您的积分已用完，请前往充值。',
                 confirmText: '去充值',
                 cancelText: '取消',
                 success: (res) => {
                   if (res.confirm) wx.navigateTo({ url: '/pages/member/member' })
                 }
               })
-            } else {
-              that.setData({ sending: false })
+              return
             }
+            if (err) {
+              // 断网/超时/服务异常：把空气泡换成可读提示，否则会一直空着
+              const msgs = that.data.messages.slice()
+              msgs[aiIndex] = { role: 'ai', text: err.message || '网络异常，请稍后再试。' }
+              that.setData({ messages: msgs })
+            }
+            that.setData({ sending: false })
           }
         )
       }
     } catch (e) {
       const msgs = this.data.messages.slice()
-      msgs[aiIndex] = { role: 'ai', text: '抱歉，我暂时无法处理，请稍后再试。' }
+      msgs[aiIndex] = { role: 'ai', text: (e && e.message) || '抱歉，我暂时无法处理，请稍后再试。' }
       this.setData({ messages: msgs, sending: false })
     }
   },
 
-  async _adjustSend(q, messages) {
+  async _adjustSend(q, aiIndex) {
     const r = await request({
       url: '/api/plan/chat-adjust',
       method: 'POST',
-      data: { trip: this.data.adjustTrip, instruction: q }
+      data: { trip: this.data.adjustTrip, instruction: q },
+      timeout: 120000
     })
     const newTrip = r.data.trip
     const reply = r.data.reply || '已为你调整行程。'
     app.globalData.adjustTrip = newTrip
-    const msgs = messages.concat([{ role: 'ai', text: reply }])
+    // 直接替换占位气泡：之前是在已含空占位的气泡上再 concat 一条，页面上会留一个空气泡
+    const msgs = this.data.messages.slice()
+    msgs[aiIndex] = { role: 'ai', text: reply }
     this.setData({
       messages: msgs,
-      lastId: 'm' + (msgs.length - 1),
+      lastId: 'm' + aiIndex,
       adjustTrip: newTrip,
       adjusted: true,
       sending: false
@@ -131,7 +140,12 @@ Page({
 
   async loadLuggage() {
     try {
-      const r = await request({ url: '/api/chat/luggage', method: 'POST', data: {} })
+      const trip = this.data.adjustTrip || app.globalData.previewTrip || {}
+      const r = await request({
+        url: '/api/chat/luggage',
+        method: 'POST',
+        data: { city: trip.city || '', days: trip.days || 2, season: '' }
+      })
       const luggage = (r.data.list || []).map(g => ({ group: g.group, items: g.items.map(n => ({ name: n, done: false })) }))
       this.setData({ luggage })
     } catch (e) {}
@@ -139,7 +153,8 @@ Page({
 
   async loadFood() {
     try {
-      const r = await request({ url: '/api/chat/food', method: 'POST', data: { city: '' } })
+      const trip = this.data.adjustTrip || app.globalData.previewTrip || {}
+      const r = await request({ url: '/api/chat/food', method: 'POST', data: { city: trip.city || '' } })
       this.setData({ food: { red: r.data.red || [], black: r.data.black || [] } })
     } catch (e) {}
   },

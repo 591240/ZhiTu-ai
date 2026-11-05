@@ -1,7 +1,12 @@
 # 知途 AI 旅行 · 个人主体上架操作指南
 
 > 目标：以**个人主体**把「知途 AI 旅行」作为**免费 AI 行程工具**提交微信审核并发布。
-> 适用状态：代码已切换为 `MONETIZATION_ENABLED=false`（无付费）、`USE_MOCK=true`（审核期无需后端/域名即可跑通）。
+> 适用状态：`MONETIZATION_ENABLED=false`（无付费）。
+>
+> ⚠️ **2026-10-23 重要变更**：前端的 mock 演示模式（`utils/mock.js` + `USE_MOCK`）已删除。
+> 原计划「`USE_MOCK=true` 先提审拿已发布状态、拿到域名再切真后端」这条路走不通了——
+> 现在**没有后端就没有任何数据，审核员点开会全是"网络异常"**。
+> 因此顺序反过来了：**先把后端跑起来，再提交审核**。详见第三节。
 
 ---
 
@@ -33,7 +38,8 @@
 ### 第 3 步：开发者工具上传代码
 1. 打开微信开发者工具 → 导入项目目录 `miniprogram/`
 2. AppID 填你的 `wxf5fd654f184a0bb7`
-3. 确认 `config/env.js`：`USE_MOCK:true`、`MONETIZATION_ENABLED:false`
+3. 确认 `config/env.js`：`MONETIZATION_ENABLED: false`、`BASE_URL` 指向**一个真的能访问的后端**
+   - 未上线前可先用 `https://你的域名`（合法域名已配好），或开发者工具勾选「不校验合法域名」后用 `http://局域网IP:8000`
 4. 点右上「上传」→ 填版本号（如 `1.0.0`）和备注 → 上传成功
 
 ### 第 4 步：提交审核
@@ -48,21 +54,40 @@
 
 ---
 
-## 三、让上线版「真能用 AI」（可选，需域名）
-当前 `USE_MOCK=true` 上线后是**示例数据**演示版。要变成真 AI：
-1. 买域名 → ICP 备案（腾讯云备案约 1–3 天）→ 部署 SSL
-2. 后端部署到服务器 `https://你的域名`（Docker 方案见 `docker-compose.yml`）
-3. 改 `config/env.js`：`USE_MOCK:false`、`BASE_URL:'https://你的域名'`
-4. mp 后台「开发设置 → 服务器域名 → request 合法域名」添加 `https://你的域名`
-5. 重新上传 + 提交审核
+## 三、上线前必须先有后端（不再是"可选项"）
 
-> 没有域名前，先用 `USE_MOCK=true` 提交审核拿「已发布」状态；拿到域名后再切真后端二次提交即可。
+前端已无 mock，`config/env.js` 的 `BASE_URL` 指向哪，审核员看到的就是哪。所以顺序是：
+
+1. **域名 + ICP 备案 + SSL**
+   - 微信的「request 合法域名」只认 **HTTPS 域名**，纯 IP / HTTP 都不行
+   - 备案约 1–3 个工作日（腾讯云/阿里云都有引导）
+   - 隐私政策也必须托管到 HTTPS 网址（见第 1 步）
+2. **部署后端**（Docker 四件套：mysql + redis + backend + gateway）
+   - 按 `docs/知途AI Docker部署指南.md` 操作，宿主机 Nginx 反代到 `gateway`
+   - 2 核 2G 轻量服务器即可；`APP_ENV=production` 会自动关掉 CORS 局域网放行
+3. **配 `config/env.js`**
+   - `BASE_URL: 'https://你的域名'`（注意末尾不带 `/api`，接口自带前缀）
+4. **mp 后台配合法域名**
+   - 「开发设置 → 服务器域名 → request 合法域名」添加 `https://你的域名`
+   - 高德/图片域名也要加到「downloadFile 合法域名」里
+5. **重建 RAG 索引**（这步漏了检索会静默降级成关键词模式）
+   ```bash
+   docker compose up -d --build
+   docker compose exec backend python scripts/build_kb.py
+   docker compose exec backend python -c "from kb.retriever import retriever as r; print(r.status())"
+   ```
+6. 重新上传 + 提交审核
+
+> **最低成本的临时方案**：如果备案还没下来，可先用一台有公网 IP 的云服务器 + 免费 HTTPS
+> （如 Let's Encrypt），但微信 request 合法域名仍要求域名而非 IP，所以**域名这道绕不过去**。
+> 建议把备案和开发并行推进，别等代码全做完才开始备案。
 
 ---
 
 ## 四、真机演示（明天用，不发布也能用）
 - 开发者工具点「真机调试」或「预览」→ 手机微信扫码
-- 因 `USE_MOCK=true`，手机离线即可演示全部页面，无需后端
+- 前提：手机能访问到 `BASE_URL`。同一路由器下用 `http://电脑局域网IP:8000`，
+  并在「详情 → 本地设置」勾选「不校验合法域名」
 - 注意：第三方跳转（同程/携程等）真机需公众平台「跳转小程序」白名单，否则点不动
 
 ---

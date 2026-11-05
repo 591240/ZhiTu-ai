@@ -16,6 +16,7 @@ server/.venv/
 .venv/
 *.egg-info/
 .pytest_cache/
+server/.pytest_tmp/
 .mypy_cache/
 .ruff_cache/
 
@@ -42,3 +43,24 @@ Thumbs.db
 
 # ===================== 本地生成的临时产物 =====================
 outputs/
+
+# ===================== RAG 可再生产物 =====================
+# 语料 city_spots.json 要入库；索引和 embedding 缓存跑 scripts/build_kb.py 重建
+server/kb/corpus/index.meta.json
+server/kb/corpus/index.vec
+server/kb/corpus/embed_cache.json
+# 本地内嵌 milvus-lite 的数据文件（含 -wal/-shm 兄弟文件）
+server/kb/corpus/milvus.db*
+server/kb/corpus/milvus_data*/
+
+# ===================== 2026-11-05 推送前补漏 =====================
+# 工作记忆（Agent 本地记录）
+.workbuddy-ai/
+# 用户上传运行时产物（头像等）
+server/static/
+# PPT 工具运行时缓存/状态
+ppt-defence/.slidep/
+ppt-defence/.cache/
+# 本地备份文件
+*.bak
+*.bak-*

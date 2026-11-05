@@ -63,6 +63,7 @@ class PlanFormReq(BaseModel):
     end_date: str = ""                   # 返程日期 YYYY-MM-DD
     people_count: int = 2                # 出行人数
     transport_preference: str = ""       # 往返交通偏好：高铁优先/飞机优先/性价比优先/省时优先
+    must_see: str = ""                   # 必看风景 / 必去地点
 
 
 class PlanQuickReq(BaseModel):
@@ -82,6 +83,12 @@ class ChatQAReq(BaseModel):
     question: str
 
 
+class AgentChatReq(BaseModel):
+    trip_id: int
+    message: str
+    history: list = []          # [{"role": "user"|"assistant", "content": "..."}]
+
+
 class RechargeReq(BaseModel):
     amount: float                 # 充值金额
     contact: str = ""             # 微信号/手机号，用于人工确认
@@ -96,6 +103,15 @@ class LuggageReq(BaseModel):
 
 class FoodReq(BaseModel):
     city: str
+
+
+class IdReq(BaseModel):
+    """通用「按 id 操作」请求体。用模型而不是 dict，缺参时由 FastAPI 返回 422 而不是 500。"""
+    id: int
+
+
+class CollectionAddReq(BaseModel):
+    template_id: int
 
 
 def ok(data: Any = None, message: str = "ok"):

@@ -12,38 +12,40 @@ function hashStr(s) {
   return Math.abs(h)
 }
 
-// 景点封面图兜底：当后端未返回图片或图片加载失败时使用。
-// 用 loremflickr 按景点名关键词搜索，保证任何城市/景点都有图显示。
+// 稳定的随机图兜底（在线服务失败时备用，picsum 比 loremflickr 稳定）
+function _fallbackImage(seedStr) {
+  const seed = hashStr(seedStr) % 100000
+  return `https://picsum.photos/seed/z${seed}/640/360`
+}
+
+// 景点封面图兜底：优先按城市名单关键词从 loremflickr 取城市相关图；
+// 加载失败时通过 binderror 再换 fallback。
 function spotImage(name, city) {
   const n = (name || '景点').trim()
   const c = (city || '').trim()
-  const q = c ? `${encodeURIComponent(c)},${encodeURIComponent(n)}` : encodeURIComponent(n)
-  const lock = hashStr(n + c) % 1000
-  return `https://loremflickr.com/640/360/${q}/all?lock=${lock}`
+  const keyword = c ? encodeURIComponent(c) : encodeURIComponent(n)
+  const lock = hashStr(c + n) % 1000
+  return `https://loremflickr.com/640/360/${keyword}?lock=${lock}`
+}
+function spotImageFallback(name, city) {
+  return _fallbackImage((city || '') + (name || ''))
 }
 
 // 城市封面图：优先使用本地真实照片 /images/cities/城市名.jpg；
-// 没有本地图时，走 loremflickr 关键词图（保证城市内容相关，不会西安配长城）。
-// 上线前建议把真实摄影图放到 miniprogram/images/cities/ 目录，避免外部域名白名单问题。
-const CITY_ONLINE = {
-  '杭州': 'https://loremflickr.com/640/360/hangzhou,westlake?lock=201',
-  '成都': 'https://loremflickr.com/640/360/chengdu,panda?lock=202',
-  '西安': 'https://loremflickr.com/640/360/xian,terracotta?lock=203',
-  '苏州': 'https://loremflickr.com/640/360/suzhou,garden?lock=204',
-  '重庆': 'https://loremflickr.com/640/360/chongqing,hongyadong?lock=205',
-  '厦门': 'https://loremflickr.com/640/360/xiamen,gulangyu?lock=206',
-  '长沙': 'https://loremflickr.com/640/360/changsha,orangeisle?lock=207',
-  '南京': 'https://loremflickr.com/640/360/nanjing,confucius?lock=208'
-}
+// 本地图不存在时（image 组件 binderror），由页面 onImgError 换在线兜底图；
+// 在线兜底也失败，最终显示 emoji。
+// 上线前把真实摄影图放 miniprogram/images/cities/，零外部域名依赖、加载最快。
 function cityImage(city) {
   const n = (city || '旅行').trim()
   return `/images/cities/${n}.jpg`
 }
 function cityImageOnline(city) {
-  const n = (city || '旅行').trim()
-  if (CITY_ONLINE[n]) return CITY_ONLINE[n]
-  const lock = hashStr(n) % 1000
-  return `https://loremflickr.com/640/360/${encodeURIComponent(n)}?lock=${lock}`
+  // 主图直接走本地图，交给 image 组件判断是否存在
+  return cityImage(city)
+}
+function cityImageOnlineFallback(city) {
+  // 本地图缺失时的在线兜底（稳定服务）
+  return _fallbackImage(city || 'travel')
 }
 
 // 城市 → emoji（稳定封面图标，列表/无网兜底）
@@ -120,7 +122,7 @@ function ticketChannels(spot) {
   const ota = [
     { key: 'ctrip', name: '携程', note: '比价常用 · 退改灵活', search: `https://www.ctrip.com/search?q=${encodeURIComponent(name + ' 门票')}`, appId: 'wx0e6ed4f51db9d078', keyword: name + ' 门票' },
     { key: 'meituan', name: '美团', note: '常有限时折扣', search: `https://www.meituan.com/search?q=${encodeURIComponent(name + ' 门票')}`, appId: 'wxde8ac0a21135c07d', keyword: name + ' 门票' },
-    { key: 'dianping', name: '大众点评', note: '看评价 · 买票团购', search: `https://www.dianping.com/search?q=${encodeURIComponent(name + ' 门票')}`, appId: 'wx734c1ad7b3562129', keyword: name + ' 门票' },
+    { key: 'dianping', name: '大众点评', note: '看评价 · 买票团购', search: `https://www.dianping.com/search?q=${encodeURIComponent(name + ' 门票')}`, keyword: name + ' 门票' }, // AppID 待核实，暂走复制搜索链接
     { key: 'fliggy', name: '飞猪', note: '阿里会员价', search: `https://www.fliggy.com/search?q=${encodeURIComponent(name + ' 门票')}`, keyword: name + ' 门票' },
     { key: 'tongcheng', name: '同程旅行', note: '周边游常用', search: `https://www.ly.com/search?q=${encodeURIComponent(name + ' 门票')}`, keyword: name + ' 门票' },
     { key: 'douyin', name: '抖音团购', note: '节假日常更便宜', search: `https://www.douyin.com/search/${encodeURIComponent(name + ' 团购')}`, keyword: name + ' 门票' }
@@ -209,7 +211,6 @@ function openBooking(spot) {
 function openBookingFallback(spotName, accountName) {
   const channels = [
     { name: '美团', appId: 'wxde8ac0a21135c07d' },
-    { name: '大众点评', appId: 'wx734c1ad7b3562129' },
     { name: '携程', appId: 'wx0e6ed4f51db9d078' }
   ]
   wx.showActionSheet({
@@ -247,7 +248,7 @@ function dealChannels(meal) {
   const name = (meal && meal.name) || '该餐厅'
   const channels = [
     { key: 'meituan', name: '美团', note: '到店套餐/代金券常用', search: `https://www.meituan.com/search?q=${encodeURIComponent(name + ' 团购')}`, appId: 'wxde8ac0a21135c07d', keyword: name + ' 团购' },
-    { key: 'dianping', name: '大众点评', note: '看真实评价+买单优惠', search: `https://www.dianping.com/search?q=${encodeURIComponent(name)}`, appId: 'wx734c1ad7b3562129', keyword: name },
+    { key: 'dianping', name: '大众点评', note: '看真实评价+买单优惠', search: `https://www.dianping.com/search?q=${encodeURIComponent(name)}`, keyword: name }, // AppID 待核实，暂走复制搜索链接
     { key: 'douyin', name: '抖音团购', note: '短视频套餐常更便宜', search: `https://www.douyin.com/search/${encodeURIComponent(name + ' 团购')}`, keyword: name + ' 团购' },
     { key: 'xiaohongshu', name: '小红书', note: '探店笔记/隐藏优惠', search: `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(name + ' 团购')}`, keyword: name + ' 团购' }
   ]
@@ -278,8 +279,10 @@ function openDealChannel(meal) {
 
 module.exports = {
   spotImage,
+  spotImageFallback,
   cityImage,
   cityImageOnline,
+  cityImageOnlineFallback,
   cityEmoji,
   openPlatform,
   platformSearchUrl,

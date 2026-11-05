@@ -1,6 +1,6 @@
 const { request } = require('../../utils/request')
 const { openMultiMap, haversineKm } = require('../../utils/map')
-const { spotImage } = require('../../utils/media')
+const { spotImage, spotImageFallback } = require('../../utils/media')
 
 const MEAL_EMOJI = { breakfast: '🥢', lunch: '🍜', dinner: '🍲', default: '🍽' }
 
@@ -107,5 +107,18 @@ Page({
       return
     }
     openMultiMap({ lat: l.lat, lng: l.lng, name: l.name, address: l.address })
+  },
+
+  onImgError(e) {
+    const i = e.currentTarget.dataset.i
+    const item = this.data.locs[i]
+    if (!item) return
+    const fallback = spotImageFallback(item.name, this.data.city)
+    const key = `locs[${i}].image`
+    if (item.image === fallback) {
+      this.setData({ [key]: '' })
+    } else {
+      this.setData({ [key]: fallback })
+    }
   }
 })

@@ -1,7 +1,7 @@
 const { request } = require('../../utils/request')
 const storage = require('../../utils/storage')
-const mock = require('../../utils/mock')
 const { track } = require('../../utils/track')
+const { handleBizError } = require('../../utils/error')
 const app = getApp()
 
 const CROWD = ['亲子（大人带小孩）', '情侣', '学生', '中老年', '朋友', '其他']
@@ -21,6 +21,7 @@ Page({
     days: 2,
     crowdIndex: 1,
     prefs: [],
+    mustSee: '',
     transportIndex: 2,
     routeIndex: 0,
     remark: '',
@@ -38,7 +39,7 @@ Page({
   },
 
   onLoad() {
-    this.setData({ cities: mock.mockCities.map(c => c.name), city: storage.getCity() })
+    this.setData({ city: storage.getCity() })
   },
 
   onCityInput(e) { this.setData({ city: e.detail.value }) },
@@ -106,6 +107,7 @@ Page({
     this.setData({ prefs })
   },
   onRemark(e) { this.setData({ remark: e.detail.value }) },
+  onMustSee(e) { this.setData({ mustSee: e.detail.value }) },
   onBudgetMin(e) {
     const v = parseInt(e.detail.value) || 0
     const budgetMin = Math.max(0, v)
@@ -144,7 +146,8 @@ Page({
           start_date: d.startDate,
           end_date: d.endDate,
           people_count: d.peopleCount,
-          transport_preference: d.TRANSPORT_PREF[d.transportPrefIndex]
+          transport_preference: d.TRANSPORT_PREF[d.transportPrefIndex],
+          must_see: d.mustSee
         }
       })
       app.globalData.previewTrip = r.data.trip
@@ -153,18 +156,8 @@ Page({
       wx.redirectTo({ url: '/pages/detail/detail?id=preview' })
     } catch (e) {
       wx.hideLoading()
-      if (e && e.code === 4001) {
-        wx.showModal({
-          title: '积分不足',
-          content: '本次生成需要 10 积分，您的积分已用完，请前往充值。',
-          confirmText: '去充值',
-          cancelText: '取消',
-          success: (res) => {
-            if (res.confirm) wx.navigateTo({ url: '/pages/member/member' })
-          }
-        })
-      } else {
-        wx.showToast({ title: '生成失败，请重试', icon: 'none' })
+      if (!handleBizError(e)) {
+        wx.showToast({ title: (e && e.message) || '生成失败，请重试', icon: 'none' })
       }
     } finally {
       this.setData({ generating: false })

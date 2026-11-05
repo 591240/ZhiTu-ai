@@ -2,6 +2,8 @@
 # 根据起点/终点地名 + 城市，调用高德「公交路径规划」API，返回可读的线路/车次/步行段。
 
 import logging
+import re
+import time
 from urllib.parse import quote
 
 import requests
@@ -11,12 +13,34 @@ from app.services import image_service
 
 logger = logging.getLogger(__name__)
 
-# 本地内存缓存：同一进程内避免重复请求
-_route_cache: dict[str, dict | None] = {}
+# 本地内存缓存：同一进程内避免重复请求。带 TTL + 上限，
+# 否则「查询失败」会被永久缓存（一次网络抖动 → 该线路永远只有兜底文案），
+# 且缓存随城市/线路数无界增长。
+CACHE_TTL = 6 * 3600
+CACHE_MAX = 2000
+_route_cache: dict[str, tuple[float, dict | None]] = {}
 
 
 def _cache_key(origin: str, dest: str, city: str, mode: str) -> str:
     return f"{city}|{mode}|{origin}->{dest}"
+
+
+def _cache_get(key: str):
+    hit = _route_cache.get(key)
+    if not hit:
+        return False, None
+    if time.time() - hit[0] > CACHE_TTL:
+        _route_cache.pop(key, None)
+        return False, None
+    return True, hit[1]
+
+
+def _cache_put(key: str, value):
+    if len(_route_cache) >= CACHE_MAX:
+        oldest = sorted(_route_cache.items(), key=lambda kv: kv[1][0])[: CACHE_MAX // 2]
+        for k, _ in oldest:
+            _route_cache.pop(k, None)
+    _route_cache[key] = (time.time(), value)
 
 
 def _safe_int(v, default: int = 0) -> int:
@@ -65,14 +89,15 @@ def get_transit_route(origin_name: str, dest_name: str, city: str, mode: str = "
 
     mode = (mode or "公交").replace("公共交通", "公交").replace("地铁", "公交")
     cache_key = _cache_key(origin_name, dest_name, city, mode)
-    if cache_key in _route_cache:
-        return _route_cache[cache_key]
+    hit, cached = _cache_get(cache_key)
+    if hit:
+        return cached
 
     origin_loc = _location_of(origin_name, city)
     dest_loc = _location_of(dest_name, city)
     if not origin_loc or not dest_loc:
         logger.warning("无法获取起点/终点坐标: %s / %s", origin_name, dest_name)
-        _route_cache[cache_key] = None
+        _cache_put(cache_key, None)
         return None
 
     try:
@@ -85,17 +110,17 @@ def get_transit_route(origin_name: str, dest_name: str, city: str, mode: str = "
             f"&city2={quote(city)}"
             f"&extensions=all"
         )
-        r = requests.get(url, timeout=15)
+        r = requests.get(url, timeout=5)
         r.raise_for_status()
         data = r.json()
         if str(data.get("status")) != "1":
             logger.warning("高德公交路径规划失败: %s", data.get("info"))
-            _route_cache[cache_key] = None
+            _cache_put(cache_key, None)
             return None
 
         transits = data.get("route", {}).get("transits") or []
         if not transits:
-            _route_cache[cache_key] = None
+            _cache_put(cache_key, None)
             return None
 
         best = transits[0]
@@ -112,12 +137,16 @@ def get_transit_route(origin_name: str, dest_name: str, city: str, mode: str = "
             if walking:
                 steps = walking.get("steps") or []
                 instruction = steps[0].get("instruction") if steps else f"步行{walking.get('distance', 0)}米"
-                segments.append({
-                    "type": "walking",
-                    "distance": _safe_int(walking.get("distance"), 0),
-                    "duration_min": _safe_int(walking.get("duration"), 0) // 60,
-                    "instruction": instruction or f"步行{walking.get('distance', 0)}米",
-                })
+            # 高德部分返回的 instruction 会带 0x00/0x01 等内部标记，清洗掉
+            instruction = re.sub(r"\s*0x[0-9A-Fa-f]+", "", instruction or "").strip()
+            if not instruction:
+                instruction = f"步行{walking.get('distance', 0)}米"
+            segments.append({
+                "type": "walking",
+                "distance": _safe_int(walking.get("distance"), 0),
+                "duration_min": _safe_int(walking.get("duration"), 0) // 60,
+                "instruction": instruction,
+            })
 
             # 公共交通段
             bus_info = seg.get("bus")
@@ -146,9 +175,9 @@ def get_transit_route(origin_name: str, dest_name: str, city: str, mode: str = "
             "detail": _human_detail(segments),
             "segments": segments,
         }
-        _route_cache[cache_key] = result
+        _cache_put(cache_key, result)
         return result
     except Exception:
         logger.exception("查询公交路线失败: %s -> %s", origin_name, dest_name)
-        _route_cache[cache_key] = None
+        _cache_put(cache_key, None)
         return None

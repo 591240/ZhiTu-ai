@@ -3,10 +3,40 @@
 | 项目     | 内容                |
 | :------- | :------------------ |
 | 文档名称 | 数据库 ER 图设计文档 |
-| 版本     | V1.0                |
+| 版本     | V1.1（2026-10-22 按实现态校正，新增「实现对照」一节） |
 | 编制时间 | 2026 年 08 月 06 日 |
 | 数据库   | MySQL 8.0           |
 | 字符集   | utf8mb4             |
+| ORM      | SQLAlchemy 2.0 异步（`server/app/models.py`，实现态 8 张表） |
+| 文档性质 | **设计态** V1.0；与实现态的差异见下一节，二者不可混用 |
+
+---
+
+## 〇、实现对照（设计态 vs 实现态）
+
+实现态现共 **8 张表**（`app/models.py`，`grep -c __tablename__` = 8）：`users` / `trips` / `templates` / `collections` / `orders` / `events` / `feedbacks` / `distribution_records`。
+
+本文（设计态 V1.0）定义 11 张，与实现态的差集如下：
+
+| 分类 | 表 | 说明 |
+| :--- | :--- | :--- |
+| 两边同名、仍在用（5） | `user` `trip` `template` `collection` `order` | 实现时统一改复数表名（`users` / `trips` / …） |
+| 本文设计、代码从未落地（3） | `membership` | 会员态是 `users.is_vip` + `users.vip_expire_at` 两个字段，未独立建表 |
+| | `trip_day` `trip_spot` | 行程按整体 JSON 存于 `trips.content`，未拆日/景点子表（换取生成链路读写一次到位，代价是无法按景点做关系型统计） |
+| 本文设计、2026-10-22 已从代码删除（3） | `city` `service_link` `chat_history` | 见下方「死表收敛」 |
+| 代码有、本文未收录（3） | `events` `feedbacks` `distribution_records` | 埋点（`props` JSON）/ 用户反馈 / 分销佣金（配套 `users.invite_code` / `invited_by` / `points`） |
+
+**死表收敛（2026-10-22）**：`cities` / `service_links` / `chat_history` 长期是"建了但应用代码从不读取"的死表——城市列表实际由前端 `utils/cities.js` 提供，服务直达渠道硬编码在 `app/routers/service.py` 的 `SERVICES` 常量，问答是流式返回、对话未落库。三张表的 ORM 定义与 `db_init.py` 里的对应种子逻辑已删除；`create_all` 不会 DROP，旧库中残留的空表需要时手工清理：
+
+```sql
+DROP TABLE IF EXISTS chat_history, service_links, cities;
+```
+
+> **数字口径提醒**：「8 张表」这个说法在 2026-08-07 成立过（当时是 users/trips/templates/collections/orders/cities/service_links/chat_history），现在也是 8 张，但成员换了一批。引用表数量请附口径与来源，别只报数字。
+
+**迁移方式**：实现态没有 Alembic，建表靠 `Base.metadata.create_all`（`app/database.py`）。表结构变更目前依赖 `server/migrate_*.py` 脚本手工执行，属于已知短板。
+
+**驱动口径**：应用侧是 `mysql+aiomysql`（异步）；`db_init.py` 走 `mysql+pymysql` 同步引擎，而 `PyMySQL` 与 `python-dotenv` 都没写进 `requirements.txt`——该脚本只能在开发机跑，容器内会缺依赖。
 
 ---
 

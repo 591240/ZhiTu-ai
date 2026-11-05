@@ -1,7 +1,7 @@
 const env = require('../../config/env')
 const { request } = require('../../utils/request')
 const storage = require('../../utils/storage')
-const mock = require('../../utils/mock')
+const { CITY_NAMES } = require('../../utils/cities')
 const auth = require('../../utils/auth')
 const media = require('../../utils/media')
 
@@ -29,7 +29,7 @@ Page({
   onLoad() {
     const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
     const city = storage.getCity() || '杭州'
-    const cityNames = mock.mockCities.map(c => c.name)
+    const cityNames = CITY_NAMES.slice()
     const cityIndex = Math.max(0, cityNames.indexOf(city))
     this.setData({
       city,
@@ -90,17 +90,19 @@ Page({
     } catch (e) {}
   },
 
+  onCityChange(e) {
+    const cityIndex = Number(e.detail.value) || 0
+    const city = this.data.cityNames[cityIndex]
+    if (!city) return
+    storage.setCity(city)
+    getApp().globalData.city = city
+    this.setData({ city, cityIndex })
+  },
+
   onPickCity() {
-    const cities = mock.mockCities.map(c => c.name)
-    wx.showActionSheet({
-      itemList: cities,
-      success: (res) => {
-        const city = cities[res.tapIndex]
-        storage.setCity(city)
-        this.setData({ city })
-        getApp().globalData.city = city
-      }
-    })
+    // 城市选择已由 <picker> 承担；这里保留兜底入口（wx.showActionSheet 最多 6 项，
+    // 城市列表有 15 个，不能用 actionSheet 平铺）。
+    wx.showToast({ title: '请点击城市名切换', icon: 'none' })
   },
 
   goForm() { wx.navigateTo({ url: '/pages/form/form' }) },
@@ -140,10 +142,6 @@ Page({
       wx.showToast({ title: '该服务暂未配置跳转', icon: 'none' })
       return
     }
-    if (env.USE_MOCK) {
-      wx.showToast({ title: '演示版将跳转：' + name, icon: 'none' })
-      return
-    }
     wx.navigateToMiniProgram({
       appId: link.appId,
       extraData: { city: this.data.city },
@@ -163,9 +161,16 @@ Page({
     }, 100)
   },
 
-  // 模板封面图加载失败时回退 emoji
+  // 模板封面图加载失败：先换稳定 fallback，再失败才回退 emoji
   onImgError(e) {
     const idx = e.currentTarget.dataset.index
-    this.setData({ [`templates[${idx}].image`]: '' })
+    const t = this.data.templates[idx]
+    if (!t) return
+    const fallback = media.cityImageOnlineFallback(t.city)
+    if (t.image === fallback) {
+      this.setData({ [`templates[${idx}].image`]: '' })
+    } else {
+      this.setData({ [`templates[${idx}].image`]: fallback })
+    }
   }
 })

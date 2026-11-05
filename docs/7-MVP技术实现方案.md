@@ -8,6 +8,8 @@
 | 开发模式 | 单人开发 + AI 辅助   |
 | 目标周期 | 3 天核心 Demo + 4 天完整迭代 |
 
+> **文档性质**：本节及后文为 2026-08-06 的**实现方案（设计态）**。第一节技术选型表已于 2026-10-22 按实现态校正（异步驱动 aiomysql、Redis 职责收敛、服务器 2核2G、新增知识检索层）；文中的后端目录结构（`models/` 包、`redis_client.py` 路径等）仍是设计态——实际为单文件 `app/models.py`（11 张表）+ `app/database.py`。RAG 知识层是 10 月新增，见 README「五、知识检索层（RAG）」。
+
 ---
 
 ## 一、技术选型总览
@@ -18,12 +20,13 @@
 | UI 组件库  | Vant Weapp                    | 轻量级、组件丰富、文档完善、社区活跃                     |
 | 后端框架   | Python FastAPI                | 异步高性能、自动生成 OpenAPI 文档、Pydantic 数据校验     |
 | 数据库     | MySQL 8.0                     | 成熟稳定、支持 JSON 字段、单机性能足够                    |
-| 缓存       | Redis 7.0                     | 限流计数、模板缓存、LLM 结果缓存、降低 AI 调用成本        |
-| ORM        | SQLAlchemy 2.0 + PyMySQL      | 成熟 ORM、支持异步、参数化查询防注入                     |
+| 缓存       | Redis 7.0 + 进程内 dict        | Redis 实际只承担限流计数与短信验证码（不可用时内存兜底）；景点图/路线/POI 候选池走进程内缓存，重启即失效 |
+| ORM        | SQLAlchemy 2.0（异步）+ aiomysql | `create_async_engine` + `async_sessionmaker`，参数化查询防注入；本地默认 SQLite（aiosqlite） |
+| 知识检索   | Milvus（milvus-lite 引擎，自建容器）+ city 硬过滤下推 | 向量与 metadata 存在集合里，`Filter city == "x"` 在打分前排除跨城串味；FLAT 精确检索、COSINE，实测分数与进程内点积一致（偏差 <1e-4） |
 | AI - LLM   | 通义千问 / DeepSeek API        | 中文理解能力强、API 兼容 OpenAI 格式、成本低              |
 | AI - OCR   | 百度 OCR / 腾讯 OCR            | 中文识别准确率高、有免费额度                              |
 | 部署       | Docker + Nginx                | 容器化部署简单、Nginx 反向代理 + HTTPS                    |
-| 服务器     | 阿里云/腾讯云 2核4G            | 满足冷启动阶段需求、月费 90 元                            |
+| 服务器     | 阿里云/腾讯云 2核2G            | 实测内存贴满：MySQL 需限制内存参数、向量层不引入独立容器    |
 
 ---
 
@@ -851,7 +854,7 @@ TEMPLATE_CACHE_TTL=604800
 | 时段  | 任务                              | 产出                              |
 | :---- | :-------------------------------- | :-------------------------------- |
 | 上午  | 项目搭建、依赖安装、配置管理      | FastAPI 项目可运行                  |
-| 上午  | 数据库设计、建表、初始数据         | MySQL 11 张表 + 城市数据            |
+| 上午  | 数据库设计、建表、初始数据         | 建表 + 模板种子（实现态为 8 张表，城市/渠道未建表，见 `docs/2` 实现对照） |
 | 下午  | 用户认证模块 (登录/Token)          | /api/auth/login 可用               |
 | 下午  | 行程 CRUD 接口                    | /api/trip/* 全部可用                |
 | 下午  | 模板列表/详情接口                 | /api/template/* 可用               |

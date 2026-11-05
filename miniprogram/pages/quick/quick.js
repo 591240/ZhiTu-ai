@@ -1,5 +1,6 @@
 const { request } = require('../../utils/request')
 const { track } = require('../../utils/track')
+const { handleBizError } = require('../../utils/error')
 const app = getApp()
 
 const COMMON_CITIES = ['北京','上海','广州','深圳','武汉','青岛','大理','丽江','三亚','天津','昆明','桂林','长沙','南京','厦门','重庆','西安','苏州','杭州','成都']
@@ -60,18 +61,8 @@ Page({
       wx.redirectTo({ url: '/pages/detail/detail?id=preview' })
     } catch (e) {
       wx.hideLoading()
-      if (e && e.code === 4001) {
-        wx.showModal({
-          title: '积分不足',
-          content: '本次生成需要 10 积分，您的积分已用完，请前往充值。',
-          confirmText: '去充值',
-          cancelText: '取消',
-          success: (res) => {
-            if (res.confirm) wx.navigateTo({ url: '/pages/member/member' })
-          }
-        })
-      } else {
-        wx.showToast({ title: '生成失败，请重试', icon: 'none' })
+      if (!handleBizError(e)) {
+        wx.showToast({ title: (e && e.message) || '生成失败，请重试', icon: 'none' })
       }
     } finally {
       this.setData({ generating: false })

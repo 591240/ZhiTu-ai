@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 import logging
 
-from app.schemas import TripSaveReq, ok, fail
+from app.schemas import IdReq, TripSaveReq, ok, fail
 from app.deps import get_current_user
 from app.services.trip_service import trip_service
 
@@ -33,8 +33,6 @@ async def save(req: TripSaveReq, user=Depends(get_current_user)):
 
 
 @router.post("/delete")
-async def delete(body: dict, user=Depends(get_current_user)):
-    tid = body.get("id")
-    if tid:
-        await trip_service.delete(int(tid), user["user_id"])
+async def delete(req: IdReq, user=Depends(get_current_user)):
+    await trip_service.delete(req.id, user["user_id"])
     return ok({})

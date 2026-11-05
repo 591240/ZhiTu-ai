@@ -12,6 +12,7 @@ _MEM_LOCK = asyncio.Lock()
 
 CODE_TTL = 5 * 60        # 验证码有效期 5 分钟
 SEND_INTERVAL = 60       # 同手机号 60 秒内只能发一次
+MAX_VERIFY_ATTEMPTS = 5  # 同手机号最多试 5 次，防 6 位码爆破
 PHONE_RE = re.compile(r"^1[3-9]\d{9}$")
 
 # Redis 可用性标志：初始乐观（客户端对象存在即认为可用）；
@@ -75,6 +76,22 @@ async def _del(key: str):
         _redis_ok = False
 
 
+async def _incr(key: str, ex: int) -> bool:
+    """计数 +1 并设置过期；Redis 不可用返回 False（由调用方写内存）。"""
+    global _redis_ok
+    if not _redis_ok:
+        return False
+    try:
+        n = await redis_client.incr(key)
+        if n == 1:
+            await redis_client.expire(key, ex)
+        return True
+    except Exception as e:
+        print(f"[SMS] Redis 不可用，降级内存存储：{e}")
+        _redis_ok = False
+        return False
+
+
 async def gen_and_send(phone: str):
     """生成验证码、发送短信、写入存储。返回 dev_code（开发态展示用，生产为 None）。"""
     if not PHONE_RE.match(phone):
@@ -107,17 +124,43 @@ async def gen_and_send(phone: str):
 
 
 async def verify(phone: str, code: str) -> bool:
-    """校验验证码（一次性，成功即删除）。"""
-    if not code:
+    """校验验证码（一次性，成功即删除）。
+
+    6 位数字码在 5 分钟有效期内只有 100 万种可能，不记失败次数就等于允许爆破。
+    这里限制同一手机号最多试 MAX_VERIFY_ATTEMPTS 次，超限直接作废该验证码。
+    """
+    if not PHONE_RE.match(phone or "") or not code:
         return False
+
+    fail_key = f"sms:fail:{phone}"
+    fails = await _get(fail_key)
+    if fails and int(fails) >= MAX_VERIFY_ATTEMPTS:
+        await _del(f"sms:code:{phone}")
+        return False
+    if not _redis_ok:
+        async with _MEM_LOCK:
+            item = _MEM.get(fail_key)
+            if item and item[0] >= MAX_VERIFY_ATTEMPTS:
+                _MEM.pop(f"sms:code:{phone}", None)
+                return False
+
     stored = await _get(f"sms:code:{phone}")
     if stored and stored == code:
         await _del(f"sms:code:{phone}")
+        await _del(fail_key)
         return True
     if not _redis_ok:
         async with _MEM_LOCK:
             item = _MEM.get(f"sms:code:{phone}")
             if item and item[0] == code and item[1] > _now():
                 del _MEM[f"sms:code:{phone}"]
+                _MEM.pop(fail_key, None)
                 return True
+
+    # 记一次失败
+    if not await _incr(fail_key, ex=CODE_TTL):
+        async with _MEM_LOCK:
+            cur = _MEM.get(fail_key)
+            _MEM[fail_key] = ((cur[0] if cur else 0) + 1, _now() + CODE_TTL)
     return False
+

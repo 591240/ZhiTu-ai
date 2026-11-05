@@ -16,14 +16,17 @@ class TripService:
             "budget_level": r.budget_level,
             "total_budget": r.total_budget,
             "status": r.status,
-            "created_at": int(r.created_at.timestamp()),
+            # 毫秒时间戳：前端 format.fromNow 按 Date.now() 的毫秒口径算，
+            # 返回秒会被当成 1970 年（列表里每条都显示 1月22日）。
+            "created_at": int(r.created_at.timestamp() * 1000),
             "content": r.content,
         }
 
     async def list(self, user_id: int, status: str = None):
         async with SessionLocal() as s:
             q = select(Trip).where(Trip.user_id == user_id, Trip.status != "deleted")
-            if status:
+            # "all" 表示不过滤；早先直接拿去比 status 字段，导致「全部行程」恒为空
+            if status and status != "all":
                 q = q.where(Trip.status == status)
             q = q.order_by(Trip.created_at.desc())
             rows = (await s.execute(q)).scalars().all()
@@ -41,11 +44,14 @@ class TripService:
         tid = trip.get("id")
         async with SessionLocal() as s:
             # 已存在且属于该用户 → 更新原行程（对话微调后落库）
-            if tid:
+            # 仅当 tid 是有效整数时才尝试更新；非法/预览态 id 直接走新建
+            tid_int = None
+            if tid is not None and tid != "":
                 try:
                     tid_int = int(tid)
-                except (ValueError, TypeError) as e:
-                    raise ValueError(f"行程 id 格式错误: {tid}") from e
+                except (ValueError, TypeError):
+                    tid_int = None
+            if tid_int is not None:
                 r = (
                     await s.execute(
                         select(Trip).where(Trip.id == tid_int, Trip.user_id == user_id)

@@ -12,39 +12,46 @@ except Exception:  # 未安装 SDK 时不阻塞模块导入
     _HAS_ALIYUN_SMS = False
 
 
+def _mock_send(phone: str, code: str, missing: str):
+    """未配置短信服务时的降级。
+
+    开发态：打印并把验证码回传前端，方便本地登录；
+    生产态：直接失败。否则一旦漏配 key，/api/sms/send 会把验证码原样返回，
+    等于任何人都能以任意手机号登录。
+    """
+    if settings.app_env == "production":
+        raise RuntimeError(f"短信服务未配置（{missing}），生产环境拒绝发送验证码")
+    print(f"[SMS-MOCK] 给 {phone} 发送验证码: {code}（未配置 {missing}，仅本地测试）")
+    return True, code
+
+
 async def send_sms(phone: str, code: str):
     """发送短信验证码。
 
     返回 (success: bool, dev_code: str | None)。
-    - 未配置短信 key 时走 mock：打印验证码，并把 code 通过 dev_code 返回给调用方，
-      由接口在前端展示（仅本地开发 / 未接短信服务时使用）。
-    - 已配置 key 时走真实服务商，dev_code 为 None（验证码不回传前端）。
+    - 未配置短信 key 且非生产环境：dev_code 回传前端（本地开发用）。
+    - 生产环境未配置 key：抛错，绝不静默降级成"谁都能登录"。
+    - 已配置 key 时走真实服务商，dev_code 为 None。
     """
     provider = settings.sms_provider
 
-    # 未配置任何 key → 开发降级 mock
     if provider == "alicloud-market":
         if not settings.sms_app_code:
-            print(f"[SMS-MOCK] 给 {phone} 发送验证码: {code}（未配置 SMS_APP_CODE，仅本地测试）")
-            return True, code
+            return _mock_send(phone, code, "SMS_APP_CODE")
         ok = await _send_market(phone, code)
         return ok, None
     if provider == "luosimao":
         if not settings.luosimao_key:
-            print(f"[SMS-MOCK] 给 {phone} 发送验证码: {code}（未配置 LUOSIMAO_KEY，仅本地测试）")
-            return True, code
+            return _mock_send(phone, code, "LUOSIMAO_KEY")
         ok = await _send_luosimao(phone, code)
         return ok, None
     if provider == "chuangxin":
         if not settings.chuangxin_app_code:
-            print(f"[SMS-MOCK] 给 {phone} 发送验证码: {code}（未配置 CHUANGXIN_APP_CODE，仅本地测试）")
-            return True, code
+            return _mock_send(phone, code, "CHUANGXIN_APP_CODE")
         ok = await _send_chuangxin(phone, code)
         return ok, None
     if not settings.sms_api_key:
-        # 开发降级：不发真实短信，直接把验证码交回前端展示
-        print(f"[SMS-MOCK] 给 {phone} 发送验证码: {code}（未配置短信 key，仅为本地测试）")
-        return True, code
+        return _mock_send(phone, code, "SMS_API_KEY")
 
     if provider == "aliyun":
         ok = await _send_aliyun(phone, code)

@@ -1,5 +1,5 @@
-/* trips.wxss —— 我的行程列表页 WF-07（统一高级感设计系统） */
-.page { padding: 0 28rpx; background: var(--bg); --sk: #E8ECF3; --sk-2: #F2F5F9; }
+/* trips.wxss —— 我的行程列表页 iOS 26 Liquid Glass */
+.page { padding: 0 28rpx; min-height: 100vh; background: #F2F2F7; --sk: #E5E5EA; --sk-2: #F7F7FA; }
 
 .list { margin-top: 22rpx; }
 
@@ -7,149 +7,91 @@
 .loading-state { margin-top: 22rpx; }
 .skeleton-card {
   background: var(--card);
-  border-radius: var(--r-lg);
-  margin-bottom: 24rpx;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  border: 1rpx solid rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20rpx) saturate(180%); -webkit-backdrop-filter: blur(20rpx) saturate(180%);
+  border-radius: var(--r-lg); margin-bottom: 24rpx; overflow: hidden;
+  border: 0.5px solid rgba(255, 255, 255, 0.5);
+  box-shadow: var(--shadow-md), inset 0 1rpx 1rpx rgba(255, 255, 255, 0.5);
 }
-.sk-cover {
-  height: 200rpx;
-  background: linear-gradient(90deg, var(--sk) 25%, var(--sk-2) 50%, var(--sk) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-}
+.sk-cover { height: 200rpx; background: linear-gradient(90deg, var(--sk) 25%, var(--sk-2) 50%, var(--sk) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
 .sk-body { padding: 22rpx 24rpx 24rpx; }
-.sk-line {
-  height: 24rpx;
-  border-radius: 6rpx;
-  background: var(--sk);
-  margin-bottom: 16rpx;
-  width: 60%;
-}
+.sk-line { height: 24rpx; border-radius: 6rpx; background: var(--sk); margin-bottom: 16rpx; width: 60%; }
 .sk-line.short { width: 36%; }
 .sk-line:last-child { width: 28%; margin-bottom: 0; }
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
+/* 空状态 */
 .empty-illust {
-  width: 180rpx;
-  height: 180rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary-lighter), var(--primary-light));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 32rpx;
-  box-shadow: var(--shadow-blue);
-}
-.suitcase {
-  width: 88rpx;
-  height: 70rpx;
-  border-radius: 14rpx;
-  background: #fff;
-  position: relative;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
-}
-.suitcase::before {
-  content: '';
-  position: absolute;
-  top: -14rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 34rpx;
-  height: 18rpx;
-  border: 6rpx solid var(--primary-light);
-  border-bottom: none;
-  border-radius: 12rpx 12rpx 0 0;
-}
-.suitcase-stripe {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  width: 12rpx;
-  height: 100%;
+  width: 180rpx; height: 180rpx; border-radius: 50%;
   background: var(--primary-light);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 32rpx; box-shadow: var(--shadow-blue);
 }
-.suitcase-tag {
-  position: absolute;
-  right: -8rpx;
-  top: 18rpx;
-  width: 22rpx;
-  height: 14rpx;
-  background: var(--orange);
-  border-radius: 4rpx;
-  transform: rotate(-12deg);
-}
+.suitcase { width: 88rpx; height: 70rpx; border-radius: 14rpx; background: #fff; position: relative; box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06); }
+.suitcase::before { content: ''; position: absolute; top: -14rpx; left: 50%; transform: translateX(-50%); width: 34rpx; height: 18rpx; border: 6rpx solid var(--primary-light); border-bottom: none; border-radius: 12rpx 12rpx 0 0; }
+.suitcase-stripe { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 12rpx; height: 100%; background: var(--primary-light); }
+.suitcase-tag { position: absolute; right: -8rpx; top: 18rpx; width: 22rpx; height: 14rpx; background: var(--orange); border-radius: 4rpx; transform: rotate(-12deg); }
 .empty-title { font-size: 34rpx; font-weight: 700; color: var(--text-1); }
 .empty-desc { font-size: 26rpx; color: var(--text-3); margin-top: 12rpx; }
 .empty-btn { margin-top: 40rpx; width: 60%; align-self: center; }
 
+/* 行程卡（玻璃） */
 .trip-card {
   background: var(--card);
-  border-radius: var(--r-lg);
-  margin-bottom: 24rpx;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  border: 1rpx solid rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20rpx) saturate(180%); -webkit-backdrop-filter: blur(20rpx) saturate(180%);
+  border-radius: var(--r-lg); margin-bottom: 24rpx; overflow: hidden;
+  border: 0.5px solid rgba(255, 255, 255, 0.5);
+  box-shadow: var(--shadow-md), inset 0 1rpx 1rpx rgba(255, 255, 255, 0.5);
   transition: transform 0.15s ease-out;
 }
-.trip-card:active { transform: scale(0.985); }
+.trip-card:active { transform: scale(0.985); background: rgba(255, 255, 255, 0.82); }
 
-/* 封面条：蓝紫渐变 + 大 emoji + 城市 + 路线徽标 */
 .tc-cover {
-  position: relative;
-  height: 200rpx;
-  background: var(--grad-sky);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative; height: 200rpx;
+  background: var(--primary-light);
+  display: flex; align-items: center; justify-content: center;
 }
-.tc-emoji { font-size: 90rpx; filter: drop-shadow(0 4rpx 8rpx rgba(0, 0, 0, 0.2)); }
-.tc-cover-mask {
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 120rpx;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.28));
-}
-.tc-cover-top {
-  position: absolute;
-  left: 24rpx; right: 24rpx; top: 20rpx;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.tc-city {
-  font-size: 26rpx;
-  color: #fff;
-  font-weight: 600;
-  text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.3);
-}
+.tc-emoji { font-size: 90rpx; filter: drop-shadow(0 4rpx 8rpx rgba(0, 0, 0, 0.12)); }
+.tc-cover-mask { position: absolute; left: 0; right: 0; bottom: 0; height: 120rpx; background: linear-gradient(transparent, rgba(0, 0, 0, 0.18)); }
+.tc-cover-top { position: absolute; left: 24rpx; right: 24rpx; top: 20rpx; display: flex; align-items: center; justify-content: space-between; }
+.tc-city { font-size: 26rpx; color: #fff; font-weight: 600; text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.3); }
 
-/* 信息区 */
 .tc-body { padding: 22rpx 24rpx 24rpx; }
 .tc-title { font-size: 32rpx; font-weight: bold; color: var(--text-1); }
 .tc-meta { font-size: 24rpx; color: var(--text-3); margin-top: 10rpx; }
-.tc-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 18rpx;
-}
-.tc-budget { font-size: 30rpx; font-weight: bold; color: var(--orange); }
+.tc-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 18rpx; }
+.tc-budget { font-size: 30rpx; font-weight: bold; color: var(--primary); }
 .tc-budget .cur { font-size: 22rpx; margin-right: 2rpx; }
-.tc-del {
-  position: relative;
-  z-index: 2;
-  font-size: 24rpx;
-  color: var(--danger);
-  background: var(--danger-light);
-  padding: 10rpx 26rpx;
-  border-radius: var(--r-full);
-  min-width: 72rpx;
-  text-align: center;
-}
+.tc-del { position: relative; z-index: 2; font-size: 24rpx; color: var(--danger); background: var(--danger-light); padding: 10rpx 26rpx; border-radius: var(--r-full); min-width: 72rpx; text-align: center; }
 .tc-del:active { opacity: 0.8; transform: scale(0.95); }
+
+/* 头部 / Tab */
+.page-header { margin: 0; padding: 50rpx 4rpx 30rpx; background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+.ph-badge { margin-bottom: 12rpx; padding: 0; color: var(--primary); background: transparent; border: 0; border-radius: 0; font-weight: 600; }
+.ph-badge::before { width: 10rpx; height: 10rpx; background: var(--ios-green); box-shadow: 0 0 0 5rpx rgba(52, 199, 89, 0.12); }
+.ph-title { color: var(--text-1); font-size: 48rpx; font-weight: 700; letter-spacing: -1rpx; }
+.ph-sub { margin-top: 8rpx; color: var(--text-3); }
+
+.tabs-underline { border-bottom-color: var(--border); }
+.tabs-underline .tb { margin-right: 48rpx; padding: 20rpx 2rpx 22rpx; color: var(--text-3); font-weight: 500; }
+.tabs-underline .tb.on { color: var(--text-1); font-weight: 600; }
+.tabs-underline .tb.on::after { bottom: -1rpx; height: 3rpx; background: var(--primary); }
+
+.list, .loading-state { margin-top: 28rpx; }
+.empty { min-height: 720rpx; padding: 116rpx 32rpx 100rpx; }
+.empty-illust { width: 176rpx; height: 176rpx; margin-bottom: 34rpx; background: var(--primary-light); box-shadow: none; }
+.suitcase { background: #FFFFFF; border: 2rpx solid rgba(10, 132, 255, 0.22); box-shadow: 0 4rpx 12rpx rgba(10, 132, 255, 0.07); }
+.suitcase::before { border-color: var(--primary-light); }
+.suitcase-stripe { background: var(--primary-light); }
+.suitcase-tag { background: var(--orange); }
+.empty-title { color: var(--text-1); font-size: 34rpx; font-weight: 700; }
+.empty-desc { margin-top: 12rpx; color: var(--text-3); text-align: center; }
+.empty-btn { width: 62%; margin-top: 42rpx; }
+.tc-cover { background: var(--primary-light); }
+.tc-emoji { filter: none; }
+.tc-cover-mask { background: linear-gradient(transparent, rgba(255, 255, 255, 0.50)); }
+.tc-city { color: var(--text-1); font-weight: 600; text-shadow: none; }
+.tc-body { padding: 24rpx 26rpx 26rpx; }
+.tc-title { color: var(--text-1); font-weight: 700; }
+.tc-meta { color: var(--text-3); }
+.tc-budget { color: var(--primary); }
+.tc-del { color: var(--danger); background: var(--danger-light); }

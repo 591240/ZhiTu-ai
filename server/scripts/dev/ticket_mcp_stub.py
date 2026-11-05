@@ -1,17 +1,19 @@
-"""开发期 mock：最小 MCP streamable HTTP 服务，模拟 12306-mcp 的 get-tickets。
+"""开发期替身：最小 MCP streamable HTTP 服务，模拟 12306-mcp 的 get-tickets。
 
 用途：沙箱无外网、无法下载/启动真正的 12306-mcp 时，用来验证
 app/services/ticket_service.py 的 MCP 握手与调用协议是否正确。
-生产环境请改用真实的 12306-mcp（npx -y 12306-mcp --port 8801）。
+这是开发工具，不在产品链路里；生产环境请改用真实的 12306-mcp
+（npx -y 12306-mcp --port 8801）。
 
-启动：python mock_12306_mcp.py   （默认 http://127.0.0.1:8901/mcp）
+启动（在 server 目录下）：
+    venv/Scripts/python.exe scripts/dev/ticket_mcp_stub.py   # 默认 http://127.0.0.1:8901/mcp
 """
 import json
 
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 
-app = FastAPI(title="mock-12306-mcp")
+app = FastAPI(title="ticket-mcp-stub")
 
 
 def _build_fake(args: dict) -> str:

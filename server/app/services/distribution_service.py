@@ -24,7 +24,10 @@ class DistributionService:
     async def ensure_code(self, user_id: int) -> str:
         async with SessionLocal() as s:
             u = (await s.execute(select(User).where(User.id == user_id))).scalar_one_or_none()
-            if u and u.invite_code:
+            if not u:
+                # 早先这里会在 else 分支里重复查一次再直接取属性，用户不存在时抛 AttributeError
+                return ""
+            if u.invite_code:
                 return u.invite_code
             # 生成唯一码
             for _ in range(20):
@@ -33,11 +36,7 @@ class DistributionService:
                     select(User.id).where(User.invite_code == code)
                 )).scalar_one_or_none()
                 if not dup:
-                    if u:
-                        u.invite_code = code
-                    else:
-                        u = (await s.execute(select(User).where(User.id == user_id))).scalar_one_or_none()
-                        u.invite_code = code
+                    u.invite_code = code
                     await s.commit()
                     return code
         return _gen_code()

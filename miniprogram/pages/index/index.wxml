@@ -1,4 +1,8 @@
 <view class="page" style="padding-top: {{statusBarHeight + navHeight}}px;">
+  <!-- 全屏城市背景图（方案C：大图背景 + 半透明卡片） -->
+  <image class="bg-fixed" src="/images/home-journey-hero-v1.jpg" mode="aspectFill" />
+  <view class="bg-overlay"></view>
+
   <!-- 自定义导航栏 -->
   <view class="custom-navbar" style="height: {{statusBarHeight + navHeight}}px; padding-top: {{statusBarHeight}}px;">
     <view class="navbar-inner">
@@ -23,6 +27,7 @@
 
   <!-- 模块2：Hero Banner -->
   <view class="hero" bindtap="goForm" hover-class="hero-press" hover-stay-time="120">
+    <image class="hero-photo" src="/images/home-journey-hero-v1.jpg" mode="aspectFill" />
     <view class="hero-badge">AI 智能规划</view>
     <view class="hero-title">开始规划行程</view>
     <view class="hero-sub">一句话，生成你的专属路线</view>

@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -11,6 +12,17 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=ENV_FILE, extra="ignore")
 
     app_env: str = "development"
+
+    # CORS 白名单：逗号分隔的完整 Origin，例如
+    #   CORS_ORIGINS=https://你的域名,https://api.你的域名
+    # 小程序原生 wx.request 不受浏览器同源策略约束，这里只约束 H5/网页端来源。
+    # 留空且 app_env 非 production 时自动放行 localhost 与局域网（真机联调要）；
+    # 上线时把 app_env 设成 production，局域网放行会自动关闭，只认白名单。
+    cors_origins: str = ""
+
+    def cors_origin_list(self) -> list[str]:
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+
     database_url: str = "sqlite+aiosqlite:///./banyou.db"
     redis_url: str = ""
 
@@ -28,6 +40,23 @@ class Settings(BaseSettings):
     llm_api_key: str = ""
     llm_model: str = "deepseek-v4-flash"
     llm_thinking: bool = False
+
+    # —— 检索增强（RAG）——
+    # 留空则复用上面视觉模型那套 url/key（百炼同一个账号即可出 embedding，无需新增凭据）。
+    embedding_api_url: str = ""
+    embedding_api_key: str = ""
+    embedding_model: str = "text-embedding-v3"
+
+    # 向量存储（Milvus）。留空 = 不启用向量检索，检索退回关键词匹配。
+    # 两种形态同一个配置项：本地文件路径 = milvus-lite 内嵌（开发机直接可用，
+    # 例如 kb/corpus/milvus.db）；http://host:19530 = 连独立 Milvus 服务（容器部署）。
+    # 变量名必须带 KB_ 前缀：pymilvus 在自己的 settings.py 里 load_dotenv() 并读取
+    # MILVUS_URI，import 时就解析它，非 http 形式会抛 ConnectionConfigException——
+    # 那个异常被 retriever.client() 吞掉后只会静默退回关键词匹配，很难查。
+    kb_milvus_uri: str = ""
+    kb_milvus_collection: str = "kb_docs"
+    # 官方 Milvus 开启鉴权后为 "用户名:密码"；milvus-lite 不需要。
+    kb_milvus_token: str = ""
 
     daily_plan_limit: int = 3
 
@@ -113,6 +142,26 @@ class Settings(BaseSettings):
     # 高德开放平台 Web 服务 Key（REST 直连地理编码，备用）。
     # 优先级：腾讯 LBS > 高德 MCP > 高德 REST > 内置坐标表。
     gaode_web_key: str = ""
+
+    @model_validator(mode="after")
+    def _guard_production_secrets(self):
+        """生产环境禁止带着默认开发密钥上线。
+
+        jwt_secret 是 HS256 的签名密钥，一旦沿用默认值，任何人都能伪造
+        任意 user_id 的 token——不需要登录就能读写别人的行程。
+        """
+        if self.app_env == "production":
+            if self.jwt_secret.startswith("dev-secret-change-me") or len(self.jwt_secret) < 32:
+                raise ValueError(
+                    "生产环境必须配置 JWT_SECRET（≥32 位随机串），不能使用默认开发密钥"
+                )
+            if not self.redis_url:
+                raise ValueError(
+                    "生产环境必须配置 REDIS_URL：每日限流、短信验证码、发送频率限制、"
+                    "微信 access_token 缓存都靠它。没有 Redis 时这些会静默降级成进程内计数，"
+                    "多 worker 下额度直接翻倍。单机部署可用 docker 起一个 redis:7-alpine。"
+                )
+        return self
 
 
 settings = Settings()

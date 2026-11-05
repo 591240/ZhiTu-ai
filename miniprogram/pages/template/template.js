@@ -12,6 +12,11 @@ Page({
   },
 
   async onLoad(options) {
+    if (!options || !options.id) {
+      this.setData({ loading: false })
+      wx.showToast({ title: '模板参数缺失', icon: 'none' })
+      return
+    }
     try {
       const r = await request({ url: '/api/template/detail', data: { id: options.id } })
       const t = r.data.template
@@ -29,8 +34,13 @@ Page({
   onImgError() {
     const t = this.data.template
     if (!t) return
-    // 在线图也失败时，清空 image 让 emoji 兜底显示
-    this.setData({ 'template.image': '' })
+    const fallback = media.cityImageOnlineFallback(t.city)
+    if (t.image === fallback) {
+      // fallback 也失败，清空 image 让 emoji 兜底显示
+      this.setData({ 'template.image': '' })
+    } else {
+      this.setData({ 'template.image': fallback })
+    }
   },
 
   async onCollect() {
@@ -49,14 +59,15 @@ Page({
       this.setData({ published: true })
       wx.showToast({ title: '已发布到广场', icon: 'success' })
     } catch (e) {
-      wx.showToast({ title: '发布失败', icon: 'none' })
+      // request 层已经 toast 过后端返回的 message（如「该模板已被其他用户发布」），
+      // 这里再盖一层"发布失败"只会把真实原因冲掉
     }
   },
 
   onUse() {
     const t = this.data.template
+    // 不带 id：这是"用模板新建一份行程"，保存时应该新建而不是覆盖模板
     const trip = {
-      id: 'fromTpl' + Date.now(),
       title: t.title,
       city: t.city,
       days: t.days,
